@@ -1,0 +1,71 @@
+﻿@model List<examination_system.Models.AspNetUsers>
+
+@{
+    ViewBag.Title = "Accounts";
+}
+
+<h2 class="text">Accounts</h2>
+<div>
+    <span class="text lbel">search name</span>
+    <input id="search" class="text input" oninput="GetAccounts()" type="text" />
+</div>
+<div style="width: 100%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
+    <div id="all" style="width: 80%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
+        @foreach (var user in Model)
+        {
+            if (user != null)
+            {
+                @Html.Partial("_Account", user, ViewData);
+            }
+        }
+        <div style="height:365.8px" class="pnladd col-sm-3" onclick="document.getElementById('add').click()">
+            <a href="~/Account/Add" id="add"></a>
+            <img src="~/Resources/Account/add.svg" class="Img" />
+            <div>ADD NEW</div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function deleteaccount(id) {
+            alert("ARE YOU SURE TO DELETE USER")
+            $.ajax({
+                url: '/Account/Delete?Id=' + id,
+                data: { Id: id },
+                success: function (r) {
+                    if (r != true) {
+                        alert("you can't delete Account")
+                    }
+                    location.reload();
+                }
+            });
+        }
+        function dlt(id) {
+            var i = document.getElementById(id);
+            i.style.display = "none"
+        }
+        function filldots(id) {
+            var i = document.getElementById(id);
+            if (i.style.display == "none")
+                i.style.display = "block";
+            else
+                i.style.display = "none"
+        }
+        function GetAccounts() {
+            var search = document.getElementById("search");
+            if (search.value != "") {
+                $.ajax({
+                    url: '/Account/Search?SearchName=' + search.value,
+                    type: 'GET',
+                    dataType: 'Html',
+                    data: { SearchName: search.Value },
+                    success: function (r) {
+                        $("#all").html(r);
+                    }
+                });
+            } else {
+                location.reload();
+            }
+        }
+    </script>
+}

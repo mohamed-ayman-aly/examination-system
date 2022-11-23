@@ -1,0 +1,134 @@
+﻿@model examination_system.Models.Question
+
+@{
+    ViewBag.Title = "Edit";
+    SelectList classes = new SelectList(ViewBag.Class, "Id", "Name", Model.Class);
+}
+
+<h2 class="text">Edit Question</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal" id="formBody">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label lbel col-md-2">class</label>
+            <div class="col-md-10">
+                @Html.DropDownList("Class", classes, new { @class = "form-control slect" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label lbel col-md-2">Question Body</label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.QuestionBody, new { @class = "form-control textarea" })
+                @Html.ValidationMessageFor(model => model.QuestionBody, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label lbel col-md-2">Correct Answer</label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.CorrectAnswer.AnswerBody, new { @class = "form-control textarea" })
+            </div>
+        </div>
+        @if (ViewBag.Answers != null)
+        {
+            int i = 1;
+            foreach (var a in ViewBag.Answers)
+            {
+                if (a.AnswerBody!= Model.CorrectAnswer.AnswerBody) {
+                    <div class="form-group">
+                            <label class="control-label lbel col-md-2">Answer @i</label>
+                            <div class="col-md-10">
+                                <textarea class="form-control textarea" name="Answers" id="Answers" value="@a">@a.AnswerBody</textarea>
+                                <span onclick="deleteAnswer(event,@i)" class="pointer pnl" style="width:20px;height:22px">Delete Answer @i</span>
+                            </div>
+                        </div>
+                        i++;
+                        }
+                        }
+                        }else{
+                        <div class="form-group">
+                            <label class="control-label lbel col-md-2">Answer 1</label>
+                            <div class="col-md-10">
+                                <textarea class="form-control textarea" name="Answers" id="Answers" value=""></textarea>
+                                <span onclick="deleteAnswer(event)" class="pointer pnl" style="width: 20px; height: 22px">Delete Answer 1</span>
+                            </div>
+                        </div>
+                        }
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10 ">
+                                <button class="btn btn-default pnlbutton" onclick="addansr()" type="button">add Answers</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10 ">
+                                <input type="submit" value="Edit" class="btn btn-default pnlbutton" />
+                            </div>
+                        </div>
+                    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script>
+    let formBody = document.getElementById('formBody');
+    let i = formBody.children.length - 4;
+    let index = i + 2;
+    function deleteAnswer(event) {
+        if (formBody.children.length < 7) {
+            alert("can't delete Answer 1");
+            return;
+        }
+        formBody.removeChild(event.currentTarget.parentNode.parentNode)
+        i = formBody.children.length - 4;
+        index = i + 2;
+        for (var j = 3; j < formBody.children.length - 2; j++) {
+            formBody.children[j].children[0].innerText = "Answer " + (j - 2);
+            formBody.children[j].children[1].children[1].innerText = "Delete Answer " + (j-2);
+        }
+    }
+    let a=function(event) {
+        if (formBody.children.length < 7) {
+            alert("can't delete Answer 1");
+            return;
+        }
+        formBody.removeChild(event.currentTarget.parentNode.parentNode)
+        i = formBody.children.length - 4;
+        index = i + 2;
+        for (var j = 3; j < formBody.children.length - 2; j++) {
+            formBody.children[j].children[0].innerText = "Answer " + (j - 2);
+            formBody.children[j].children[1].children[1].innerText = "Delete Answer " + (j - 2);
+        }
+    }
+    function addansr() {
+        var fg = document.createElement("div");
+        fg.className = "form-group";
+        var l = document.createElement("label");
+        l.className = "control-label lbel col-md-2"
+        l.innerText = 'Answer ' + i;
+        fg.appendChild(l);
+        var md10 = document.createElement("div");
+        md10.className = "col-md-10";
+        var inp = document.createElement("textarea");
+        inp.name = 'Answers';
+        inp.className = 'form-control textarea';
+        inp.id = 'Answers';
+        md10.appendChild(inp);
+        var span = document.createElement("span");
+        span.onclick=a;
+        span.className = 'pointer pnl';
+        span.style = "height: 22px";
+        span.innerText = "Delete Answer "+i;
+        md10.appendChild(span);
+        fg.appendChild(md10);
+        formBody.insertBefore(fg, formBody.children[index]);
+        i += 1;
+        index += 1;
+    }
+</script>
+}

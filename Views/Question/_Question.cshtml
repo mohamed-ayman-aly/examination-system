@@ -1,0 +1,54 @@
+﻿@model examination_system.Models.Question
+<div class="pnl col-sm-10">
+    <div id="@Model.Id" style="border-radius:10px ;border: solid 1px white; background-color: #e1e8ff; position: absolute; right: 27px; top: 30px; display: none;">
+        <div onclick="dlt('@Model.Id')" class="pointer pnlpnl" style="color:red;height:22px"> x </div>
+        <a href="/Question/Edit?Id=@Model.Id"></a>
+        <div onclick="document.getElementById('@Model.Id').children[1].click()" class="pointer pnlpnl" style="height:22px">
+            Edit
+        </div>
+        <div onclick="deleteclass('@Model.Id')" class="pointer pnlpnl" style="height:22px">
+            Delete
+        </div>
+    </div>
+    <img src="/Resources/Account/3verticaldots.svg" class="dots pointer" onclick="filldots('@Model.Id')" />
+    <div class="lbel">@Model.QuestionBody</div>
+    <div class="text">@Model.Class.Name</div>
+    <ol style="font-size:17px;">
+        <li>
+            @{
+                try
+                {
+                    @Model.Answers.Count()
+                }
+                catch
+                {
+                    <span> 0</span>
+                }
+            }
+        </li>
+        <li>
+            @{
+                try
+                {
+                    @Model.Exams.Count()
+                }
+                catch
+                {
+                    <span> 0</span>
+                }
+            }
+        </li>
+    </ol>
+    <ol>
+        <li>Answers</li>
+        <li>Exams</li>
+    </ol>
+    <hr />
+    <span>Answers</span>
+    <ul>
+        @foreach (var a in @Model.Answers)
+        {
+            <li><div>@a.AnswerBody</div></li>
+        }
+    </ul>
+</div>

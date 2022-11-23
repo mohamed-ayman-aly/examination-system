@@ -1,0 +1,198 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Login 10</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body class="img js-fullheight" style="overflow-y:hidden;background-image: url(/Resources/bg.jpg);">
+
+    @RenderBody()
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
+
+
+<style>
+    .pnl .pnl {
+        padding: 2px;
+        margin: 5px;
+        height: 22px;
+        width: 45px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: white;
+        border-radius: 22px;
+        color: #3140c7;
+        margin: 10px;
+    }
+    #m {
+    }
+
+    .img {
+        top: 0;
+        right: 0;
+    }
+
+        .img img {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            border: 1px solid black;
+        }
+
+            .img img:hover {
+                height: 50px;
+                width: 50px;
+                border-radius: 50%;
+                border: 1px solid white;
+            }
+
+    ::-webkit-datetime-edit {
+        padding: 1rem;
+    }
+
+    ::-webkit-datetime-edit-fields-wrapper {
+        background: silver;
+    }
+
+    ::-webkit-datetime-edit-text {
+        color: #3140bf;
+        padding: 0 0.3em;
+    }
+
+    ::-webkit-datetime-edit-month-field {
+        color: #3140bf;
+    }
+
+    ::-webkit-datetime-edit-day-field {
+        color: #3140bf;
+    }
+
+    ::-webkit-datetime-edit-year-field {
+        color: #3140bf;
+    }
+
+    .navbar-inverse {
+        background-color: #fbceb5;
+    }
+
+        .navbar-inverse:hover {
+            color: white;
+            border-color: #000000;
+        }
+
+        .navbar-inverse .navbar-brand {
+            color: black;
+        }
+
+        .navbar-inverse .navbar-nav > li > a {
+            color: black;
+        }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: #e1e8ff;
+        color: #3140c7;
+    }
+
+
+    .pnl {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: white;
+        color: #3140c7;
+        border-radius: 12px;
+        margin: 10px;
+        width: calc(25% - 20px);
+    }
+
+        .pnl:hover {
+            box-shadow: 0 0 8px 0px #00000080;
+        }
+
+    .pnladd:hover {
+        box-shadow: 0 0 8px 0px #00000080;
+        height: 363.8px;
+        border: 2px white solid;
+    }
+
+    .pnladd {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: #e1e8ff;
+        border: 1px white solid;
+        color: black;
+        border-radius: 12px;
+        margin: 10px;
+        width: calc(25% - 20px);
+    }
+
+        .pnladd .Img {
+            width: 50%;
+            margin-bottom: 50px;
+            filter: invert(74%) sepia(33%) saturate(991%) hue-rotate(197deg) brightness(96%) contrast(98%);
+        }
+
+        .pnladd:hover .Img {
+            filter: invert(19%) sepia(95%) saturate(3010%) hue-rotate(243deg) brightness(90%) contrast(101%);
+        }
+
+    .UserName {
+        font-size: 20px
+    }
+
+    .pnl .Img {
+        width: 100px;
+        height: 100px;
+        border-radius: 100px;
+        border: solid #e1e8ff 10px;
+        margin-top: 50px;
+    }
+
+    .dots {
+        width: 3px;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .pnl button {
+        background-color: #b2acf3;
+        color: white;
+        border: none;
+        width: 55%;
+        height: 35px;
+        border-radius: 30px;
+        margin-bottom: 50px;
+    }
+
+        .pnl button:hover {
+            background-color: #483ae7;
+        }
+
+    .pointer {
+        cursor: pointer;
+    }
+</style>

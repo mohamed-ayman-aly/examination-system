@@ -1,0 +1,372 @@
+﻿@using examination_system.Models;
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@{ 
+    DB DB= new DB();
+    UserStore<AspNetUsers> UserStore = new UserStore<AspNetUsers>(DB);
+    UserManager<AspNetUsers> userManager = new UserManager<AspNetUsers>(UserStore);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div >
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("examination system", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (User.IsInRole("superadmin") ||
+                            User.IsInRole(examination_system.Models.UserType.admin.ToString()))
+                    {
+                        <li>@Html.ActionLink("Accounts", "Index", "Account")</li>
+                    }
+                    @if (User.IsInRole("superadmin"))
+                    {
+                        <li>@Html.ActionLink("Roles", "Index", "Role")</li>
+                    }
+                    @if (User.IsInRole("superadmin") ||
+                            User.IsInRole("admin") ||
+                            User.IsInRole("professor")
+                            )
+                    {
+                        <li>@Html.ActionLink("Classes", "Index", "Class")</li>
+                    }
+                    @if (User.IsInRole("professor") ||
+                            User.IsInRole("superadmin"))
+                    {
+                        <li>@Html.ActionLink("Questions", "Index", "Question")</li>
+                        <li>@Html.ActionLink("Exams", "Index", "Exam")</li>
+                    }
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li style="position: absolute" id="img" class="img">
+                            <img src="~/Resources/Account/imgs/@userManager.FindById(User.Identity.GetUserId()).ImgFileName" />
+                            <a class="hidden" href="/Account/LogOut"></a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            @Html.ActionLink("Log In", "LogIn", "Account")
+                        </li>
+                    }
+                    </ul>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div style="z-index:1034;"  id="m"></div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+<style>
+    .pnlpnl {
+        padding: 2px;
+        margin: 5px;
+        height: 22px;
+        width: 45px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: white;
+        border-radius:22px;
+        color: #3140c7;
+        margin: 10px;
+    }
+    .img {
+        top: 0;
+        left: 0;
+    }
+    .img img {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        border: 2px solid black;
+    }
+    .img img:hover {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+    ::-webkit-datetime-edit {
+        padding: 1em;
+    }
+
+    ::-webkit-datetime-edit-fields-wrapper {
+        background: silver;
+    }
+
+    ::-webkit-datetime-edit-text {
+        color: #3140bf;
+        padding: 0 0.3em;
+    }
+
+    ::-webkit-datetime-edit-month-field {
+        color: #3140bf;
+    }
+
+    ::-webkit-datetime-edit-day-field {
+        color: #3140bf;
+    }
+
+    ::-webkit-datetime-edit-year-field {
+        color: #3140bf;
+    }
+
+    .navbar-inverse {
+        background-color: #fbceb5;
+    }
+    .navbar-inverse:hover {
+        color: white;
+        border-color: #000000;
+    }
+    .navbar-inverse .navbar-brand {
+        margin-left:50px;
+        color: black;
+    }
+
+    .navbar-inverse .navbar-nav > li>a{
+        color: black;
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+        ::-webkit-scrollbar:vertical:hover {
+            width: 10px;
+        }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        background: linear-gradient(to bottom, blue, lightblue);
+        border-radius: 10px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to top, blue, lightblue);
+        border-radius: 10px;
+    }
+</style>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        overflow-x:hidden;
+    }
+    body {
+        background-color: #e1e8ff;
+        overflow-y: auto;
+        color: #3140c7;
+    }
+    input, select {
+        background-color: #e1e8ff !important;
+        color: #3140c7 !important;
+        border-radius: 34px !important;
+        font-size: 2.4rem !important;
+        height: 34px !important;
+        margin: 10px !important;
+        padding: 0 !important;
+        padding-left: 20px !important;
+        border: 1px white solid !important;
+        width: calc(25% - 20px) !important;
+        outline: none !important;
+    }
+    textarea {
+        background-color: #e1e8ff !important;
+        color: #3140c7 !important;
+        border-radius: 34px !important;
+        font-size: 2.7rem !important;
+        line-height: 34px !important;
+        margin: 10px !important;
+        padding: 20px !important;
+        border: 1px white solid !important;
+        width: calc(25% - 20px) !important;
+        outline: none !important;
+    }
+    ol {
+        list-style-type: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+    input:hover, input:focus, select:hover, select:focus, textarea:hover, textarea:focus {
+        border: 2px white solid !important;
+        outline: none !important;
+    }
+    textarea:hover, textarea:future {
+        border: 2px white solid !important;
+        outline: none !important;
+    }
+    .pnl {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: white;
+        color: #3140c7;
+        border-radius: 12px;
+        margin: 10px;
+        min-width: 232px;
+    }
+
+    .pnl:hover {
+        box-shadow: 0 0 8px 0px #00000080;
+    }
+
+    .pnladd:hover {
+        box-shadow: 0 0 8px 0px #00000080;
+        
+        border: 2px white solid;
+    }
+
+    .pnladd {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: #e1e8ff;
+        border: 1px white solid;
+        color: black;
+        border-radius: 12px;
+        margin: 10px;
+        min-width: 232px;
+        height: 363.8px;
+    }
+    img{
+        width:200px;
+    }
+    .pnladd .Img {
+        width: 100px;
+        margin: 50px;
+        filter: invert(74%) sepia(33%) saturate(991%) hue-rotate(197deg) brightness(96%) contrast(98%);
+    }
+
+    .pnladd:hover .Img {
+        filter: invert(19%) sepia(95%) saturate(3010%) hue-rotate(243deg) brightness(90%) contrast(101%);
+    }
+
+    .UserName {
+        font-size: 20px
+    }
+
+    .pnl .Img {
+        width: 100px;
+        height: 100px;
+        border-radius: 100px;
+        border: solid #e1e8ff 10px;
+        margin-top: 50px;
+    }
+
+    .dots {
+        width: 3px;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        filter: invert(74%) sepia(33%) saturate(991%) hue-rotate(197deg) brightness(96%) contrast(98%);
+    }
+
+    button, input[type="submit"] {
+        background-color: #b2acf3 !important;
+        color: white !important;
+        border: none !important;
+        width: 260px !important;
+        height: 35px !important;
+        border-radius: 30px !important;
+        margin: 0px !important;
+        padding: 0px !important;
+    }
+    .navbar-header button {
+        background-color: #fbceb5 !important;
+        border-radius: 5px !important;
+        border: solid 2px black !important;
+        width: 40px !important;
+        height: 40px !important;
+        padding: 7px !important;
+        margin: 7px !important;
+    }
+    .pnl button:hover {
+        background-color: #483ae7 !important;
+    }
+    .pnl button {
+        width: 55% !important;
+        margin-bottom: 50px !important;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    var c = true;
+    var img = document.getElementById("img");
+    function fm(id) {
+        let el = document.getElementById(id);
+        let h = (el.clientHeight / 2) + 5;
+        let w = (el.clientWidth / 2) + 5;
+        document.addEventListener("mousemove", mousemove);
+        el.style.position = "absolute";
+        function mousemove(e) {
+            el.style.left = e.clientX - w + "px";
+            el.style.top = e.clientY - h + "px";
+        }
+        img.addEventListener("click", file);
+        img.childNodes[0].addEventListener("click", file);
+        function file () {
+            let m = document.getElementById("m");
+            if (c) {
+                document.removeEventListener("mousemove", mousemove);
+                m.style.removeProperty("left");
+                m.style.left = "0px";
+                m.style.top = "10px";
+                m.innerHTML = `<div style="border-radius:10px ;border: solid 1px white; background-color: #e1e8ff;">
+                                    <div class="pointer pnlpnl" onclick="document.getElementById('m').innerHTML = ''; c = true;" style="color:red;"> x </div>
+                                    <div  class="pointer pnlpnl" > @Html.ActionLink("Log Out", "LogOut", "Account")</div>
+                                    <div  class="pointer pnlpnl" > @Html.ActionLink("edit", "edit", "Account")</div>
+                               </div>`
+                    ;
+                c = !c;
+            }
+        }
+        
+    }
+    fm("m");
+</script>

@@ -1,0 +1,44 @@
+﻿@using examination_system.Models
+@model Exam
+@{
+    int c = new DB().Classes.FirstOrDefault(e => e.Id == Model.Class.Id).Students.Count();
+}
+<div class="pnl col-sm-3">
+    <div id="@Model.Id" style="border-radius:10px ;border: solid 1px white; background-color: #e1e8ff; position: absolute; right: 27px; top: 30px; display: none;">
+        <div onclick="dlt('@Model.Id')" class="pointer pnlpnl" style="color:red;height:22px"> x </div>
+        <a href="/Exam/Edit?Id=@Model.Id"></a>
+        <div onclick="document.getElementById('@Model.Id').children[1].click()" class="pointer pnlpnl" style="height:22px"> Edit </div>
+        <div onclick="deleteexam('@Model.Id')" class="pointer pnlpnl" style="height:22px"> Delete </div>
+    </div>
+    <img src="/Resources/Account/3verticaldots.svg" class="dots pointer" onclick="filldots('@Model.Id')" />
+    <svg class="Img" height="75" width="75">
+        <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color: #685de7; stop-opacity: 1" />
+                <stop offset="100%" style="stop-color: #b2acf3; stop-opacity: 1" />
+            </linearGradient>
+        </defs>
+        <text y="50%" textLength="75" lengthAdjust="spacingAndGlyphs" fill="url(#grad1)">@Model.Name</text>
+    </svg>
+    <div class="UserName">@Model.Name</div>
+    <div class="text">@Model.Professor.UserName</div>
+    <div class="text">@Model.Class.Name</div>
+    <div class="text">@Model.Duration</div>
+
+    <ol style="font-size:17px;">
+        <li>
+            @{try
+                {@Model.Questions.Count}
+            catch
+            {<span> 0</span>} }
+    </li>
+    <li>
+        @c
+    </li>
+</ol>
+<ol>
+    <li>Questions</li>
+    <li>Students</li>
+</ol>
+<button>view details</button>
+</div>

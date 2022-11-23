@@ -1,0 +1,31 @@
+﻿@using examination_system.Models
+@model AspNetUsers
+<div class="pnl col-md-3">
+    <div id="@Model.Id" style="justify-content:center;border-radius:10px ;border: solid 1px white; background-color: #e1e8ff; position: absolute; right: 27px; top: 30px; display: none;">
+        <div onclick="dlt('@Model.Id')" class="pointer pnlpnl" style="padding: 2px; margin: 5px; color: red; height: 22px; width: 45px; "> x </div>
+        <div class="pointer pnlpnl" style="padding: 2px; margin: 5px; height: 22px; width: 45px;"> Edit </div>
+        <div onclick="deleteaccount('@Model.Id')" class="pointer pnlpnl" style="padding: 2px; margin: 5px; height: 22px; width: 45px; "> Delete </div>
+    </div>
+    <img src="/Resources/Account/3verticaldots.svg" class="dots pointer" onclick="filldots('@Model.Id')" />
+    <img src="~/Resources/Account/imgs/@Model.ImgFileName" class="Img" />
+    <div class="UserName">@Model.UserName</div>
+    <div class="JobTitle">
+        @{ try
+            {
+                if (int.Parse(@Model.UserType.ToString()) == 3){
+                    <span>superadmin</span>
+                }
+            }catch{
+                @Model.UserType.ToString()
+            }
+        }
+    </div>
+    <div class="Email">@Model.Email</div>
+    <ol style="font-size:17px;">
+        <li>@Model.Roles.Count()</li>
+    </ol>
+    <ol>
+        <li>Roles</li>
+    </ol>
+    <button>view profile</button>
+</div>

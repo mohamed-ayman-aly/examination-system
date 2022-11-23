@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+}
+
+<h2 class="text">Add Role</h2>
+@using (Html.BeginForm(null, null, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.Label("name", htmlAttributes: new { @class = "lbel text control-label  col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("name", new { htmlAttributes = new { @class = "input form-control" } })
+                @Html.ValidationMessage("name", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Add" class="btn pnlbutton btn-default" />
+            </div>
+        </div>
+    </div>
+}

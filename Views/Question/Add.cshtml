@@ -1,0 +1,100 @@
+﻿@model examination_system.Models.Question
+
+@{
+    ViewBag.Title = "Add";
+    SelectList classes = new SelectList(ViewBag.Class, "Id", "Name", 0);
+}
+
+<h2 class="text">Add Question</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal" id="formBody">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label class="control-label lbel col-md-2">class</label>
+        <div class="col-md-10">
+            @Html.DropDownList("Class",classes,new { @class = "form-control slect" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label lbel col-md-2">Question Body</label>
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.QuestionBody, new { @class = "form-control textarea" } )
+            @Html.ValidationMessageFor(model => model.QuestionBody, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label lbel col-md-2">Correct Answer</label>
+        <div class="col-md-10">
+            <textarea class="form-control textarea" name="CorrectAnswer" id="CorrectAnswer" value="@ViewBag.CorrectAnswer" ></textarea>
+        </div>
+    </div>
+    @if (ViewBag.Answers != null)
+    {
+        int i = 1;
+        foreach (var a in ViewBag.Answers)
+        {
+            <div class="form-group">
+                <label class="control-label lbel col-md-2">Answer @i</label>
+                <div class="col-md-10">
+                    <textarea class="form-control textarea" name="Answers" id="Answers" value="@a"> </textarea>
+                </div>
+            </div>
+            i++;
+        }
+    }
+    else
+    {
+        <div class="form-group">
+            <label class="control-label lbel col-md-2">Answer 1</label>
+            <div class="col-md-10">
+                <textarea class="form-control textarea" name="Answers" id="Answers" value=""></textarea> 
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10 ">
+            <button class="btn btn-default pnlbutton" onclick="addansr()" type="button">add Answers</button>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10 ">
+            <input type="submit" value="Create" class="btn btn-default pnlbutton" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var formBody = document.getElementById('formBody');
+        var i = formBody.children.length - 4;
+        var index = i+2;
+        function addansr() {
+            var fg = document.createElement("div");
+            fg.className = "form-group";
+            var l = document.createElement("label");
+            l.className = "control-label lbel col-md-2"
+            l.innerText = 'Answer ' + i;
+            fg.appendChild(l);
+            var md10 = document.createElement("div");
+            md10.className = "col-md-10";
+            var inp = document.createElement("textarea");
+            inp.name = 'Answers';
+            inp.className = 'form-control textarea';
+            inp.id = 'Answers';
+            md10.appendChild(inp);
+            fg.appendChild(md10);
+            formBody.insertBefore(fg, formBody.children[index]);
+            i += 1;
+            index += 1;
+        }
+    </script>
+}

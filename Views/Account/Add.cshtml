@@ -1,0 +1,101 @@
+﻿@model examination_system.Models.AspNetUsers
+
+@{
+    ViewBag.Title = "Add";
+}
+
+<h2 class="text">Add New Account</h2>
+
+
+@using (Html.BeginForm("Add", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = " text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "input form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PasswordHash, htmlAttributes: new { @class = "text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PasswordHash, new { htmlAttributes = new { @class = "input form-control" } })
+                @Html.ValidationMessageFor(model => model.PasswordHash, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "input form-control" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "input form-control" } })
+                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "input form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("User Type", htmlAttributes: new { @class = "text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.UserType, "Select a User Type", new { @class = "slect form-control" })
+                @Html.ValidationMessageFor(m => m.UserType)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Image File", htmlAttributes: new { @class = "text lbel control-label col-md-2" })
+            <div class="col-md-10">
+                <input required style="display:none" onchange="browseResult(event)" id="ImgFile" type="file" name="ImgFile" value="" accept="image/*" />
+                <button type="button" onclick="document.getElementById('ImgFile').click();" class="pnlbutton">
+                    Upload Image
+                </button>
+                <span class="text" id="ImgFileName" ></span>
+                <br />
+                <img id="ImgFileshow"/>
+                @Html.ValidationMessageFor(m => m.ImgFileName)
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="add" class="pnlbutton" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function browseResult(event) {
+            document.getElementById("ImgFileName").innerText = event.target.files[0].name;
+            document.getElementById("ImgFileshow").src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
+}
