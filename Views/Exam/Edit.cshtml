@@ -2,10 +2,16 @@
 @{
     ViewBag.Title = "Add Exam";
 }
-<h2>Edit Exam</h2>
+<h2>Edit Exam:@Model.Name</h2>
+<button class="smallbutton" onclick="AddSub2E()">
+    <img src="~/Resources/Exam/AddSub2E.svg" />
+</button>
+<button class="smallbutton" onclick="AddGrop2E()">
+    <img src="~/Resources/Exam/AddGrop2E.svg" />
+</button>
 <div id="body" class="body">
-    <div id="examtop" class="move" unselectable="on" style="position: absolute;">exam</div>
-    <div id="questiontop" class="move" unselectable="on" style="position: absolute;">questions</div>
+    <div id="examtop" class="move" unselectable="on" style="position: absolute;overflow-y:hidden;">exam</div>
+    <div id="questiontop" class="move" unselectable="on" style="position: absolute; overflow-y: hidden;">questions</div>
     <div id="exambody" style="position: absolute;">
         @foreach (var q in ViewBag.exambody)
         {
@@ -24,6 +30,7 @@
                 <img src="~/Resources/Account/minus.svg" width="50" height="50" onclick="removeqtoe('@q.Id')" />
             </div>
         }
+
     </div>
     <div id="questionbody" style="position: absolute;">
         @foreach (var q in ViewBag.questionbody)
@@ -50,7 +57,20 @@
         margin: 0;
         padding: 0;
     }
-
+    .sup {
+        display: flex;
+        background-color: white;
+        color: #3140c7;
+        border-radius: 12px;
+        margin: 10px;
+        flex-direction: column;
+        border:solid black 2px;
+    }
+    .sup .sup {
+        margin: 30px;
+        display: flex;
+        flex-wrap: wrap;
+    }
     #body {
         position: relative;
         width: 100%;
@@ -120,10 +140,58 @@
         z-index: 1;
         border-radius: 3vh;
     }
+    .row {
+        margin: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
 </style>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 <script>
+    var examtop = document.getElementById("examtop");
+    var questiontop = document.getElementById("questiontop");
+
+    var exambody = document.getElementById("exambody");
+    var questionbody = document.getElementById("questionbody");
+
+    var body = document.getElementById("body");
+    var bodyp = body.getBoundingClientRect();
+    var sup = `
+        <div class="sup">
+            <div class="row">
+                <button class="smallbutton" onclick="AddSub2f(event)">
+                    <img src="/Resources/Exam/AddSub2E.svg" />
+                </button>
+                <button class="smallbutton" onclick="AddGrop2f(event)">
+                    <img src="/Resources/Exam/AddGrop2E.svg" />
+                </button>
+            </div>
+            <div class="row">
+                <span style="margin: 0 10px;width: 60px;">Heading</span>
+                <input style="width: 82% !important;max-width: none;">
+            </div>
+        </div>
+        <br/>
+    `;
+    function AddSub2E() {
+        exambody.innerHTML = exambody.innerHTML + sup;
+    }
+    function AddSub2f(event) {
+        event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + sup;
+    }
+    function saveAddSub2E(head) {
+        $.ajax({
+            url: '/Exam/AddSub2Exam?e=' + '@Model.Id' + '&head=' + head,
+            type: 'GET',
+            data: { e: '@Model.Id', head: head },
+            success: function () {
+                location.reload();
+            }
+        });
+    }
     function addqtoe(id,deg) {
         $.ajax({
             url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + id + '&deg=' + deg,
@@ -134,6 +202,7 @@
             }
         });
     }
+
     function removeqtoe(id){
         $.ajax({
             url: '/Exam/removeQuestion2Exam?q=' + id + '&e=' +'@Model.Id',
@@ -144,17 +213,6 @@
             }
         });
     }
-</script>
-<script>
-    var examtop = document.getElementById("examtop");
-    var questiontop = document.getElementById("questiontop");
-
-    var exambody = document.getElementById("exambody");
-    var questionbody = document.getElementById("questionbody");
-
-    var body = document.getElementById("body");
-    var bodyp = body.getBoundingClientRect();
-
     examtop.addEventListener("mousedown", () => {
         localStorage.setItem("lasttop","examtop")
         examtop.style.marginTop = "0px";
@@ -169,12 +227,13 @@
         questionbody.style.zIndex = "1";
         document.addEventListener("mousemove", FolwMouse);
         function FolwMouse(event) {
+            var st = document.documentElement.scrollTop;
             examtop.style.removeProperty("right");
             if (event.clientX > bodyp.left && event.clientX < bodyp.right)
                 examtop.style.left = exambody.style.left = event.clientX - bodyp.left - (examtop.clientWidth / 2) + 'px';
-            if (event.clientY > bodyp.top && event.clientY < bodyp.bottom) {
-                examtop.style.top = event.clientY + document.documentElement.scrollTop - (examtop.clientHeight / 2) - bodyp.top + 'px';
-                exambody.style.top = event.clientY + document.documentElement.scrollTop - bodyp.top + (examtop.clientHeight / 2) - 12 + 'px';
+            if (event.clientY + st > bodyp.y / 4-50 && event.clientY + st < bodyp.y / 4-50 + bodyp.height) {
+                examtop.style.top = event.clientY + st - bodyp.top/4+50 - (examtop.clientHeight / 2) +'px';
+                exambody.style.top = event.clientY + st - bodyp.top/4+50 + (examtop.clientHeight / 2) - 12 + 'px';
             }
         }
         examtop.addEventListener("mouseup", (event) => {
@@ -183,7 +242,7 @@
             document.removeEventListener("mousemove", FolwMouse);
             exambody.style.removeProperty("top");
             examtop.style.removeProperty("top");
-            if (event.clientY - bodyp.top + document.documentElement.scrollTop < body.clientHeight / 20) {
+            if (event.clientY - bodyp.top/4+50 + document.documentElement.scrollTop < body.clientHeight / 20) {
                 exambody.style.width = "100%";
                 questionbody.style.width = "100%";
                 exambody.style.removeProperty("left");
@@ -247,9 +306,9 @@
             questiontop.style.removeProperty("right");
             if (event.clientX > bodyp.left && event.clientX < bodyp.right)
                 questiontop.style.left = questionbody.style.left = event.clientX - bodyp.left - (questiontop.clientWidth / 2) + 'px';
-            if (event.clientY > bodyp.top && event.clientY < bodyp.bottom) {
-                questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top + document.documentElement.scrollTop + 'px';
-                questionbody.style.top = event.clientY - bodyp.top + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
+            if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 50 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 50 + bodyp.height) {
+                questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 50 + document.documentElement.scrollTop + 'px';
+                questionbody.style.top = event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
             }
         }
         questiontop.addEventListener("mouseup", (event) => {
@@ -258,7 +317,7 @@
             document.removeEventListener("mousemove", FolwMouse);
             questionbody.style.removeProperty("top");
             questiontop.style.removeProperty("top");
-            if (event.clientY - bodyp.top + document.documentElement.scrollTop < body.clientHeight / 20) {
+            if (event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop < body.clientHeight / 20) {
                 exambody.style.width = "100%";
                 questionbody.style.width = "100%";
                 exambody.style.removeProperty("left");

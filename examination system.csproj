@@ -200,7 +200,18 @@
     <Content Include="Content\Site.css" />
     <Content Include="Resources\Account\3verticaldots.svg" />
     <Content Include="Resources\Account\add.svg" />
+    <Content Include="Resources\Account\imgs\20acd432-a32f-4a6c-bc1f-cd16e4976581.jpg" />
     <Content Include="Resources\Account\minus.svg" />
+    <Content Include="Resources\Exam\AddGrop2E.svg" />
+    <Content Include="Resources\Exam\AddGrop2Sub.svg" />
+    <Content Include="Resources\Exam\AddQ2Grop.svg" />
+    <Content Include="Resources\Exam\AddQ2Sub.svg" />
+    <Content Include="Resources\Exam\AddSub2E.svg" />
+    <Content Include="Resources\Exam\RemoveGrop2E.svg" />
+    <Content Include="Resources\Exam\RemoveGrop2Sub.svg" />
+    <Content Include="Resources\Exam\RemoveQ2Grop.svg" />
+    <Content Include="Resources\Exam\RemoveQ2Sub.svg" />
+    <Content Include="Resources\Exam\RemoveSub2E.svg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -257,7 +268,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Resources\Account\imgs\" />
     <Folder Include="Views\Account\images\" />
   </ItemGroup>
   <ItemGroup>
