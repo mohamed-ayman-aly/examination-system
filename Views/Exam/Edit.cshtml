@@ -40,7 +40,7 @@
                       "<span onclick = \"setmehere(event)\" style = \"margin: 0 10px;width: 60px;\" > Heading</ span>" +
                       "<text onclick = \"setmehere(event)\" style = \"width: 82% !important;max-width: none;\" value=\"" + sq.Heading + "\" >";
         foreach (ExamQuestion eq in sq.Questions) {
-
+            res += qtohtml(eq);
         }
         foreach (GroupQuestion gq in sq.GroupQuestions) {
             res += groptohtml(gq);
