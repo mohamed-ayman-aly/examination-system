@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace examination_system.Models.View_Models
+namespace examination_system.Models
 {
     [Table("SubQuestions")]
     public class SubQuestion

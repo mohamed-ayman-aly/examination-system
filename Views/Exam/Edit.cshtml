@@ -1,145 +1,198 @@
-﻿@model examination_system.Models.Exam
+﻿@using examination_system.Models;
+@model Exam
 @{
     ViewBag.Title = "Add Exam";
 }
+@functions{
+    public string qtohtml(ExamQuestion eq)
+    {
+        string res = "";
+        res += "<div class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\">" +
+                   "<div>" +
+                       "<div>" + eq.Question.QuestionBody + "</div>"+
+                       "<input value=\""+eq.Degree+"\" />"+
+                       "<ul>";
+        foreach (var a in eq.Question.Answers)
+        {
+            res += "<li><div> @a.AnswerBody </div></li>";
+        }
+        res += "</ul>" +
+            "</div>" +
+            "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"removeqtoe('" + eq.Id + "')\" />" +
+        "</div>";
+        return res;
+    }
+    public string groptohtml(GroupQuestion gq)
+    { return ""; }
+    public string suptohtml(SubQuestion sq)
+    {
+        string res = "";
+        res += "<div class= \"sub\" onclick = \"setmehere(event)\" >" +
+                  "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                      "<button class= \"smallbutton\" onclick = \"AddSub2f(event);setmehere(event)\" >" +
+                          "<img src = \"/Resources/Exam/AddSub2E.svg\" onclick = \"setmehere(event)\" />" +
+                      "</button>" +
+                      "<button class= \"smallbutton\" onclick = \"AddGrop2f(event);setmehere(event);\" >" +
+                          "<img src = \"/Resources/Exam/AddGrop2E.svg\" onclick = \"setmehere(event)\" />" +
+                      "</button>" +
+                  "</div>" +
+                  "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                      "<span onclick = \"setmehere(event)\" style = \"margin: 0 10px;width: 60px;\" > Heading</ span>" +
+                      "<text onclick = \"setmehere(event)\" style = \"width: 82% !important;max-width: none;\" value=\"" + sq.Heading + "\" >";
+        foreach (ExamQuestion eq in sq.Questions) {
+
+        }
+        foreach (GroupQuestion gq in sq.GroupQuestions) {
+            res += groptohtml(gq);
+        }
+        foreach (SubQuestion ssq in sq.SubQuestions)
+        {
+            res += suptohtml(ssq);
+        }
+        res += "</div>" +
+        "</div>" +
+        "<br/>";
+        return res;
+    }
+        }
 <h2>Edit Exam:@Model.Name</h2>
 <button class="smallbutton" onclick="AddSub2E()">
-    <img src="~/Resources/Exam/AddSub2E.svg" />
-</button>
+<img src = "~/Resources/Exam/AddSub2E.svg" />
+</button >
 <button class="smallbutton" onclick="AddGrop2E()">
-    <img src="~/Resources/Exam/AddGrop2E.svg" />
-</button>
+<img src = "~/Resources/Exam/AddGrop2E.svg" />
+</button >
 <div id="body" class="body">
-    <div id="examtop" class="move" unselectable="on" style="position: absolute;overflow-y:hidden;">exam</div>
-    <div id="questiontop" class="move" unselectable="on" style="position: absolute; overflow-y: hidden;">questions</div>
-    <div id="exambody" style="position: absolute;">
-        @foreach (var q in ViewBag.exambody)
-        {
-            <div class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div>
-                        @q.QuestionBody
-                    </div>
-                    <ul>
-                        @foreach (var a in q.Answers)
-                        {
-                            <li><div>@a.AnswerBody</div></li>
-                        }
-                    </ul>
-                </div>
-                <img src="~/Resources/Account/minus.svg" width="50" height="50" onclick="removeqtoe('@q.Id')" />
-            </div>
-        }
-
-    </div>
-    <div id="questionbody" style="position: absolute;">
-        @foreach (var q in ViewBag.questionbody)
-        {
-            <div class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div>
-                        @q.QuestionBody
-                    </div>
-                    <ul>
-                        @foreach (var a in q.Answers)
-                        {
-                            <li><div>@a.AnswerBody</div></li>
-                        }
-                    </ul>
-                </div>
-                <img src="~/Resources/Account/add.svg" width="50" height="50" onclick="addqtoe('@q.Id')" />
-            </div>
-        }
-    </div>
+<div id = "examtop" class="move" unselectable="on" style="position: absolute;overflow-y:hidden;">exam</div>
+<div id = "questiontop" class="move" unselectable="on" style="position: absolute; overflow-y: hidden;">questions</div>
+<div id="exambody" onclick="setmehere(event);" style="position: absolute;border: solid 2px #4747ff">
+    @foreach (ExamQuestion q in ViewBag.exambody)
+    {
+        @qtohtml(q);
+    }
+    @foreach (GroupQuestion q in ViewBag.myexamGroupQuestions)
+    {
+        @groptohtml(q);
+    }
+    @foreach (SubQuestion q in ViewBag.myexamSubQuestions)
+    {
+        @suptohtml(q);
+    }
 </div>
-<style>
-    * {
+<div id = "questionbody" style="position: absolute;">
+    @foreach(ExamQuestion q in ViewBag.questionbody)
+        {
+        <div class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div>
+                    @q.Question.QuestionBody
+                </div>
+                <input value="@q.Degree" />
+                <ul>
+                    @foreach (var a in q.Question.Answers)
+                    {
+                        < li >< div > @a.AnswerBody </ div ></ li >
+                    }
+                </ul>
+            </div>
+            <img src = "~/Resources/Account/add.svg" width="50" height="50" onclick="addqtoe('@q.Id')" />
+        </div>
+    }
+</div >
+</div >
+<style >
+* {
         margin: 0;
         padding: 0;
     }
-    .sup {
+
+.sub
+    {
         display: flex;
         background-color: white;
         color: #3140c7;
-        border-radius: 12px;
+    border-radius: 12px;
         margin: 10px;
         flex-direction: column;
-        border:solid black 2px;
+        border: solid black 2px;
     }
-    .sup .sup {
+
+    .sub.sub {
         margin: 30px;
         display: flex;
         flex-wrap: wrap;
     }
-    #body {
-        position: relative;
-        width: 100%;
-        height: 80vh;
-        background-color: white;
-        overflow: hidden;
-    }
 
-    #examtop {
-        color: aliceblue;
-        background-color: #b2acf3;
-        padding: 5px;
-        padding-bottom: 40px;
-        margin-top: 0.75vh;
-        margin-left: 0.75vw;
-        height: 4.25vh;
-        border-radius: 3vh 3vh 0 0;
-        display: inline-block;
-        text-align: center;
-        line-height: 4.25vh;
-        z-index: 1;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -o-user-select: none;
-        user-select: none;
-    }
+#body {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    background-color: white;
+    overflow: hidden;
+}
 
-    #questiontop {
-        color: aliceblue;
-        background-color: #b2acf3;
-        margin-top: 0.75vh;
-        margin-left: 5.5vw;
-        height: 4.25vh;
-        padding: 5px;
-        padding-bottom: 40px;
-        border-radius: 3vh 3vh 0 0;
-        display: inline-block;
-        text-align: center;
-        line-height: 4.25vh;
-        z-index: 1;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -o-user-select: none;
-        user-select: none;
-    }
+#examtop {
+    color: aliceblue;
+    background-color: #b2acf3;
+    padding: 5px;
+    padding-bottom: 40px;
+    margin-top: 0.75vh;
+    margin-left: 0.75vw;
+    height: 4.25vh;
+    border-radius: 3vh 3vh 0 0;
+    display: inline-block;
+    text-align: center;
+    line-height: 4.25vh;
+    z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+#questiontop {
+    color: aliceblue;
+    background-color: #b2acf3;
+    margin-top: 0.75vh;
+    margin-left: 5.5vw;
+    height: 4.25vh;
+    padding: 5px;
+    padding-bottom: 40px;
+    border-radius: 3vh 3vh 0 0;
+    display: inline-block;
+    text-align: center;
+    line-height: 4.25vh;
+    z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
 
     #exambody {
         background-color: #b2acf3;
         position: absolute;
-        width: 100%;
-        height: 75vh;
-        overflow-y: auto;
-        top: 5vh;
-        z-index: 1;
-        border-radius: 3vh;
+    width: 100%;
+    height: 75vh;
+    overflow-y: auto;
+    top: 5vh;
+    z-index: 1;
+    border-radius: 3vh;
     }
 
     #questionbody {
         background-color: #b2acf3;
         position: absolute;
-        width: 100%;
-        height: 75vh;
-        overflow-y: auto;
-        top: 5vh;
-        z-index: 1;
-        border-radius: 3vh;
+    width: 100%;
+    height: 75vh;
+    overflow-y: auto;
+    top: 5vh;
+    z-index: 1;
+    border-radius: 3vh;
     }
+
     .row {
         margin: 10px;
         display: flex;
@@ -147,226 +200,243 @@
         flex-wrap: wrap;
         flex-direction: row;
     }
-</style>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-<script>
-    var examtop = document.getElementById("examtop");
-    var questiontop = document.getElementById("questiontop");
+</style >
+@section Scripts
+    {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script >
+            var examtop = document.getElementById("examtop");
+        var questiontop = document.getElementById("questiontop");
 
-    var exambody = document.getElementById("exambody");
-    var questionbody = document.getElementById("questionbody");
+        var exambody = document.getElementById("exambody");
+        var questionbody = document.getElementById("questionbody");
 
-    var body = document.getElementById("body");
-    var bodyp = body.getBoundingClientRect();
-    var sup = `
-        <div class="sup">
-            <div class="row">
-                <button class="smallbutton" onclick="AddSub2f(event)">
-                    <img src="/Resources/Exam/AddSub2E.svg" />
-                </button>
-                <button class="smallbutton" onclick="AddGrop2f(event)">
-                    <img src="/Resources/Exam/AddGrop2E.svg" />
-                </button>
-            </div>
-            <div class="row">
-                <span style="margin: 0 10px;width: 60px;">Heading</span>
-                <input style="width: 82% !important;max-width: none;">
-            </div>
+        var body = document.getElementById("body");
+        var bodyp = body.getBoundingClientRect();
+        var here = exambody;
+        here.style.border = "#4747ff soled 2px";
+        var sub = `
+    <div class= "sub" onclick = "setmehere(event)" >
+        <div class= "row" onclick = "setmehere(event)" >
+            <button class= "smallbutton" onclick = "AddSub2f(event);setmehere(event)" >
+                <img src = "/Resources/Exam/AddSub2E.svg" onclick = "setmehere(event)" />
+            </button>
+            <button class= "smallbutton" onclick = "AddGrop2f(event);setmehere(event);" >
+                <img src = "/Resources/Exam/AddGrop2E.svg" onclick = "setmehere(event)" />
+            </button>
         </div>
-        <br/>
-    `;
+        <div class= "row" onclick = "setmehere(event)" >
+            <span onclick = "setmehere(event)" style = "margin: 0 10px;width: 60px;" > Heading </ span >
+            <textarea onclick = "setmehere(event)" style = "width: 82% !important;max-width: none;" >
+        </div>
+    </div>
+    <br/>
+`;
     function AddSub2E() {
-        exambody.innerHTML = exambody.innerHTML + sup;
+        exambody.innerHTML = exambody.innerHTML + sub;
     }
     function AddSub2f(event) {
-        event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + sup;
+                event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + sub;
     }
     function saveAddSub2E(head) {
-        $.ajax({
+                $.ajax({
             url: '/Exam/AddSub2Exam?e=' + '@Model.Id' + '&head=' + head,
-            type: 'GET',
-            data: { e: '@Model.Id', head: head },
-            success: function () {
+                    type: 'GET',
+                    data: { e: '@Model.Id', head: head },
+                    success: function () {
                 location.reload();
             }
         });
-    }
-    function addqtoe(id,deg) {
-        $.ajax({
+            }
+            function addqtoe(id, deg) {
+                $.ajax({
             url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + id + '&deg=' + deg,
-            type: 'GET',
-            data: {e: '@Model.Id', q: id, deg:deg },
-            success: function () {
+                    type: 'GET',
+                    data: { e: '@Model.Id', q: id, deg: deg },
+                    success: function () {
                 location.reload();
             }
         });
-    }
-
-    function removeqtoe(id){
-        $.ajax({
-            url: '/Exam/removeQuestion2Exam?q=' + id + '&e=' +'@Model.Id',
-            type: 'GET',
-            data: { q: id,e:'@Model.Id' },
-            success: function () {
-                location.reload();
             }
-        });
-    }
-    examtop.addEventListener("mousedown", () => {
-        localStorage.setItem("lasttop","examtop")
-        examtop.style.marginTop = "0px";
-        examtop.style.marginLeft = "0px";
-        exambody.style.zIndex = "2";
-        examtop.style.zIndex = "2";
-        examtop.style.backgroundColor = "#685de7";
-        exambody.style.backgroundColor = "#685de7";
-        questiontop.style.removeProperty("background-color");
-        questionbody.style.removeProperty("background-color");
-        questiontop.style.zIndex = "1";
-        questionbody.style.zIndex = "1";
-        document.addEventListener("mousemove", FolwMouse);
-        function FolwMouse(event) {
-            var st = document.documentElement.scrollTop;
-            examtop.style.removeProperty("right");
-            if (event.clientX > bodyp.left && event.clientX < bodyp.right)
-                examtop.style.left = exambody.style.left = event.clientX - bodyp.left - (examtop.clientWidth / 2) + 'px';
-            if (event.clientY + st > bodyp.y / 4-50 && event.clientY + st < bodyp.y / 4-50 + bodyp.height) {
-                examtop.style.top = event.clientY + st - bodyp.top/4+50 - (examtop.clientHeight / 2) +'px';
-                exambody.style.top = event.clientY + st - bodyp.top/4+50 + (examtop.clientHeight / 2) - 12 + 'px';
+            function setmehere(event) {
+        var lasthere = here;
+        here.style.removeProperty("border");
+        here = event.target;
+        while (!here.classList.contains("sub")
+            && !here.classList.contains("grop")
+            && here.id != "exambody") {
+            here = here.parentElement;
+            if (here == null) {
+                here = lasthere;
+                break;
             }
         }
-        examtop.addEventListener("mouseup", (event) => {
-            examtop.style.removeProperty("margin-top");
-            examtop.style.removeProperty("margin-left");
-            document.removeEventListener("mousemove", FolwMouse);
-            exambody.style.removeProperty("top");
-            examtop.style.removeProperty("top");
-            if (event.clientY - bodyp.top/4+50 + document.documentElement.scrollTop < body.clientHeight / 20) {
-                exambody.style.width = "100%";
-                questionbody.style.width = "100%";
+        here.style.border = "solid 2px #4747ff";
+    }
+    function removeqtoe(id) {
+                $.ajax({
+            url: '/Exam/removeQuestion2Exam?q=' + id + '&e=' + '@Model.Id',
+                    type: 'GET',
+                    data: { q: id, e: '@Model.Id' },
+                    success: function () {
+                location.reload();
+            }
+        });
+            }
+            examtop.addEventListener("mousedown", () => {
+            localStorage.setItem("lasttop", "examtop")
+                examtop.style.marginTop = "0px";
+            examtop.style.marginLeft = "0px";
+            exambody.style.zIndex = "2";
+            examtop.style.zIndex = "2";
+            examtop.style.backgroundColor = "#685de7";
+            exambody.style.backgroundColor = "#685de7";
+            questiontop.style.removeProperty("background-color");
+            questionbody.style.removeProperty("background-color");
+            questiontop.style.zIndex = "1";
+            questionbody.style.zIndex = "1";
+            document.addEventListener("mousemove", FolwMouse);
+            function FolwMouse(event) {
+                var st = document.documentElement.scrollTop;
+                examtop.style.removeProperty("right");
+                if (event.clientX > bodyp.left && event.clientX < bodyp.right)
+                        examtop.style.left = exambody.style.left = event.clientX - bodyp.left - (examtop.clientWidth / 2) + 'px';
+                    if (event.clientY + st > bodyp.y / 4 - 50 && event.clientY + st < bodyp.y / 4 - 50 + bodyp.height) {
+        examtop.style.top = event.clientY + st - bodyp.top / 4 + 50 - (examtop.clientHeight / 2) + 'px';
+        exambody.style.top = event.clientY + st - bodyp.top / 4 + 50 + (examtop.clientHeight / 2) - 12 + 'px';
+    }
+    }
+    examtop.addEventListener("mouseup", (event) => {
+        examtop.style.removeProperty("margin-top");
+        examtop.style.removeProperty("margin-left");
+        document.removeEventListener("mousemove", FolwMouse);
+        exambody.style.removeProperty("top");
+        examtop.style.removeProperty("top");
+        if (event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop < body.clientHeight / 20) {
+            exambody.style.width = "100%";
+            questionbody.style.width = "100%";
+            exambody.style.removeProperty("left");
+            exambody.style.removeProperty("right");
+            questionbody.style.removeProperty("left");
+            questionbody.style.removeProperty("right");
+            if (event.clientX - bodyp.left < questiontop.clientWidth + (body.clientHeight / 66.6666666666666)) {
+                examtop.style.removeProperty("left");
+                examtop.style.removeProperty("right");
+                questiontop.style.removeProperty("right");
+                questiontop.style.removeProperty("left");
+                localStorage.setItem("screan", "1")
+                        } else {
+                questiontop.style.left = "-3.75vw";
+                questiontop.style.removeProperty("right");
+                examtop.style.removeProperty("right");
+                examtop.style.left = "5.5vw";
+                localStorage.setItem("screan", "2")
+                        }
+        } else {
+            exambody.style.width = "50%";
+            questionbody.style.width = "50%";
+            if (event.clientX < window.innerWidth / 2) {
+                examtop.style.removeProperty("left");
+                examtop.style.removeProperty("right");
+                questiontop.style.removeProperty("left");
+                questiontop.style.right = "0.75vw";
                 exambody.style.removeProperty("left");
                 exambody.style.removeProperty("right");
                 questionbody.style.removeProperty("left");
+                questionbody.style.right = "0px";
+                localStorage.setItem("screan", "3")
+                        } else {
+                questiontop.style.left = "-3.75vw";
+                questiontop.style.removeProperty("right");
+                examtop.style.removeProperty("left");
+                examtop.style.right = "0.75vw";
+                questionbody.style.removeProperty("left");
                 questionbody.style.removeProperty("right");
-                if (event.clientX - bodyp.left < questiontop.clientWidth + (body.clientHeight / 66.6666666666666)) {
-                    examtop.style.removeProperty("left");
-                    examtop.style.removeProperty("right");
-                    questiontop.style.removeProperty("right");
-                    questiontop.style.removeProperty("left");
-                    localStorage.setItem("screan", "1")
-                } else {
-                    questiontop.style.left = "-3.75vw";
-                    questiontop.style.removeProperty("right");
-                    examtop.style.removeProperty("right");
-                    examtop.style.left = "5.5vw";
-                    localStorage.setItem("screan", "2")
-                }
-            } else {
-                exambody.style.width = "50%";
-                questionbody.style.width = "50%";
-                if (event.clientX < window.innerWidth / 2) {
-                    examtop.style.removeProperty("left");
-                    examtop.style.removeProperty("right");
-                    questiontop.style.removeProperty("left");
-                    questiontop.style.right = "0.75vw";
-                    exambody.style.removeProperty("left");
-                    exambody.style.removeProperty("right");
-                    questionbody.style.removeProperty("left");
-                    questionbody.style.right = "0px";
-                    localStorage.setItem("screan", "3")
-                } else {
-                    questiontop.style.left = "-3.75vw";
-                    questiontop.style.removeProperty("right");
-                    examtop.style.removeProperty("left");
-                    examtop.style.right = "0.75vw";
-                    questionbody.style.removeProperty("left");
-                    questionbody.style.removeProperty("right");
-                    exambody.style.removeProperty("left");
-                    exambody.style.right = "0px"
-                    localStorage.setItem("screan", "4")
-                }
-            }
-        });
+                exambody.style.removeProperty("left");
+                exambody.style.right = "0px"
+                            localStorage.setItem("screan", "4")
+                        }
+        }
     });
+            });
     questiontop.addEventListener("mousedown", () => {
-        localStorage.setItem("lasttop", "questiontop")
-        questiontop.style.marginTop = "0px";
-        questiontop.style.marginLeft = "0px";
-        exambody.style.zIndex = "1";
-        examtop.style.zIndex = "1";
-        questiontop.style.zIndex = "2";
-        questionbody.style.zIndex = "2";
-        questiontop.style.backgroundColor = "#685de7";
-        questionbody.style.backgroundColor = "#685de7";
-        exambody.style.removeProperty("background-color");
-        examtop.style.removeProperty("background-color");
-        document.addEventListener("mousemove", FolwMouse);
-        function FolwMouse(event) {
-            questiontop.style.removeProperty("right");
-            if (event.clientX > bodyp.left && event.clientX < bodyp.right)
-                questiontop.style.left = questionbody.style.left = event.clientX - bodyp.left - (questiontop.clientWidth / 2) + 'px';
-            if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 50 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 50 + bodyp.height) {
-                questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 50 + document.documentElement.scrollTop + 'px';
-                questionbody.style.top = event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
-            }
-        }
-        questiontop.addEventListener("mouseup", (event) => {
-            questiontop.style.removeProperty("margin-top");
-            questiontop.style.removeProperty("margin-left");
-            document.removeEventListener("mousemove", FolwMouse);
-            questionbody.style.removeProperty("top");
-            questiontop.style.removeProperty("top");
-            if (event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop < body.clientHeight / 20) {
-                exambody.style.width = "100%";
-                questionbody.style.width = "100%";
+    localStorage.setItem("lasttop", "questiontop")
+                questiontop.style.marginTop = "0px";
+    questiontop.style.marginLeft = "0px";
+    exambody.style.zIndex = "1";
+    examtop.style.zIndex = "1";
+    questiontop.style.zIndex = "2";
+    questionbody.style.zIndex = "2";
+    questiontop.style.backgroundColor = "#685de7";
+    questionbody.style.backgroundColor = "#685de7";
+    exambody.style.removeProperty("background-color");
+    examtop.style.removeProperty("background-color");
+    document.addEventListener("mousemove", FolwMouse);
+    function FolwMouse(event) {
+        questiontop.style.removeProperty("right");
+        if (event.clientX > bodyp.left && event.clientX < bodyp.right)
+                        questiontop.style.left = questionbody.style.left = event.clientX - bodyp.left - (questiontop.clientWidth / 2) + 'px';
+                    if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 50 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 50 + bodyp.height) {
+        questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 50 + document.documentElement.scrollTop + 'px';
+        questionbody.style.top = event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
+    }
+    }
+    questiontop.addEventListener("mouseup", (event) => {
+        questiontop.style.removeProperty("margin-top");
+        questiontop.style.removeProperty("margin-left");
+        document.removeEventListener("mousemove", FolwMouse);
+        questionbody.style.removeProperty("top");
+        questiontop.style.removeProperty("top");
+        if (event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop < body.clientHeight / 20) {
+            exambody.style.width = "100%";
+            questionbody.style.width = "100%";
+            exambody.style.removeProperty("left");
+            exambody.style.removeProperty("right");
+            questionbody.style.removeProperty("left");
+            questionbody.style.removeProperty("right");
+            if (event.clientX - bodyp.left > examtop.clientWidth + (body.clientWidth / 66.6666666666666)) {
+                questiontop.style.removeProperty("left");
+                questiontop.style.removeProperty("right");
+                examtop.style.removeProperty("right");
+                examtop.style.removeProperty("left");
+                localStorage.setItem("screan", "1")
+                        } else {
+                questiontop.style.left = "-3.75vw";
+                questiontop.style.removeProperty("right");
+                examtop.style.removeProperty("right");
+                examtop.style.left = "5.5vw";
+                localStorage.setItem("screan", "2")
+                        }
+        } else {
+            exambody.style.width = "50%";
+            questionbody.style.width = "50%";
+            if (event.clientX > body.clientWidth / 2) {
+                examtop.style.removeProperty("left");
+                examtop.style.removeProperty("right");
+                questiontop.style.removeProperty("left");
+                questiontop.style.right = "0.75vw";
                 exambody.style.removeProperty("left");
                 exambody.style.removeProperty("right");
                 questionbody.style.removeProperty("left");
+                questionbody.style.right = "0px";
+                localStorage.setItem("screan", "3")
+                        } else {
+                questiontop.style.left = "-3.75vw";
+                questiontop.style.removeProperty("right");
+                examtop.style.removeProperty("left");
+                examtop.style.right = "0.75vw";
+                questionbody.style.removeProperty("left");
                 questionbody.style.removeProperty("right");
-                if (event.clientX - bodyp.left > examtop.clientWidth + (body.clientWidth / 66.6666666666666)) {
-                    questiontop.style.removeProperty("left");
-                    questiontop.style.removeProperty("right");
-                    examtop.style.removeProperty("right");
-                    examtop.style.removeProperty("left");
-                    localStorage.setItem("screan", "1")
-                } else {
-                    questiontop.style.left = "-3.75vw";
-                    questiontop.style.removeProperty("right");
-                    examtop.style.removeProperty("right");
-                    examtop.style.left = "5.5vw";
-                    localStorage.setItem("screan", "2")
-                }
-            } else {
-                exambody.style.width = "50%";
-                questionbody.style.width = "50%";
-                if (event.clientX > body.clientWidth / 2) {
-                    examtop.style.removeProperty("left");
-                    examtop.style.removeProperty("right");
-                    questiontop.style.removeProperty("left");
-                    questiontop.style.right = "0.75vw";
-                    exambody.style.removeProperty("left");
-                    exambody.style.removeProperty("right");
-                    questionbody.style.removeProperty("left");
-                    questionbody.style.right = "0px";
-                    localStorage.setItem("screan", "3")
-                } else {
-                    questiontop.style.left = "-3.75vw";
-                    questiontop.style.removeProperty("right");
-                    examtop.style.removeProperty("left");
-                    examtop.style.right = "0.75vw";
-                    questionbody.style.removeProperty("left");
-                    questionbody.style.removeProperty("right");
-                    exambody.style.removeProperty("left");
-                    exambody.style.right = "0px";
-                    localStorage.setItem("screan", "4")
-                }
-            }
-        });
+                exambody.style.removeProperty("left");
+                exambody.style.right = "0px";
+                localStorage.setItem("screan", "4")
+                        }
+        }
     });
+            });
     window.onload = () => {
-        var lasttop=localStorage.getItem("lasttop")
-        if (lasttop == "examtop") {
+        var lasttop = localStorage.getItem("lasttop")
+                if (lasttop == "examtop") {
             exambody.style.zIndex = "2";
             examtop.style.zIndex = "2";
             questiontop.style.zIndex = "1";
@@ -383,7 +453,7 @@
         exambody.style.removeProperty("top");
         examtop.style.removeProperty("top");
         var screan = localStorage.getItem("screan")
-        if (screan == 1) {
+                if (screan == 1) {
             exambody.style.width = "100%";
             questionbody.style.width = "100%";
             exambody.style.removeProperty("left");
@@ -395,7 +465,7 @@
             questiontop.style.removeProperty("right");
             questiontop.style.removeProperty("left");
             localStorage.setItem("screan", "1")
-        }
+                }
         if (screan == 2) {
             exambody.style.width = "100%";
             questionbody.style.width = "100%";
@@ -408,7 +478,7 @@
             examtop.style.removeProperty("right");
             examtop.style.left = "5.5vw";
             localStorage.setItem("screan", "2")
-        }
+                }
         if (screan == 3) {
             exambody.style.width = "50%";
             questionbody.style.width = "50%";
@@ -421,7 +491,7 @@
             questionbody.style.removeProperty("left");
             questionbody.style.right = "0px";
             localStorage.setItem("screan", "3")
-        }
+                }
         if (screan == 4) {
             exambody.style.width = "50%";
             questionbody.style.width = "50%";
@@ -433,8 +503,8 @@
             questionbody.style.removeProperty("right");
             exambody.style.removeProperty("left");
             exambody.style.right = "0px"
-            localStorage.setItem("screan", "4")
-        }
+                    localStorage.setItem("screan", "4")
+                }
     }
-</script>
+    </script >
 }
