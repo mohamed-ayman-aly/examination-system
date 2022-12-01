@@ -52,7 +52,7 @@ namespace examination_system.Controllers
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
-            NewExame.Id = Guid.NewGuid();
+            NewExame.Id = System.Guid.NewGuid();
             NewExame.Class = DB.Classes.FirstOrDefault(c => c.Id.ToString() == Classid);
             NewExame.Professor = userManager.FindById(User.Identity.GetUserId());
             DB.Exams.Add(NewExame);
@@ -106,6 +106,9 @@ namespace examination_system.Controllers
             }
             return RedirectToAction("Index");
         }
+        public string Guid() {
+            return new Guid().ToString();
+        }
         public void AddQuestion2Exam(string e,string q,int deg)
         {
             DB = new DB();
@@ -135,12 +138,20 @@ namespace examination_system.Controllers
                 return false;
             }
         }
-        public void AddSub2Exam(string e, string head) {
+        public void AddSub2Exam(string e,string id, string head) {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            myexam.SubQuestions.Add(new SubQuestion { Id = new Guid(), Heading = head });
+            myexam.SubQuestions.Add(new SubQuestion { Id =new Guid(id), Heading = head });
+        }
+        public void AddSub2Sub(string sub, string id, string head)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
+            mysub.SubQuestions.Add(new SubQuestion { Id = new Guid(id), Heading = head });
         }
         public void RemoveSub2Exam(string e, string id)
         {
