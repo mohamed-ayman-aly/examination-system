@@ -14,7 +14,6 @@ namespace examination_system.Models
         public Guid Id { get; set; }
         [Required]
         public string Heading { get; set; }
-        [Required]
         public virtual List<ExamQuestion> Questions { get; set; }
         public virtual List<SubQuestion> SubQuestions { get; set; }
         public virtual List<GroupQuestion> GroupQuestions { get; set; }

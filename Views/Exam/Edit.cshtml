@@ -57,10 +57,10 @@
         }
 <h2>Edit Exam:@Model.Name</h2>
 <button class="smallbutton" onclick="AddSub2E()">
-<img src = "~/Resources/Exam/AddSub2E.svg" />
+<img src = "/Resources/Exam/AddSub2E.svg" />
 </button >
 <button class="smallbutton" onclick="AddGrop2E()">
-<img src = "~/Resources/Exam/AddGrop2E.svg" />
+<img src = "/Resources/Exam/AddGrop2E.svg" />
 </button >
 <div  id="body" class="body">
 <div id = "examtop" class="move" unselectable="on" style="position: absolute;overflow-y:hidden;">exam</div>
@@ -80,22 +80,21 @@
     }
 </div>
 <div id = "questionbody" style="position: absolute;">
-    @foreach(ExamQuestion q in ViewBag.questionbody)
+    @foreach(Question q in ViewBag.questionbody)
         {
         <div class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <div>
-                    @q.Question.QuestionBody
+                    @q.QuestionBody
                 </div>
-                <input value="@q.Degree" />
                 <ul>
-                    @foreach (var a in q.Question.Answers)
+                    @foreach (var a in q.Answers)
                     {
                         < li >< div > @a.AnswerBody </ div ></ li >
                     }
                 </ul>
             </div>
-            <img src = "~/Resources/Account/add.svg" width="50" height="50" onclick="addqtohear(event,'@q.Id')" />
+            <img src = "/Resources/Account/minus.svg" width="50" height="50" onclick="addqtohear(event,'@q.Id')" />
         </div>
     }
 </div >
@@ -195,7 +194,7 @@
 
     .row {
         margin: 10px;
-        display: flex;
+        display:flex;
         align-items: center;
         flex-wrap: wrap;
         flex-direction: row;
@@ -230,19 +229,18 @@
         }
         here.style.border = "solid 2px #4747ff";
     };
-    function guid() {
-        $.ajax({
+    function guid(){
+        return $.ajax({
             url: '/Exam/Guid',
             type: 'GET',
             datatype: 'string',
-            success: function (id) {
-                return id;
-            }
         });
     };
-    function sub() {
-        return  `
-    <div id=`+ guid() +` class= "sub" onclick = "setmehere(event)" >
+    async function sub() {
+        try {
+            var g = await guid();
+            return `
+    <div id=`+ g + ` class= "sub" onclick = "setmehere(event)" >
         <div class= "row" onclick = "setmehere(event)" >
             <button class= "smallbutton" onclick = "AddSub2f(event);setmehere(event)" >
                 <img src = "/Resources/Exam/AddSub2E.svg" onclick = "setmehere(event)" />
@@ -252,20 +250,28 @@
             </button>
         </div>
         <div class= "row" onclick = "setmehere(event)" >
-            <span onclick = "setmehere(event)" style = "margin: 0 10px;width: 60px;" > Heading </ span >
-            <textarea onclick = "setmehere(event)" style = "width: 82% !important;max-width: none;" >
+            <span onclick = "setmehere(event)" style = "margin: 0 10px;width: 100%;" > Heading </span >
+        </div>
+        <div class= "row" onclick = "setmehere(event)" >
+            <textarea onfocusout=" saveAddSub2E(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
         </div>
     </div>
     <br/>
 `;
+        }
+        catch {
+            console.log(err);
+            return '';
+        }
     };
-    function AddSub2E() {
-        exambody.innerHTML = exambody.innerHTML + sub();
+    async function AddSub2E() {
+        exambody.innerHTML = exambody.innerHTML + await sub();
     };
-    function AddSub2f(event) {
-        event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + sub();
+    async function AddSub2f(event) {
+        event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + await sub();
     };
     function saveAddSub2E(event) {
+        if (event.target.value!='')
         $.ajax({
             url: '/Exam/AddSub2Exam?e=' + '@Model.Id' + '&id=' + here.id + '&head=' + event.target.value,
             type: 'GET',
@@ -281,7 +287,7 @@
         });
     };
 
-
+    
     function addqtohear(event,id) {
         if (here.classList.contains("sub")) {
             $.ajax({

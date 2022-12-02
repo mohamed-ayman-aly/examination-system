@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
@@ -107,7 +108,7 @@ namespace examination_system.Controllers
             return RedirectToAction("Index");
         }
         public string Guid() {
-            return new Guid().ToString();
+            return System.Guid.NewGuid().ToString();
         }
         public void AddQuestion2Exam(string e,string q,int deg)
         {
@@ -143,7 +144,20 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            myexam.SubQuestions.Add(new SubQuestion { Id =new Guid(id), Heading = head });
+            Guid Id = new Guid(id);
+            var mysub = myexam.SubQuestions.FirstOrDefault(sub => sub.Id == Id);
+            if (mysub == null)
+            {
+                mysub = new SubQuestion { Id = Id, Heading = head };
+                DB.SubQuestions.Add(mysub);
+                DB.SaveChanges();
+                myexam.SubQuestions.Add(mysub);
+            }
+            else
+            {
+                mysub.Heading = head;
+                DB.SaveChanges();
+            }
         }
         public void AddSub2Sub(string sub, string id, string head)
         {

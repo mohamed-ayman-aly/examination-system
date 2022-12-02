@@ -177,12 +177,14 @@
         box-shadow: inset 0 0 5px grey;
         background: linear-gradient(to bottom, blue, lightblue);
         border-radius: 10px;
+        height:10px
     }
 
     /* Handle */
     ::-webkit-scrollbar-thumb {
         background: linear-gradient(to top, blue, lightblue);
         border-radius: 10px;
+        height: 10px
     }
 </style>
 <style>
@@ -213,12 +215,24 @@
         background-color: #e1e8ff !important;
         color: #3140c7 !important;
         border-radius: 34px !important;
-        font-size: 2.7rem !important;
-        line-height: 34px !important;
+        font-size: 2rem !important;
+        line-height: 23px !important;
         margin: 10px !important;
         padding: 20px !important;
         border: 1px white solid !important;
-        width: calc(25% - 20px) !important;
+        width: calc(25% - 20px);
+        outline: none !important;
+    }
+    .row textarea {
+        background-color: #e1e8ff !important;
+        color: #3140c7 !important;
+        border-radius: 34px !important;
+        font-size: 2rem !important;
+        line-height: 23px !important;
+        margin: 10px !important;
+        padding: 20px !important;
+        border: 1px white solid !important;
+        width: 95%;
         outline: none !important;
     }
     ol {
