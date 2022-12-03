@@ -111,7 +111,6 @@ namespace examination_system.Controllers
         {
             return System.Guid.NewGuid().ToString();
         }
-
         public void RemoveSub2Exam(string e, string id)
         {
             DB = new DB();
