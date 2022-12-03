@@ -21,7 +21,7 @@
         }
         res += "</ul>" +
             "</div>" +
-            "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"setmehere(event);removeqtohear(event);\" />" +
+            "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"setmehere(event);removeqtohere(event);\" />" +
             "<span>Degree</span>" +
             "<input onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none; width: 82% !important;\" />" +
         "</div>";
@@ -33,6 +33,10 @@
     {
         string res = "";
         res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
+                  "<div class= \"row\" onclick = \"setmehere(event)\" >"+
+                  "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                  "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />"+
+                  "</div>"+
                   "<div class= 'row' onclick ='setmehere(event)'>" +
                       "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
                           "<img src = '/Resources/Exam/AddSub2E.svg' onclick = 'setmehere(event)' />" +
@@ -106,7 +110,7 @@
                         }
                     </ul>
                 </div>
-                <img src="/Resources/Account/add.svg" width="50" height="50" onclick="addqtohear(event)" />
+                <img src="/Resources/Account/add.svg" width="50" height="50" onclick="addqtohere(event)" />
             </div>
         }
     </div>
@@ -125,6 +129,7 @@
         margin: 10px;
         flex-direction: column;
         border: solid black 2px;
+        min-height:30px;
     }
 
         .sub.sub {
@@ -215,7 +220,7 @@
 @section Scripts
     {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
     var examtop = document.getElementById("examtop");
     var questiontop = document.getElementById("questiontop");
 
@@ -253,6 +258,10 @@
             var g = await guid();
             return `
     <div id=`+ g + ` class= "sub" onclick = "setmehere(event)" >
+    <div class= "row" onclick = "setmehere(event)" >
+        <img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />
+        <img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />
+    </div>
         <div class= "row" onclick = "setmehere(event)" >
             <button class= "smallbutton" onclick = "AddSub2f(event);setmehere(event)" >
                 <img src = "/Resources/Exam/AddSub2E.svg" onclick = "setmehere(event)" />
@@ -308,8 +317,8 @@
             }
         }
     }
-    function addqtohear(event) {
-        event.target.setAttribute("onclick", "removeqtohear(event);");
+    function addqtohere(event) {
+        event.target.setAttribute("onclick", "removeqtohere(event);");
         var q = event.target.parentElement;
         event.target.src = "/Resources/Account/minus.svg";
         questionbody.removeChild(q);
@@ -350,8 +359,8 @@
         q.appendChild(input);
         here.appendChild(q);
     };
-    function removeqtohear(event) {
-        event.target.setAttribute("onclick", "addqtohear(event);");
+    function removeqtohere(event) {
+        event.target.setAttribute("onclick", "addqtohere(event);");
         var q = event.target.parentElement;
         here.removeChild(q);
         q.style.removeProperty('border');
@@ -383,9 +392,46 @@
         }
 
     };
+    function minimize(event) {
+        event.target.src = "/Resources/maximize.svg";
+        event.target.setAttribute("onclick", "setmehere(event);maximum(event);")
+        var x = false;
+        for (var child of here.children) {
+            if (x)
+                child.style.display = "none";
+            x = true;
+        }
 
-
-
+    };
+    function maximum(event) {
+        event.target.src = "/Resources/minimize.svg";
+        event.target.setAttribute("onclick", "setmehere(event);minimize(event);")
+        var x = false;
+        for (var child of here.children) {
+            if (x)
+                child.style.removeProperty('display');
+            x = true;
+        }
+    };
+    function removesub2here(event) {
+        var id = event.target.parentElement.parentElement.id;
+        var parent = event.target.parentElement.parentElement.parentElement;
+        if (parent.classList.contains("sub")) {
+            $.ajax({
+                url: '/Exam/RemoveSub2Sub?sub=' + parent.id + '&id=' + id,
+                type: 'GET',
+                data: { sub: parent.id , id:  id },
+            });
+        }
+        if (parent.id == "exambody") {
+            $.ajax({
+                url: '/Exam/RemoveSub2Exam?e=' + '@Model.Id' + '&id=' + id,
+                type: 'GET',
+                data: { e: '@Model.Id', id: id },
+            });
+        }
+        parent.removeChild(event.target.parentElement.parentElement);
+    }
 
 
     examtop.addEventListener("mousedown", () => {
@@ -611,5 +657,5 @@
                     localStorage.setItem("screan", "4")
                 }
     }
-    </script>
+</script>
 }
