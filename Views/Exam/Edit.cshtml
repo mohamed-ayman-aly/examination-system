@@ -1,4 +1,8 @@
-﻿@using examination_system.Models;
+﻿<!--this was ajax only challenge,
+    i know that it should be all with post forms,
+    but i have to train on ajax😅😜
+-->
+@using examination_system.Models;
 @model Exam
 @{
     ViewBag.Title = "Add Exam";
@@ -63,10 +67,6 @@
         return res;
     }
 }
-<!--this was ajax only challenge,
-    i know that it should be all with post forms,
-    but i have to train on ajax😅😜
--->
 <h2>Edit Exam:@Model.Name</h2>
 <button class="smallbutton" onclick="AddSub2E()">
     <img src="/Resources/Exam/AddSub2E.svg" />
