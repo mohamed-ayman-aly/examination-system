@@ -20,6 +20,5 @@ namespace examination_system.Models
         public virtual Answer CorrectAnswer { get; set; }
         public virtual Class Class { get; set; }
 
-
     }
 }
