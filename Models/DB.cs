@@ -20,7 +20,8 @@ namespace examination_system.Models
         public DbSet<Class> Classes { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<ExamStudent> ExamStudent { get; set; }
-        public DbSet<Studentanswer> Studentsanswer { get; set; }
+        public DbSet<Studentanswer> Studentsanswers { get; set; }
+        public DbSet<ExamQuestion> ExamQuestions { get; set; }
         public DbSet<SubQuestion> SubQuestions { get; set; }
         public DbSet<GroupQuestion> GroupQuestions { get; set; }
     }

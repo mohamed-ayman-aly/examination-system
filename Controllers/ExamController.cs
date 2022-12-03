@@ -117,7 +117,10 @@ namespace examination_system.Controllers
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            myexam.Questions.Add(new ExamQuestion { Id = new Guid() ,Degree=deg,Exam= myexam ,Question= myquestion }); ;
+            var neweq = new ExamQuestion { Id = System.Guid.NewGuid(), Degree = deg, Exam = myexam, Question = myquestion };
+            DB.ExamQuestions.Add(neweq);
+            DB.SaveChanges();
+            myexam.Questions.Add(neweq);
             DB.SaveChanges();
             return;
         }
@@ -139,34 +142,7 @@ namespace examination_system.Controllers
                 return false;
             }
         }
-        public void AddSub2Exam(string e,string id, string head) {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            Guid Id = new Guid(id);
-            var mysub = myexam.SubQuestions.FirstOrDefault(sub => sub.Id == Id);
-            if (mysub == null)
-            {
-                mysub = new SubQuestion { Id = Id, Heading = head };
-                DB.SubQuestions.Add(mysub);
-                DB.SaveChanges();
-                myexam.SubQuestions.Add(mysub);
-            }
-            else
-            {
-                mysub.Heading = head;
-                DB.SaveChanges();
-            }
-        }
-        public void AddSub2Sub(string sub, string id, string head)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-            mysub.SubQuestions.Add(new SubQuestion { Id = new Guid(id), Heading = head });
-        }
+
         public void RemoveSub2Exam(string e, string id)
         {
             DB = new DB();
@@ -248,6 +224,57 @@ namespace examination_system.Controllers
             var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
             mysub.GroupQuestions.Remove(mysub.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop));
             DB.SaveChanges();
+        }
+
+
+
+
+
+
+
+        public void AddSub2Exam(string e, string id, string head)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            Guid Id = new Guid(id);
+            var mysub = myexam.SubQuestions.FirstOrDefault(sub => sub.Id == Id);
+            if (mysub == null)
+            {
+                mysub = new SubQuestion { Id = Id, Heading = head };
+                DB.SubQuestions.Add(mysub);
+                DB.SaveChanges();
+                myexam.SubQuestions.Add(mysub);
+                DB.SaveChanges();
+            }
+            else
+            {
+                mysub.Heading = head;
+                DB.SaveChanges();
+            }
+        }
+        public void AddSub2Sub(string sub, string id, string head)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
+            Guid Id = new Guid(id);
+            var newsub = mysub.SubQuestions.FirstOrDefault(s => s.Id == Id);
+            if (newsub == null)
+            {
+                newsub = new SubQuestion { Id = new Guid(id), Heading = head };
+                DB.SubQuestions.Add(newsub);
+                DB.SaveChanges();
+                mysub.SubQuestions.Add(newsub);
+                DB.SaveChanges();
+            }
+            else
+            {
+                newsub.Heading = head;
+                DB.SaveChanges();
+            }
         }
     }
 }
