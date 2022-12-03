@@ -7,6 +7,7 @@
     public string qtohtml(ExamQuestion eq)
     {
         string res = "";
+<<<<<<< HEAD
         res += "<div id=\"" + eq.Id + "\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\" onclick=\"setmehere(event)\" >" +
                    "<div onclick=\"setmehere(event)\">" +
                        "<div onclick=\"setmehere(event)\">" + eq.Question.QuestionBody + "</div>" +
@@ -20,6 +21,20 @@
             "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"setmehere(event);removeqtohear(event);\" />" +
             "<span>Degree</span>" +
             "<input onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none; width: 82% !important;\" />" +
+=======
+        res += "<div id=\""+eq.Id+"\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\">" +
+                   "<div>" +
+                       "<div>" + eq.Question.QuestionBody + "</div>"+
+                       "<input value=\""+eq.Degree+"\" />"+
+                       "<ul>";
+        foreach (var a in eq.Question.Answers)
+        {
+            res += "<li><div> @a.AnswerBody </div></li>";
+        }
+        res += "</ul>" +
+            "</div>" +
+            "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"removeqtoe('" + eq.Id + "')\" />" +
+>>>>>>> parent of c0c25f8 (change edit exam)
         "</div>";
         return res;
     }
@@ -28,15 +43,16 @@
     public string suptohtml(SubQuestion sq)
     {
         string res = "";
-        res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
-                  "<div class= 'row' onclick ='setmehere(event)'>" +
-                      "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
-                          "<img src = '/Resources/Exam/AddSub2E.svg' onclick = 'setmehere(event)' />" +
+        res += "<div id=\""+ sq.Id+ "\" class= \"sub\" onclick = \"setmehere(event)\" >" +
+                  "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                      "<button class= \"smallbutton\" onclick = \"AddSub2f(event);setmehere(event)\" >" +
+                          "<img src = \"/Resources/Exam/AddSub2E.svg\" onclick = \"setmehere(event)\" />" +
                       "</button>" +
-                      "<button class='smallbutton' onclick = 'setmehere(event);AddGrop2f(event);' >" +
-                          "<img src = '/Resources/Exam/AddGrop2E.svg' onclick ='setmehere(event)' />" +
+                      "<button class= \"smallbutton\" onclick = \"AddGrop2f(event);setmehere(event);\" >" +
+                          "<img src = \"/Resources/Exam/AddGrop2E.svg\" onclick = \"setmehere(event)\" />" +
                       "</button>" +
                   "</div>" +
+<<<<<<< HEAD
                   "<div class= 'row' onclick = 'setmehere(event)' >" +
                       "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
                   "</div>" +
@@ -48,6 +64,12 @@
 
         foreach (ExamQuestion eq in sq.Questions)
         {
+=======
+                  "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                      "<span onclick = \"setmehere(event)\" style = \"margin: 0 10px;width: 60px;\" > Heading</ span>" +
+                      "<textarea onfocusout=\"saveAddSub2E(event)\" onclick = \"setmehere(event)\" style = \"width: 82% !important;max-width: none;\" value=\"" + sq.Heading + "\" >";
+        foreach (ExamQuestion eq in sq.Questions) {
+>>>>>>> parent of c0c25f8 (change edit exam)
             res += qtohtml(eq);
         }
         foreach (GroupQuestion gq in sq.GroupQuestions)
@@ -59,6 +81,7 @@
             res += suptohtml(ssq);
         }
         res += "</div>" +
+        "</div>" +
         "<br/>";
         return res;
     }
@@ -72,6 +95,7 @@
     <img src="/Resources/Exam/AddSub2E.svg" />
 </button>
 <button class="smallbutton" onclick="AddGrop2E()">
+<<<<<<< HEAD
     <img src="/Resources/Exam/AddGrop2E.svg" />
 </button>
 <div id="body" class="body">
@@ -95,6 +119,32 @@
         @foreach (Question q in ViewBag.questionbody)
         {
             <div id="@q.Id" class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
+=======
+<img src = "/Resources/Exam/AddGrop2E.svg" />
+</button >
+<div  id="body" class="body">
+<div id = "examtop" class="move" unselectable="on" style="position: absolute;overflow-y:hidden;">exam</div>
+<div id = "questiontop" class="move" unselectable="on" style="position: absolute; overflow-y: hidden;">questions</div>
+<div id="exambody" onclick="setmehere(event);" style="position: absolute;border: solid 2px #4747ff">
+    @foreach (ExamQuestion q in ViewBag.exambody)
+    {
+        @qtohtml(q);
+    }
+    @foreach (GroupQuestion q in ViewBag.myexamGroupQuestions)
+    {
+        @groptohtml(q);
+    }
+    @foreach (SubQuestion q in ViewBag.myexamSubQuestions)
+    {
+        @suptohtml(q);
+    }
+</div>
+<div id = "questionbody" style="position: absolute;">
+    @foreach(Question q in ViewBag.questionbody)
+        {
+        <div class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+>>>>>>> parent of c0c25f8 (change edit exam)
                 <div>
                     <div>
                         @q.QuestionBody
@@ -106,6 +156,7 @@
                         }
                     </ul>
                 </div>
+<<<<<<< HEAD
                 <img src="/Resources/Account/add.svg" width="50" height="50" onclick="addqtohear(event)" />
             </div>
         }
@@ -113,6 +164,22 @@
 </div>
 <style>
     * {
+=======
+                <ul>
+                    @foreach (var a in q.Answers)
+                    {
+                        < li >< div > @a.AnswerBody </ div ></ li >
+                    }
+                </ul>
+            </div>
+            <img src = "/Resources/Account/minus.svg" width="50" height="50" onclick="addqtohear(event,'@q.Id')" />
+        </div>
+    }
+</div >
+</div >
+<style >
+* {
+>>>>>>> parent of c0c25f8 (change edit exam)
         margin: 0;
         padding: 0;
     }
@@ -209,7 +276,10 @@
         align-items: center;
         flex-wrap: wrap;
         flex-direction: row;
+<<<<<<< HEAD
         width: 93%;
+=======
+>>>>>>> parent of c0c25f8 (change edit exam)
     }
 </style>
 @section Scripts
@@ -225,7 +295,7 @@
     var body = document.getElementById("body");
     var bodyp = body.getBoundingClientRect();
     var here = exambody;
-    here.style.border = "#4747ff solid 2px";
+    here.style.border = "#4747ff soled 2px";
     function setmehere(event) {
         var lasthere = here;
         here.style.removeProperty("border");
@@ -265,7 +335,7 @@
             <span onclick = "setmehere(event)" style = "margin: 0 10px;width: 100%;" > Heading </span >
         </div>
         <div class= "row" onclick = "setmehere(event)" >
-            <textarea onfocusout=" saveAddSub2f(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
+            <textarea onfocusout=" saveAddSub2E(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
         </div>
     </div>
     <br/>
@@ -291,6 +361,7 @@
         });
     };
     function saveAddSub2f(event) {
+<<<<<<< HEAD
         if (event.target.value != '') {
             if (here.parentElement.id == 'exambody') {
                 $.ajax({
@@ -322,27 +393,50 @@
         input.addEventListener("click", setmehere(event));
         input.addEventListener("focusout", (event) => {
             if (here.classList.contains("sub")) {
+=======
+        $.ajax({
+            url: '/Exam/AddSub2Exam?sub=' + here.id + '&id=' + event.target.parentElement.parentElement
+                + '&head=' + event.target.value,
+            type: 'GET',
+            data: { sub: here.id, id: event.target.parentElement.parentElement, head: event.target.value }
+        });
+    };
+
+    
+    function addqtohear(event,id) {
+        if (here.classList.contains("sub")) {
+            $.ajax({
+                url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + id + '&deg=' + event.target.value,
+                type: 'GET',
+                data: { e: '@Model.Id', sub: here.id, q: id, deg: event.target.value },
+            });
+        }
+        if (here.classList.contains("grup")) {
+             $.ajax({
+                 url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + id + '&deg=' + event.target.value,
+                type: 'GET',
+                 data: { e: '@Model.Id', q: id, deg: event.target.value },
+            });
+        }
+        if (here.id == "exambody") {
+            $.ajax({
+                url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + id + '&deg=' + event.target.value,
+                type: 'GET',
+                data: { e: '@Model.Id', q: id, deg: event.target.value },
+            });
+        }
+    };
+    function removeqtoe(id) {
+>>>>>>> parent of c0c25f8 (change edit exam)
                 $.ajax({
-                    url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
+            url: '/Exam/removeQuestion2Exam?q=' + id + '&e=' + '@Model.Id',
                     type: 'GET',
-                    data: { e: '@Model.Id', sub: here.id, q: event.target.parentElement.id, deg: event.target.value },
-                });
-            }
-            if (here.classList.contains("grup")) {
-                $.ajax({
-                    url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                    type: 'GET',
-                    data: { e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
-                });
-            }
-            if (here.id == "exambody") {
-                $.ajax({
-                    url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                    type: 'GET',
-                    data: { e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
-                });
+                    data: { q: id, e: '@Model.Id' },
+                    success: function () {
+                location.reload();
             }
         });
+<<<<<<< HEAD
         input.style = 'width: 82% !important;max-width: none;';
         q.style.border = "black solid 2px";
         q.style.minwidth = "0";
@@ -388,6 +482,9 @@
 
 
 
+=======
+    };
+>>>>>>> parent of c0c25f8 (change edit exam)
     examtop.addEventListener("mousedown", () => {
         localStorage.setItem("lasttop", "examtop")
         examtop.style.marginTop = "0px";

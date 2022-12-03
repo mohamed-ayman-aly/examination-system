@@ -110,7 +110,67 @@ namespace examination_system.Controllers
         public string Guid() {
             return System.Guid.NewGuid().ToString();
         }
+<<<<<<< HEAD
 
+=======
+        public void AddQuestion2Exam(string e,string q,int deg)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            myexam.Questions.Add(new ExamQuestion { Id = new Guid() ,Degree=deg,Exam= myexam ,Question= myquestion }); ;
+            DB.SaveChanges();
+            return;
+        }
+        public bool RemoveQuestion2Exam(string e,string q)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Question.Id.ToString() == q);
+            myexam.Questions.Remove(myquestion);
+            try
+            {
+                DB.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public void AddSub2Exam(string e,string id, string head) {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            Guid Id = new Guid(id);
+            var mysub = myexam.SubQuestions.FirstOrDefault(sub => sub.Id == Id);
+            if (mysub == null)
+            {
+                mysub = new SubQuestion { Id = Id, Heading = head };
+                DB.SubQuestions.Add(mysub);
+                DB.SaveChanges();
+                myexam.SubQuestions.Add(mysub);
+            }
+            else
+            {
+                mysub.Heading = head;
+                DB.SaveChanges();
+            }
+        }
+        public void AddSub2Sub(string sub, string id, string head)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
+            mysub.SubQuestions.Add(new SubQuestion { Id = new Guid(id), Heading = head });
+        }
+>>>>>>> parent of c0c25f8 (change edit exam)
         public void RemoveSub2Exam(string e, string id)
         {
             DB = new DB();
@@ -173,8 +233,10 @@ namespace examination_system.Controllers
             mysub.GroupQuestions.Remove(mysub.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop));
             DB.SaveChanges();
         }
+<<<<<<< HEAD
 
 
+        /*mohsening*/
 
 
 
@@ -304,5 +366,7 @@ namespace examination_system.Controllers
             DB.ExamQuestions.Remove(mysub.Questions.FirstOrDefault(ex => ex.Id.ToString() == q));
             DB.SaveChanges();
         }
+=======
+>>>>>>> parent of c0c25f8 (change edit exam)
     }
 }
