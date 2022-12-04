@@ -15,7 +15,8 @@ namespace examination_system.Models
         [Key]
         public Guid Id { get; set; }
         [Required(ErrorMessage = "Answer Body is Required"), AllowHtml]
-        public string AnswerBody { get; set; } 
-
+        public string AnswerBody { get; set; }
+        [InverseProperty("Answers")]
+        public Question Question { get; set; }
     }
 }
