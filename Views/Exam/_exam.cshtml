@@ -4,7 +4,7 @@
     int c = new DB().Classes.FirstOrDefault(e => e.Id == Model.Class.Id).Students.Count();
 }
 <div class="pnl col-sm-3">
-    <div id="@Model.Id" style="border-radius:10px ;border: solid 1px white; background-color: #e1e8ff; position: absolute; right: 27px; top: 30px; display: none;">
+    <div id="@Model.Id" style="border-radius: 10px; background-color: #00000075; position: absolute; right: 10px; top: 0px; display: none;">
         <div onclick="dlt('@Model.Id')" class="pointer pnlpnl" style="color:red;height:22px"> x </div>
         <a href="/Exam/Edit?Id=@Model.Id"></a>
         <div onclick="document.getElementById('@Model.Id').children[1].click()" class="pointer pnlpnl" style="height:22px"> Edit </div>
