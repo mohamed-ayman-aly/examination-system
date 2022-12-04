@@ -10,9 +10,10 @@ namespace examination_system.Controllers
     public class ExamStudentController : Controller
     {
         DB DB = new DB();
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost,ValidateAntiForgeryToken,Authorize(Roles = "student")]
         public ActionResult Index(string id)
         {
+            DB = new DB();
 
             return View();
         }
