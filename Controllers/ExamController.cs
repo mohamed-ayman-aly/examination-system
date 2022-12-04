@@ -243,22 +243,17 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
-        public bool RemoveQuestion2Exam(string e, string q)
+        public void RemoveQuestion2Exam(string e, string q)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            DB.ExamQuestions.Remove(myquestion);
-            try
+            if (myquestion == null)
             {
+                DB.ExamQuestions.Remove(myquestion);
                 DB.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
             }
         }
         public void AddQuestion2Sub(string e, string sub, string q, int deg)
@@ -294,8 +289,12 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-            DB.ExamQuestions.Remove(mysub.Questions.FirstOrDefault(ex => ex.Id.ToString() == q));
-            DB.SaveChanges();
+            var myeq = mysub.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            if (myeq != null)
+            {
+                DB.ExamQuestions.Remove(myeq);
+                DB.SaveChanges();
+            }
         }
         public void RemoveSub2Exam(string e, string id)
         {
@@ -303,21 +302,25 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            myexam.SubQuestions.Remove(myexam.SubQuestions.FirstOrDefault(sub => sub.Id.ToString() == id));
-            DB.SaveChanges();
+            var mysub = myexam.SubQuestions.FirstOrDefault(sub => sub.Id.ToString() == id);
+            if (mysub != null)
+            {
+                myexam.SubQuestions.Remove(mysub);
+                DB.SaveChanges();
+            }
         }
         public void RemoveSub2Sub(string sub, string id)
         {
-            try
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
+            var mysonsub = mysub.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == id);
+            if (mysonsub != null)
             {
-                DB = new DB();
-                UserStore = new UserStore<AspNetUsers>(DB);
-                userManager = new UserManager<AspNetUsers>(UserStore);
-                var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-                mysub.SubQuestions.Remove(mysub.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == id));
+                mysub.SubQuestions.Remove(mysonsub);
                 DB.SaveChanges();
             }
-            catch { }
         }
     }
 }
