@@ -15,14 +15,14 @@ namespace examination_system.Models
     public class DB:IdentityDbContext<AspNetUsers>
     {
         public DB():base("Examination System") { }
-        public DbSet<Question> Questions { get; set; }
-        public DbSet<Answer> Answers { get; set; }
-        public DbSet<Class> Classes { get; set; }
-        public DbSet<Exam> Exams { get; set; }
-        public DbSet<ExamStudent> ExamStudent { get; set; }
-        public DbSet<Studentanswer> Studentsanswers { get; set; }
-        public DbSet<SubQuestion> SubQuestions { get; set; }
-        public DbSet<ExamQuestion> ExamQuestions { get; set; }
-        public DbSet<GroupQuestion> GroupQuestions { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<Answer> Answers { get; set; }
+        public virtual DbSet<Class> Classes { get; set; }
+        public virtual DbSet<Exam> Exams { get; set; }
+        public virtual DbSet<ExamStudent> ExamStudent { get; set; }
+        public virtual DbSet<Studentanswer> Studentsanswers { get; set; }
+        public virtual DbSet<SubQuestion> SubQuestions { get; set; }
+        public virtual DbSet<ExamQuestion> ExamQuestions { get; set; }
+        public virtual DbSet<GroupQuestion> GroupQuestions { get; set; }
     }
 }
