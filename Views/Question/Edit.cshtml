@@ -70,7 +70,7 @@
                     </div>
 }
 
-<div>
+<div class="Back">
     @Html.ActionLink("Back to List", "Index")
 </div>
 @section Scripts {
@@ -122,7 +122,8 @@
         var span = document.createElement("span");
         span.onclick=a;
         span.className = 'pointer pnl';
-        span.style = "height: 22px";
+        span.style.width = '20px';
+        span.style.height= '22px';
         span.innerText = "Delete Answer "+i;
         md10.appendChild(span);
         fg.appendChild(md10);

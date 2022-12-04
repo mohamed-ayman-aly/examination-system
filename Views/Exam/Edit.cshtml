@@ -23,7 +23,7 @@
             "</div>" +
             "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"setmehere(event);removeqtohere(event);\" />" +
             "<span>Degree</span>" +
-            "<input onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none; width: 82% !important;\" />" +
+            "<input onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
         "</div>";
         return res;
     }
@@ -49,7 +49,7 @@
                       "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
                   "</div>" +
                   "<div class= 'row' onclick = 'setmehere(event)' >" +
-                      "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)' style = 'width: 82% !important;max-width: none;'>" +
+                      "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)' style = 'background-color:#00c0ff !important;color:#ffffff !important;width: 82% !important;max-width: none;'>" +
                       sq.Heading +
                       "</textarea>" +
                   "</div>";
@@ -126,31 +126,30 @@
     .sub {
         display: flex;
         background-color: white;
-        color: #3140c7;
+        color: #00c0ff !important;
         border-radius: 12px;
         margin: 10px;
         flex-direction: column;
         border: solid black 2px;
-        min-height:30px;
+        min-height: 30px;
     }
-
-        .sub.sub {
-            margin: 30px;
-            display: flex;
-            flex-wrap: wrap;
-        }
+    .sub.sub {
+        margin: 10px;
+        display: flex;
+        flex-wrap: wrap;
+    }
 
     #body {
         position: relative;
         width: 100%;
         height: 80vh;
-        background-color: white;
+        background-color: #ffffff33;
         overflow: hidden;
     }
 
     #examtop {
         color: aliceblue;
-        background-color: #b2acf3;
+        background-color: #00c0ff3d;
         padding: 5px;
         padding-bottom: 40px;
         margin-top: 0.75vh;
@@ -170,7 +169,7 @@
 
     #questiontop {
         color: aliceblue;
-        background-color: #b2acf3;
+        background-color: #00c0ff3d;
         margin-top: 0.75vh;
         margin-left: 5.5vw;
         height: 4.25vh;
@@ -189,7 +188,7 @@
     }
 
     #exambody {
-        background-color: #b2acf3;
+        background-color: #00c0ff3d;
         position: absolute;
         width: 100%;
         height: 75vh;
@@ -200,7 +199,7 @@
     }
 
     #questionbody {
-        background-color: #b2acf3;
+        background-color: #00c0ff3d;
         position: absolute;
         width: 100%;
         height: 75vh;
@@ -217,6 +216,18 @@
         flex-wrap: wrap;
         flex-direction: row;
         width: 93%;
+    }
+    .row textarea {
+        background-color: #e1e8ff !important;
+        color: #3140c7 !important;
+        border-radius: 34px !important;
+        font-size: 2rem !important;
+        line-height: 23px !important;
+        margin: 10px !important;
+        padding: 20px !important;
+        border: 1px white solid !important;
+        width: 95%;
+        outline: none !important;
     }
 </style>
 @section Scripts
@@ -442,8 +453,8 @@
         examtop.style.marginLeft = "0px";
         exambody.style.zIndex = "2";
         examtop.style.zIndex = "2";
-        examtop.style.backgroundColor = "#685de7";
-        exambody.style.backgroundColor = "#685de7";
+        examtop.style.backgroundColor = "#00c0ff3d";
+        exambody.style.backgroundColor = "#00c0ff3d";
         questiontop.style.removeProperty("background-color");
         questionbody.style.removeProperty("background-color");
         questiontop.style.zIndex = "1";
@@ -520,8 +531,8 @@
     examtop.style.zIndex = "1";
     questiontop.style.zIndex = "2";
     questionbody.style.zIndex = "2";
-    questiontop.style.backgroundColor = "#685de7";
-    questionbody.style.backgroundColor = "#685de7";
+    questiontop.style.backgroundColor = "#00c0ff3d";
+    questionbody.style.backgroundColor = "#00c0ff3d";
     exambody.style.removeProperty("background-color");
     examtop.style.removeProperty("background-color");
     document.addEventListener("mousemove", FolwMouse);
