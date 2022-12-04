@@ -15,20 +15,20 @@
         <div class="form-group">
             <label class="control-label lbel col-md-2">class</label>
             <div class="col-md-10">
-                @Html.DropDownList("Class", classes, new { @class = "form-control slect" })
+                @Html.DropDownList("Class", classes, new { @class = " slect" })
             </div>
         </div>
         <div class="form-group">
             <label class="control-label lbel col-md-2">Question Body</label>
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.QuestionBody, new { @class = "form-control textarea" })
+                @Html.TextAreaFor(model => model.QuestionBody, new { @class = " textarea" })
                 @Html.ValidationMessageFor(model => model.QuestionBody, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <label class="control-label lbel col-md-2">Correct Answer</label>
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.CorrectAnswer.AnswerBody, new { @class = "form-control textarea" })
+                @Html.TextAreaFor(model => model.CorrectAnswer.AnswerBody, new { @class = " textarea" })
             </div>
         </div>
         @if (ViewBag.Answers != null)
@@ -40,7 +40,7 @@
                     <div class="form-group">
                             <label class="control-label lbel col-md-2">Answer @i</label>
                             <div class="col-md-10">
-                                <textarea class="form-control textarea" name="Answers" id="Answers" value="@a">@a.AnswerBody</textarea>
+                                <textarea class=" textarea" name="Answers" id="Answers" value="@a">@a.AnswerBody</textarea>
                                 <span onclick="deleteAnswer(event,@i)" class="pointer pnl" style="width:20px;height:22px">Delete Answer @i</span>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                         <div class="form-group">
                             <label class="control-label lbel col-md-2">Answer 1</label>
                             <div class="col-md-10">
-                                <textarea class="form-control textarea" name="Answers" id="Answers" value=""></textarea>
+                                <textarea class=" textarea" name="Answers" id="Answers" value=""></textarea>
                                 <span onclick="deleteAnswer(event)" class="pointer pnl" style="width: 20px; height: 22px">Delete Answer 1</span>
                             </div>
                         </div>
@@ -116,7 +116,7 @@
         md10.className = "col-md-10";
         var inp = document.createElement("textarea");
         inp.name = 'Answers';
-        inp.className = 'form-control textarea';
+        inp.className = ' textarea';
         inp.id = 'Answers';
         md10.appendChild(inp);
         var span = document.createElement("span");
