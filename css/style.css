@@ -11435,7 +11435,7 @@ a {
     -webkit-transition: .3s all ease;
     -o-transition: .3s all ease;
     transition: .3s all ease;
-    color: #fbceb5;
+    color: rgb(0, 192, 255);
 }
 
     a:hover, a:focus {
@@ -11454,11 +11454,11 @@ h1, h2, h3, h4, h5,
 }
 
 .bg-primary {
-    background: #fbceb5 !important;
+    background: rgb(0, 192, 255) !important;
 }
 
 .ftco-section {
-    padding: 7em 0;
+    padding: 3em 0;
 }
 
 .ftco-no-pt {
@@ -11642,11 +11642,11 @@ textarea.form-control {
 
 /* Style the checkmark/indicator */
 .checkbox-primary {
-    color: #fbceb5;
+    color: rgb(0, 192, 255);
 }
 
     .checkbox-primary input:checked ~ .checkmark:after {
-        color: #fbceb5;
+        color: rgb(0, 192, 255);
     }
 
 .btn {
@@ -11663,25 +11663,25 @@ textarea.form-control {
     }
 
     .btn.btn-primary {
-        background: #fbceb5 !important;
-        border: 1px solid #fbceb5 !important;
+        background: rgb(0, 192, 255) !important;
+        border: 1px solid rgb(0, 192, 255) !important;
         color: #000 !important;
     }
 
         .btn.btn-primary:hover {
-            border: 1px solid #fbceb5;
+            border: 1px solid rgb(0, 192, 255);
             background: transparent;
-            color: #fbceb5;
+            color: rgb(0, 192, 255);
         }
 
         .btn.btn-primary.btn-outline-primary {
-            border: 1px solid #fbceb5;
+            border: 1px solid rgb(0, 192, 255);
             background: transparent;
-            color: #fbceb5;
+            color: rgb(0, 192, 255);
         }
 
             .btn.btn-primary.btn-outline-primary:hover {
                 border: 1px solid transparent;
-                background: #fbceb5;
+                background: rgb(0, 192, 255);
                 color: #fff;
             }
