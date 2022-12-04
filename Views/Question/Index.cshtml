@@ -3,8 +3,9 @@
 @{
     ViewBag.Title = "Questions";
 }
-
-<h2 class="text">Questions</h2>
+<div style="margin:0 70px">
+    <h2 class="text">Questions</h2>
+</div>
 <div>
     <span class="text lbel">search Question Body</span>
     <input id="search" class="text input" oninput="Getqb()" type="text" />
@@ -28,66 +29,67 @@
                 <div>ADD NEW</div>
             </div>
         }
-    </div></div>
+    </div>
+</div>
 
-    @section Scripts {
-        <script>
-            function deleteclass(id) {
-                alert("ARE YOU SURE TO DELETE USER")
+@section Scripts {
+    <script>
+        function deleteclass(id) {
+            alert("ARE YOU SURE TO DELETE USER")
+            $.ajax({
+                url: '/Question/Delete?Id=' + id,
+                data: { Id: id },
+                success: function (r) {
+                    if (r != "True") {
+                        alert("you can't delete Question")
+                    } else {
+                        location.reload();
+                    }
+                }
+            });
+        }
+        function dlt(id) {
+            var i = document.getElementById(id);
+            i.style.display = "none"
+        }
+        function filldots(id) {
+            var i = document.getElementById(id);
+            if (i.style.display == "none")
+                i.style.display = "block";
+            else
+                i.style.display = "none"
+        }
+        function Getqb() {
+            var search = document.getElementById("search");
+            if (search.value != "") {
                 $.ajax({
-                    url: '/Question/Delete?Id=' + id,
-                    data: { Id: id },
+                    url: '/Question/Search?SearchName=' + search.value,
+                    type: 'GET',
+                    dataType: 'Html',
+                    data: { SearchName: search.Value },
                     success: function (r) {
-                        if (r != "True") {
-                            alert("you can't delete Question")
-                        } else {
-                            location.reload();
-                        }
+                        $("#all").html(r);
                     }
                 });
+            } else {
+                location.reload();
             }
-            function dlt(id) {
-                var i = document.getElementById(id);
-                i.style.display = "none"
+        }
+        function Getqc() {
+            var search = document.getElementById("searchqc");
+            if (search.value != "") {
+                $.ajax({
+                    url: '/Question/SearchClass?SearchName=' + search.value,
+                    type: 'GET',
+                    dataType: 'Html',
+                    data: { SearchName: search.Value },
+                    success: function (r) {
+                        $("#all").html(r);
+                    }
+                });
+            } else {
+                location.reload();
             }
-            function filldots(id) {
-                var i = document.getElementById(id);
-                if (i.style.display == "none")
-                    i.style.display = "block";
-                else
-                    i.style.display = "none"
-            }
-            function Getqb() {
-                var search = document.getElementById("search");
-                if (search.value != "") {
-                    $.ajax({
-                        url: '/Question/Search?SearchName=' + search.value,
-                        type: 'GET',
-                        dataType: 'Html',
-                        data: { SearchName: search.Value },
-                        success: function (r) {
-                            $("#all").html(r);
-                        }
-                    });
-                } else {
-                    location.reload();
-                }
-            }
-            function Getqc() {
-                var search = document.getElementById("searchqc");
-                if (search.value != "") {
-                    $.ajax({
-                        url: '/Question/SearchClass?SearchName=' + search.value,
-                        type: 'GET',
-                        dataType: 'Html',
-                        data: { SearchName: search.Value },
-                        success: function (r) {
-                            $("#all").html(r);
-                        }
-                    });
-                } else {
-                    location.reload();
-                }
-            }
-        </script>
-    }
+        }
+    </script>
+}

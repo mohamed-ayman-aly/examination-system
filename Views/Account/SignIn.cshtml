@@ -3,9 +3,9 @@
 @{
     ViewBag.Title = "Sign In";
 }
-
-<h2 class="text">Sign In</h2>
-
+<div style="margin:0 70px">
+    <h2 class="text">Sign In</h2>
+</div>
 
 @using (Html.BeginForm("SignIn", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {

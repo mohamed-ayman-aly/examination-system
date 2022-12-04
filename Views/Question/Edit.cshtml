@@ -4,9 +4,9 @@
     ViewBag.Title = "Edit";
     SelectList classes = new SelectList(ViewBag.Class, "Id", "Name", Model.Class);
 }
-
-<h2 class="text">Edit Question</h2>
-
+<div style="margin:0 70px">
+    <h2 class="text">Edit Question</h2>
+</div>    
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

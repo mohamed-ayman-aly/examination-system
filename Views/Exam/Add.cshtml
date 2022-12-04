@@ -4,9 +4,9 @@
     ViewBag.Title = "Add";
     SelectList classes = new SelectList(ViewBag.Class, "Id", "Name", 0);
 }
-
-<h2 class="text">Add Exam</h2>
-
+<div style="margin:0 70px">
+    <h2 class="text">Add Exam</h2>
+</div>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

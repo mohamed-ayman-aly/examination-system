@@ -4,8 +4,9 @@
     ViewBag.Title = "Add";
 }
 
-<h2 class="text">Add New Account</h2>
-
+<div style="margin:0 70px">
+    <h2 class="text">Add New Account</h2>
+</div>
 
 @using (Html.BeginForm("Add", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -70,9 +71,9 @@
                 <button type="button" onclick="document.getElementById('ImgFile').click();" class="pnlbutton">
                     Upload Image
                 </button>
-                <span class="text" id="ImgFileName" ></span>
+                <span class="text" id="ImgFileName"></span>
                 <br />
-                <img id="ImgFileshow"/>
+                <img id="ImgFileshow" />
                 @Html.ValidationMessageFor(m => m.ImgFileName)
             </div>
         </div>
