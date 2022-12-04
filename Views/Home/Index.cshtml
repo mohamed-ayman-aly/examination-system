@@ -2,8 +2,29 @@
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div style="width: 100%; height: auto; justify-content: center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; ">
-    <div id="all" style="overflow:hidden;width: 90%; height: 100vh; justify-content: center;position:relative; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
-        <img src="/Resources/26215101-removebg-preview.png" style="position: absolute; max-width: 1000000px; width: 89%;" />
+<div class="all">
+    <div >
     </div>
 </div>
+<style>
+    .all {
+        width: 100%;
+        height: auto;
+        justify-content: center;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .all > div {
+        overflow: hidden;
+        width: 90%;
+        height: 100vh;
+        justify-content: center;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+</style>
