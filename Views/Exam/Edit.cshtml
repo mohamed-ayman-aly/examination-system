@@ -49,7 +49,7 @@
                       "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
                   "</div>" +
                   "<div class= 'row' onclick = 'setmehere(event)' >" +
-                      "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)' style = 'background-color:#00c0ff !important;color:#ffffff !important;width: 82% !important;max-width: none;'>" +
+                      "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
                       sq.Heading +
                       "</textarea>" +
                   "</div>";
@@ -149,7 +149,7 @@
 
     #examtop {
         color: aliceblue;
-        background-color: #00c0ff3d;
+        background-color: #007fa8;
         padding: 5px;
         padding-bottom: 40px;
         margin-top: 0.75vh;
@@ -169,7 +169,7 @@
 
     #questiontop {
         color: aliceblue;
-        background-color: #00c0ff3d;
+        background-color: #007fa8;
         margin-top: 0.75vh;
         margin-left: 5.5vw;
         height: 4.25vh;
@@ -188,7 +188,7 @@
     }
 
     #exambody {
-        background-color: #00c0ff3d;
+        background-color: #007fa8;
         position: absolute;
         width: 100%;
         height: 75vh;
@@ -199,7 +199,7 @@
     }
 
     #questionbody {
-        background-color: #00c0ff3d;
+        background-color: #007fa8;
         position: absolute;
         width: 100%;
         height: 75vh;
@@ -218,8 +218,9 @@
         width: 93%;
     }
     .row textarea {
-        background-color: #e1e8ff !important;
-        color: #3140c7 !important;
+        background-color: #00c0ff !important;
+        color: #ffffff !important;
+        max-width: none;
         border-radius: 34px !important;
         font-size: 2rem !important;
         line-height: 23px !important;
@@ -444,6 +445,7 @@
             });
         }
         parent.removeChild(event.target.parentElement.parentElement);
+        here = parent;
     }
 
 
