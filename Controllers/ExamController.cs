@@ -125,7 +125,12 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            myexam.GroupQuestions.Remove(myexam.GroupQuestions.FirstOrDefault(grop => grop.Id.ToString() == id));
+            var mygrop = myexam.GroupQuestions.FirstOrDefault(grop => grop.Id.ToString() == id);
+            if (mygrop != null)
+            {
+                myexam.GroupQuestions.Remove(mygrop);
+                DB.SaveChanges();
+            }
         }
         public void AddQuestion2Grop(string e, string grop, string q)
         {
@@ -144,8 +149,12 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
-            mygrop.Questions.Remove(mygrop.Questions.FirstOrDefault(ex => ex.Id.ToString() == q)); ;
-            DB.SaveChanges();
+            var myquestion = mygrop.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            if (myquestion != null)
+            {
+                mygrop.Questions.Remove(myquestion); ;
+                DB.SaveChanges();
+            }
         }
         public void AddGrop2Sub(string sub, int deg)
         {
@@ -162,8 +171,12 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-            mysub.GroupQuestions.Remove(mysub.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop));
-            DB.SaveChanges();
+            var mygrop = mysub.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
+            if (mygrop != null)
+            {
+                mysub.GroupQuestions.Remove(mygrop);
+                DB.SaveChanges();
+            }
         }
 
 
@@ -250,7 +263,7 @@ namespace examination_system.Controllers
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            if (myquestion == null)
+            if (myquestion != null)
             {
                 DB.ExamQuestions.Remove(myquestion);
                 DB.SaveChanges();
