@@ -1,5 +1,5 @@
 ﻿@using examination_system.Models
-@model List<examination_system.Models.Class>
+@model List<Class>
 
 @{
     ViewBag.Title = "classes";
@@ -107,6 +107,7 @@
             $.ajax({
                 url: '/Class/Delete?Id=' + id,
                 data: { Id: id },
+                success: function () { location.reload() },
             });
         }
         function dlt(id) {

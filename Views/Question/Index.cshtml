@@ -109,13 +109,7 @@
             $.ajax({
                 url: '/Question/Delete?Id=' + id,
                 data: { Id: id },
-                success: function (r) {
-                    if (r != "True") {
-                        alert("you can't delete Question")
-                    } else {
-                        location.reload();
-                    }
-                }
+                success: function () { location.reload() }
             });
         }
         function dlt(id) {

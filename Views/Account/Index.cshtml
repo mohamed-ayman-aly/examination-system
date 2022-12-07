@@ -104,6 +104,7 @@
             $.ajax({
                 url: '/Account/Delete?Id=' + id,
                 data: { Id: id },
+                success: function () { location.reload() },
             });
         }
         function dlt(id) {
