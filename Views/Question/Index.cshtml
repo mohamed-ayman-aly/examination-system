@@ -105,7 +105,7 @@
 @section Scripts {
     <script>
         function deleteclass(id) {
-            alert("ARE YOU SURE TO DELETE USER")
+            if (confirm('Are you sure you want to delete Question'))
             $.ajax({
                 url: '/Question/Delete?Id=' + id,
                 data: { Id: id },

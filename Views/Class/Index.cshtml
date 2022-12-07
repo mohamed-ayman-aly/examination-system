@@ -103,7 +103,7 @@
 @section Scripts {
     <script>
         function deleteclass(id) {
-            alert("ARE YOU SURE TO DELETE Class")
+            if (confirm('Are you sure you want to delete Class'))
             $.ajax({
                 url: '/Class/Delete?Id=' + id,
                 data: { Id: id },

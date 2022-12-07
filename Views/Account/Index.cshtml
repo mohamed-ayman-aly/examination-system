@@ -100,12 +100,12 @@
     <script>
         var a = document.createElement('a');
         function deleteaccount(id) {
-            alert("ARE YOU SURE TO DELETE USER")
-            $.ajax({
-                url: '/Account/Delete?Id=' + id,
-                data: { Id: id },
-                success: function () { location.reload() },
-            });
+            if (confirm('Are you sure you want to delete Account'))
+                $.ajax({
+                    url: '/Account/Delete?Id=' + id,
+                    data: { Id: id },
+                    success: function () { location.reload() },
+                });
         }
         function dlt(id) {
             var i = document.getElementById(id);
