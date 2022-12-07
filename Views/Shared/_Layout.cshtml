@@ -205,13 +205,44 @@
         padding: 0;
         overflow-x: hidden;
     }
-
+    .all {
+        width: 100%;
+        height: auto;
+        justify-content: center;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .pagination > li > a, .pagination > li > span {
+        background-color: #00000075;
+        border: 1px solid #000;
+    }
+    option {
+        background-color: #000000e0;
+    }
+    .pagination > .active > a {
+        background-color: #007fa8;
+        border-color: #000000;
+    }
+    .pagination > .active > a:hover {
+        background-color: #00c0ff !important;
+        border-color: #000000;
+    }
+    .all > div {
+        width: 80%;
+        height: auto;
+        justify-content: center;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
     body {
         
         overflow-y: auto;
         color: #00c0ff;
     }
-
     input, select {
         border: 2px solid #dee2e6;
         font-size: 1rem !important;
@@ -229,11 +260,14 @@
         max-width: 100000px;
         outline: none !important;
     }
-
     input[type=submit] {
         overflow: hidden;
+        background-color: #007fa8 !important;
     }
-
+    input[type=submit]:hover {
+        overflow: hidden;
+        background-color: #00c0ff !important;
+    }
     input [type=number] {
         border: 2px solid #dee2e6;
         font-size: 1rem !important;
@@ -251,7 +285,6 @@
         max-width: 100000px;
         outline: none !important;
     }
-
     textarea {
         border: 2px solid #dee2e6;
         height: 85px;
@@ -267,7 +300,6 @@
         max-width: 100000px;
         outline: none !important;
     }
-
     ol {
         list-style-type: none;
         display: flex;
@@ -275,15 +307,12 @@
         justify-content: space-around;
         width: 100%;
     }
-
     input:hover, input:focus, select:hover, select:focus, textarea:hover, textarea:focus {
         outline: none !important;
     }
-
     textarea:hover, textarea:future {
         outline: none !important;
     }
-
     .pnl {
         display: flex;
         flex-direction: column;
@@ -296,24 +325,19 @@
         margin: 10px;
         min-width: 232px;
     }
-
     .pnl:hover {
         box-shadow: 0 0 8px 0px #00000080;
     }
-
     .pnladd:hover {
         box-shadow: 0 0 8px 0px #00000080;
         border: 2px white solid;
     }
-
     a {
         color: white;
     }
-
     a:hover {
         color: white;
     }
-
     .pnladd {
         display: flex;
         flex-direction: column;
@@ -328,25 +352,20 @@
         min-width: 232px;
         height: 363.8px;
     }
-
     img {
         max-width: 200px;
     }
-
     .pnladd .Img {
         width: 100px;
         margin: 50px;
         filter: invert(28%) sepia(56%) saturate(2295%) hue-rotate(169deg) brightness(102%) contrast(101%);
     }
-
     .pnladd:hover .Img {
         filter: invert(66%) sepia(30%) saturate(7251%) hue-rotate(160deg) brightness(102%) contrast(108%);
     }
-
     .UserName {
         font-size: 20px
     }
-
     .pnl .Img {
         width: 100px;
         height: 100px;
@@ -354,7 +373,6 @@
         border: solid #e1e8ff 10px;
         margin-top: 50px;
     }
-
     .dots {
         width: 5px;
         position: absolute;
@@ -362,9 +380,12 @@
         top: 15px;
         filter: invert(28%) sepia(56%) saturate(2295%) hue-rotate(169deg) brightness(102%) contrast(101%);
     }
+    .dots:hover {
 
+        filter: invert(66%) sepia(30%) saturate(7251%) hue-rotate(160deg) brightness(102%) contrast(108%);
+    }
     button, input[type="submit"] {
-        background-color: #00c0ff !important;
+        background-color: #007fa8 !important;
         color: white !important;
         border: none !important;
         width: 260px !important;
@@ -373,7 +394,9 @@
         margin: 0px !important;
         padding: 0px !important;
     }
-
+    button:hover, input[type="submit"]:hover {
+        background-color: #00c0ff !important;
+    }
     .smallbutton {
         background-color: #00c0ff !important;
         color: white !important;
@@ -388,7 +411,6 @@
         align-items: center;
         border: solid black 2px;
     }
-
     .navbar-header button {
         background-color: #ffff0000 !important;
         border-radius: 5px !important;
@@ -398,17 +420,14 @@
         padding: 7px !important;
         margin: 7px !important;
     }
-
     .pnl button:hover {
         background-color: #00c0ff !important;
     }
-
     .pnl button {
         width: 55% !important;
         margin-bottom: 50px !important;
         background-color: #007fa8 !important;
     }
-
     .pointer {
         cursor: pointer;
     }

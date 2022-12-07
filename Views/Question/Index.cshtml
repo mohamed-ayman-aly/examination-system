@@ -1,19 +1,58 @@
-﻿@model List<examination_system.Models.Question>
+﻿@using examination_system.Models
+@model List<Question>
 
 @{
     ViewBag.Title = "Questions";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.pager != null)
+    {
+        pager = ViewBag.pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 <div style="margin:0 70px">
     <h2 class="text">Questions</h2>
-</div>
-<div>
     <span class="text lbel">search Question Body</span>
-    <input id="search" class="text input" oninput="Getqb()" type="text" />
+    <input id="searchQuestion" class="text input" value="@ViewBag.SearchName" oninput="GetClasss()" type="text" />
+    <br />
     <span class="text lbel">search Question class</span>
-    <input id="searchqc" class="text input" oninput="Getqc()" type="text" />
+    <input id="searchclass" class="text input" value="@ViewBag.Searchclass" oninput="GetClasss()" type="text" />
+    <button onclick="a.click()" style="width :100px !important;height:30px;margin:10px">Search</button>
 </div>
-<div style="width: 100%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
-    <div id="all" style="width: 80%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
+<div class="all">
+    <div>
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=1" onmouseover="setSearchName(event)">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                    </li>
+                }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div>
         @foreach (var Question in Model)
         {
             if (Question != null)
@@ -28,6 +67,37 @@
                 <img src="~/Resources/Account/add.svg" class="Img" />
                 <div>ADD NEW</div>
             </div>
+        }
+    </div>
+    <div>
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=1" onmouseover="setSearchName(event)">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                    </li>
+                }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Question/Index?SearchName=&Searchclass=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                    </li>
+                }
+            </ul>
         }
     </div>
 </div>
@@ -59,37 +129,21 @@
             else
                 i.style.display = "none"
         }
-        function Getqb() {
-            var search = document.getElementById("search");
-            if (search.value != "") {
-                $.ajax({
-                    url: '/Question/Search?SearchName=' + search.value,
-                    type: 'GET',
-                    dataType: 'Html',
-                    data: { SearchName: search.Value },
-                    success: function (r) {
-                        $("#all").html(r);
-                    }
-                });
-            } else {
-                location.reload();
-            }
+        var a = document.createElement('a');
+        function GetClasss() {
+            var searchQuestion = document.getElementById("searchQuestion");
+            var searchclass = document.getElementById("searchclass");
+            a.href = "/Question/Index?SearchName=" + searchQuestion.value + "&searchclass=" + searchclass.value + "&pg=1"
         }
-        function Getqc() {
-            var search = document.getElementById("searchqc");
-            if (search.value != "") {
-                $.ajax({
-                    url: '/Question/SearchClass?SearchName=' + search.value,
-                    type: 'GET',
-                    dataType: 'Html',
-                    data: { SearchName: search.Value },
-                    success: function (r) {
-                        $("#all").html(r);
-                    }
-                });
-            } else {
-                location.reload();
-            }
+        function setSearchName(event) {
+            var searchQuestion = document.getElementById("searchQuestion");
+            var searchclass = document.getElementById("searchclass");
+            var h = event.target.getAttribute('href');
+            if (h.search("SearchName=&") != -1)
+                h = h.replace('SearchName=', 'SearchName=' + searchQuestion.value)
+            if (h.search("searchclass=&") != -1)
+                h = h.replace('searchclass=', 'searchclass=' + searchclass.value)
+            event.target.setAttribute('href', h);
         }
     </script>
 }

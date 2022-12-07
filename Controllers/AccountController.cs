@@ -4,9 +4,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -26,28 +28,27 @@ namespace examination_system.Controllers
             userManager = new UserManager<AspNetUsers>(UserStore);
             return Db.Roles.FirstOrDefault(r=>r.Id==id).Name;
         }
+        const int pageSize = 29;
         [Authorize(Roles = "superadmin,admin")]
-        public string Search(string SearchName)
+        public ActionResult Index(string SearchName="",int pg=1)
         {
             Db = new DB();
             UserStore = new UserStore<AspNetUsers>(Db);
             userManager = new UserManager<AspNetUsers>(UserStore);
-            var Users = Db.Users.Where(u => u.UserName.Contains(SearchName)).ToList();
-            string ret="";
-            foreach (var u in Users)
-            {
-                ret += PartialView("_Account",u).RenderToString();
+            var Users = Db.Users.Where(u=>u.UserName.Contains(SearchName));
+            int recsCount = Users.Count();
+            if (pg < 1)
+                pg = 1;
+            if (recsCount != 0 && pg > (int)Math.Ceiling((decimal) recsCount / pageSize)) {
+                pg = (int)Math.Ceiling((decimal)recsCount / pageSize);
             }
-            return ret;
-        }
-        [Authorize(Roles = "superadmin,admin")]
-        public ActionResult Index(string SearchName="")
-        {
-            Db = new DB();
-            UserStore = new UserStore<AspNetUsers>(Db);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var Users = Db.Users.Where(u=>u.UserName.Contains(SearchName)).ToList();
-            return View(Users);
+            Pager pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = Users.OrderBy(a=>a.UserName).Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.pager = pager;
+            this.ViewBag.SearchName = SearchName;
+
+            return View(data);
         }
         [Authorize(Roles = "superadmin,admin")]
         public ActionResult Add() {
@@ -59,6 +60,10 @@ namespace examination_system.Controllers
             Db = new DB();
             UserStore = new UserStore<AspNetUsers>(Db);
             userManager = new UserManager<AspNetUsers>(UserStore);
+            if (ImgFile == null) {
+                ModelState.AddModelError("", "add Image File please");
+                return View(NewUser);
+            }
             if (User.IsInRole("admin")&& NewUser.UserType== UserType.admin) {
                 ModelState.AddModelError("", "admin users can't add admin users");
                 return View(NewUser);

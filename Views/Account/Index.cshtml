@@ -1,17 +1,56 @@
-﻿@model List<examination_system.Models.AspNetUsers>
+﻿@using examination_system.Models;
+@model List<AspNetUsers>
 
 @{
     ViewBag.Title = "Accounts";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.pager != null) {
+        pager = ViewBag.pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 
 <div style="margin:0 70px">
     <h2 class="text">Accounts</h2>
     <span class="text lbel">search name</span>
-    <input id="search" class="text input" oninput="GetAccounts()" type="text" />
+    <input id="search" class="text input" value="@ViewBag.SearchName" oninput="GetAccounts()" type="text" />
+    <button onclick="a.click()" style="width :100px !important;height:30px;margin:10px">Search</button>
 </div>
-<div style="width: 100%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
-    <div id="all" style="width: 80%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
+<div class="all">
+    <div id="pagination1">
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                    </li>
+                }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div id="all">
         @foreach (var user in Model)
         {
             if (user != null)
@@ -25,20 +64,46 @@
             <div>ADD NEW</div>
         </div>
     </div>
+    <div id="pagination2">
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                    </li>
+                }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Account/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
 </div>
 @section Scripts {
     <script>
+        var a = document.createElement('a');
         function deleteaccount(id) {
             alert("ARE YOU SURE TO DELETE USER")
             $.ajax({
                 url: '/Account/Delete?Id=' + id,
                 data: { Id: id },
-                success: function (r) {
-                    if (r != true) {
-                        alert("you can't delete Account")
-                    }
-                    location.reload();
-                }
             });
         }
         function dlt(id) {
@@ -54,19 +119,14 @@
         }
         function GetAccounts() {
             var search = document.getElementById("search");
-            if (search.value != "") {
-                $.ajax({
-                    url: '/Account/Search?SearchName=' + search.value,
-                    type: 'GET',
-                    dataType: 'Html',
-                    data: { SearchName: search.Value },
-                    success: function (r) {
-                        $("#all").html(r);
-                    }
-                });
-            } else {
-                location.reload();
-            }
+            a.href = "/Account/Index?SearchName=" + search.value +"&pg=1"
+        }
+        function setSearchName(event) {
+            var s = document.getElementById("search");
+            var h = event.target.getAttribute('href');
+            if (h.search("SearchName=&")!=-1)
+                h=h.replace('SearchName=', 'SearchName=' + s.value)
+            event.target.setAttribute('href', h);
         }
     </script>
 }

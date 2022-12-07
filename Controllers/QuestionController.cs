@@ -2,6 +2,7 @@
 using examination_system.Models.View_Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -12,28 +13,6 @@ namespace examination_system.Controllers
     public class QuestionController : Controller
     {
         static DB DB = new DB();
-        public string Search(string SearchName = "")
-        {
-            DB = new DB();
-            var Users = DB.Questions.Where(q => q.QuestionBody.Contains(SearchName)).ToList();
-            string ret = "";
-            foreach (var u in Users)
-            {
-                ret += PartialView("_Question", u).RenderToString();
-            }
-            return ret;
-        }
-        public string SearchClass(string SearchName = "")
-        {
-            DB = new DB();
-            var Users = DB.Questions.Where(q => q.Class.Name.Contains(SearchName)).ToList();
-            string ret = "";
-            foreach (var u in Users)
-            {
-                ret += PartialView("_Question", u).RenderToString();
-            }
-            return ret;
-        }
         public bool Delete(string Id)
         {
             DB = new DB();
@@ -57,10 +36,26 @@ namespace examination_system.Controllers
                 return false;
             }
         }
-        public ActionResult Index()
+        const int pageSize = 9;
+        public ActionResult Index(string SearchName = "", string Searchclass = "", int pg = 1)
         {
             DB = new DB();
-            return View(DB.Questions.ToList());
+            var Questions = DB.Questions.Where(q => q.QuestionBody.Contains(SearchName)
+            && q.Class.Name.Contains(Searchclass));
+            int recsCount = Questions.Count();
+            if (pg < 1)
+                pg = 1;
+            if (recsCount != 0 && pg > (int)Math.Ceiling((decimal)recsCount / pageSize))
+            {
+                pg = (int)Math.Ceiling((decimal)recsCount / pageSize);
+            }
+            Pager pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = Questions.OrderBy(q => q.QuestionBody).Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.pager = pager;
+            this.ViewBag.SearchName = SearchName;
+            this.ViewBag.Searchclass = Searchclass;
+            return View(data);
         }
         public ActionResult Add()
         {

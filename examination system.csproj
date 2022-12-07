@@ -180,6 +180,7 @@
     <Compile Include="Models\ExamQuestion.cs" />
     <Compile Include="Models\ExamStudent.cs" />
     <Compile Include="Models\GroupQuestion.cs" />
+    <Compile Include="Models\Pager.cs" />
     <Compile Include="Models\Studentanswer.cs" />
     <Compile Include="Controllers\Attributes\Unique.cs" />
     <Compile Include="Models\View Models\LogInViewModel.cs" />

@@ -18,26 +18,28 @@ namespace examination_system.Controllers
         static DB DB = new DB();
         static UserStore<AspNetUsers> UserStore = new UserStore<AspNetUsers>(DB);
         static UserManager<AspNetUsers> userManager = new UserManager<AspNetUsers>(UserStore);
-        public ActionResult Index()
+        const int pageSize = 29;
+        public ActionResult Index(string SearchName = "", int pg = 1)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             string s = User.Identity.GetUserId();
-            return View(DB.Exams.Where(e => e.Professor.Id == s).ToList());
-        }
-        public string Search(string SearchName = "")
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var exams = DB.Exams.Where(e => e.Name.Contains(SearchName)).ToList();
-            string ret = "";
-            foreach (var e in exams)
+            var exams = DB.Exams.Where(e => e.Professor.Id == s&&e.Name.Contains(SearchName));
+            int recsCount = exams.Count();
+            if (pg < 1)
+                pg = 1;
+            if (recsCount != 0 && pg > (int)Math.Ceiling((decimal)recsCount / pageSize))
             {
-                ret += PartialView("_exam", e).RenderToString();
+                pg = (int)Math.Ceiling((decimal)recsCount / pageSize);
             }
-            return ret;
+            Pager pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = exams.OrderBy(e=>e.Name).Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.pager = pager;
+            this.ViewBag.SearchName = SearchName;
+
+            return View(data);
         }
         public ActionResult Add()
         {

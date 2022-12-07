@@ -1,17 +1,57 @@
-﻿@model List<examination_system.Models.Class>
+﻿@using examination_system.Models
+@model List<examination_system.Models.Class>
 
 @{
     ViewBag.Title = "classes";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.pager != null)
+    {
+        pager = ViewBag.pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 
 <div style="margin:0 70px">
     <h2 class="text">classes</h2>
     <span class="text lbel">search name</span>
-    <input id="search" class="text input" oninput="GetAccounts()" type="text" />
+    <input id="search" class="text input" value="@ViewBag.SearchName" oninput="GetClasss()" type="text" />
+    <button onclick="a.click()" style="width :100px !important;height:30px;margin:10px">Search</button>
 </div>
-<div style="width: 100%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
-    <div id="all" style="width: 80%; height: auto;justify-content:center; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
+<div class="all">
+    <div>
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                    </li>
+                }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div id="all">
         @foreach (var Class in Model)
         {
             if (Class != null)
@@ -28,49 +68,69 @@
             </div>
         }
     </div>
-</div>
-    @section Scripts {
-        <script>
-            function deleteclass(id) {
-                alert("ARE YOU SURE TO DELETE Class")
-                $.ajax({
-                    url: '/Class/Delete?Id=' + id,
-                    data: { Id: id },
-                    success: function (r) {
-                        if (r != "True") {
-                            alert("you can't delete Class")
-                        } else {
-                            location.reload();
-                        }
-                    }
-                });
-            }
-            function dlt(id) {
-                var i = document.getElementById(id);
-                i.style.display = "none"
-            }
-            function filldots(id) {
-                var i = document.getElementById(id);
-                if (i.style.display == "none")
-                    i.style.display = "block";
-                else
-                    i.style.display = "none"
-            }
-            function GetAccounts() {
-                var search = document.getElementById("search");
-                if (search.value != "") {
-                    $.ajax({
-                        url: '/Class/Search?SearchName=' + search.value,
-                        type: 'GET',
-                        dataType: 'Html',
-                        data: { SearchName: search.Value },
-                        success: function (r) {
-                            $("#all").html(r);
-                        }
-                    });
-                } else {
-                    location.reload();
+    <div>
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                    </li>
                 }
-            }
-        </script>
-    }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function deleteclass(id) {
+            alert("ARE YOU SURE TO DELETE Class")
+            $.ajax({
+                url: '/Class/Delete?Id=' + id,
+                data: { Id: id },
+            });
+        }
+        function dlt(id) {
+            var i = document.getElementById(id);
+            i.style.display = "none"
+        }
+        function filldots(id) {
+            var i = document.getElementById(id);
+            if (i.style.display == "none")
+                i.style.display = "block";
+            else
+                i.style.display = "none"
+        }
+        var a = document.createElement('a');
+        function GetClasss() {
+            var search = document.getElementById("search");
+            a.href = "/Class/Index?SearchName=" + search.value + "&pg=1"
+        }
+        function setSearchName(event) {
+            var s = document.getElementById("search");
+            var h = event.target.getAttribute('href');
+            if (h.search("SearchName=&") != -1)
+                h = h.replace('SearchName=', 'SearchName=' + s.value)
+            event.target.setAttribute('href', h);
+        }
+    </script>
+}
