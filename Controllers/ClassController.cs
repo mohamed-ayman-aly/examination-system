@@ -52,6 +52,35 @@ namespace examination_system.Controllers
 
             return View(data);
         }
+        [Authorize(Roles = "student,superadmin")]
+        public ActionResult Register()
+        {
+            DB = new DB();
+            string userid = User.Identity.GetUserId();
+            var aspNetUsers = DB.Users.FirstOrDefault(u => u.Id == userid);
+            var myClasses = aspNetUsers.Classes.ToList();
+            var OtherClasses= DB.Classes.OrderBy(u => u.Name).ToList();
+            for (int i=0;i< OtherClasses.Count;i++) {
+                if (myClasses.Contains(OtherClasses[i])) {
+                    OtherClasses.RemoveAt(i);
+                    i--;
+                }
+            }
+            ViewBag.myClasses = myClasses;
+            ViewBag.OtherClasses = OtherClasses;
+            return View();
+        }
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "student,superadmin")]
+        public ActionResult Register(string Class)
+        {
+            DB = new DB();
+            string userid = User.Identity.GetUserId();
+            var NewClass =DB.Classes.FirstOrDefault(c => c.Id.ToString() == Class);
+            var user = DB.Users.FirstOrDefault(u => u.Id == userid);
+            NewClass.Students.Add(user);
+            DB.SaveChanges();
+            return RedirectToAction("Register");
+        }
         [Authorize(Roles ="admin,superadmin")]
         public ActionResult Add()
         {

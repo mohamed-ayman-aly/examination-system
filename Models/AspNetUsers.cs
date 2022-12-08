@@ -14,6 +14,6 @@ namespace examination_system.Models
         public string ImgFileName { get; set; }
         [Required(ErrorMessage = "ConfirmPassword is Required"),Compare("PasswordHash",ErrorMessage = "Passwords are not match")]
         public string ConfirmPassword { get; set; }
-        public List<Class> Classes { get; set; }
+        public virtual List<Class> Classes { get; set; }
     }
 }

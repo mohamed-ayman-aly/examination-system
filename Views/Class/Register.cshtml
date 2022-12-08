@@ -1,0 +1,42 @@
+﻿@using examination_system.Models
+@{
+    ViewBag.Title = "classes";
+    List<Class> myClasses = ViewBag.myClasses;
+    SelectList OtherClasses = new SelectList(ViewBag.OtherClasses, "Id", "Name", 0);
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.Label("class", htmlAttributes: new { @class = "lbel control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Class", OtherClasses, new { @class = "form-control slect" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Add" class="pnlbutton btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<div class="all">
+    <div>
+        @if (myClasses != null)
+        {
+            foreach (var Class in myClasses)
+            {
+
+                @Html.Partial("_Class", Class);
+            }
+        }
+        else {
+            <div class="pnl">
+                <h2 style="padding:10px">you aren't Register in any class</h2>
+            </div>
+        }
+    </div>
+</div>
