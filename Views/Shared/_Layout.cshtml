@@ -41,7 +41,8 @@
                     }
                     @if (User.IsInRole("superadmin") ||
                             User.IsInRole("admin") ||
-                            User.IsInRole("professor")
+                            User.IsInRole("professor") ||
+                            User.IsInRole("student")
                             )
                     {
                         <li>@Html.ActionLink("Classes", "Index", "Class")</li>

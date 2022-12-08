@@ -1,6 +1,5 @@
 ﻿@using examination_system.Models
 @model List<Class>
-
 @{
     ViewBag.Title = "classes";
     Pager pager = new Pager();
@@ -11,8 +10,6 @@
         pageNo = pager.CurrentPage;
     }
 }
-
-
 <div style="margin:0 70px">
     <h2 class="text">classes</h2>
     <span class="text lbel">search name</span>
@@ -30,19 +27,19 @@
                         <a class="page-link" href="/Class/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage - 1)" onmouseover="setSearchName(event)">previous</a>
                     </li>
                 }
                 @for (var p = pager.StartPage; p <= pager.EndPage; p++)
                 {
-                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                    <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
                         <a class="page-link" href="/Class/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
                     </li>
                 }
                 @if (pager.CurrentPage < pager.TotalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage + 1)" onmouseover="setSearchName(event)">Next</a>
                     </li>
                     <li class="page-item">
                         <a class="page-link" href="/Class/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
@@ -78,19 +75,19 @@
                         <a class="page-link" href="/Class/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage - 1)" onmouseover="setSearchName(event)">previous</a>
                     </li>
                 }
                 @for (var p = pager.StartPage; p <= pager.EndPage; p++)
                 {
-                    <li class="page-item @(p==pager.CurrentPage?"active":"")">
+                    <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
                         <a class="page-link" href="/Class/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
                     </li>
                 }
                 @if (pager.CurrentPage < pager.TotalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage + 1)" onmouseover="setSearchName(event)">Next</a>
                     </li>
                     <li class="page-item">
                         <a class="page-link" href="/Class/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
@@ -104,11 +101,11 @@
     <script>
         function deleteclass(id) {
             if (confirm('Are you sure you want to delete Class'))
-            $.ajax({
-                url: '/Class/Delete?Id=' + id,
-                data: { Id: id },
-                success: function () { location.reload() },
-            });
+                $.ajax({
+                    url: '/Class/Delete?Id=' + id,
+                    data: { Id: id },
+                    success: function () { location.reload() },
+                });
         }
         function dlt(id) {
             var i = document.getElementById(id);
