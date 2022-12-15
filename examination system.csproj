@@ -218,6 +218,7 @@
     <Content Include="Resources\main.png" />
     <Content Include="Resources\maximize.svg" />
     <Content Include="Resources\minimize.svg" />
+    <Content Include="Resources\plyr-play.svg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -272,11 +273,11 @@
     <Content Include="Views\Exam\_exam.cshtml" />
     <Content Include="Views\Account\_Layout.cshtml" />
     <Content Include="Views\Class\Register.cshtml" />
+    <Content Include="Views\ExamStudent\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Account\images\" />
-    <Folder Include="Views\ExamStudent\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -309,7 +310,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50527</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50533/</IISUrl>
+          <IISUrl>http://localhost:50933/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

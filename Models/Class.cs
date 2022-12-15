@@ -19,5 +19,7 @@ namespace examination_system.Models
         
         public virtual List<Question> Questions { get; set; }
         public virtual List<AspNetUsers> Students { get; set; }
+        [InverseProperty("Class")]
+        public virtual List<Exam> Exams { get; set; }
     }
 }

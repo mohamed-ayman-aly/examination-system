@@ -1,12 +1,58 @@
-﻿@{
+﻿@using examination_system.Models
+@model List <Exam>
+@{
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="all">
-    <div >
+    <div>
+        @foreach (var e in Model)
+        {
+            <div class="pnl">
+                <div>
+                    <span>Exam: </span>
+                    <span class="name">@e.Name</span>
+                </div>
+                <div>
+                    <span>Class: </span>
+                    @e.Class.Name
+                </div>
+                @if ((e.Date - DateTime.Now) > TimeSpan.Zero)
+                {
+                    <div>
+                        <span> starting in: </span>
+                        <div class="timer">
+                            @{
+                                var t = e.Date - DateTime.Now;
+                            }
+                            <span class="Days">@t.Days</span>D
+                            <span class="Hours">@t.Hours</span>H
+                            <span class="Minutes">@t.Minutes</span>M
+                            <span class="Seconds">@t.Seconds</span>S
+                        </div>
+                    </div>
+                }
+                else
+                {
+            <div class="imgdiv">
+                @using (Html.BeginForm("Index", "ExamStudent"))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("name", e.Name)
+                    <button type="submit" style="background-color: #007fa800 !important; width: fit-content !important; height: fit-content !important; margin: 0 !important; padding: 0 !important; ">
+                        <img class="play" src="~/Resources/plyr-play.svg" />
+                    </button>
+                }
+            </div>
+                }
+            </div>
+        }
     </div>
 </div>
 <style>
+    .hid {
+        
+    }
     .all {
         width: 100%;
         justify-content: center;
@@ -19,15 +65,81 @@
         background-repeat: no-repeat;
         background-position: center;
     }
-    .all > div {
-        overflow: hidden;
-        width: 90%;
-        min-height: 77vh;
-        justify-content: center;
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
+        .all > div {
+            overflow: hidden;
+            width: 90%;
+            min-height: 77vh;
+            justify-content: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+    .pnl {
+        font-size: 20px;
+        padding: 20px;
+        background-color: #000000b0 !important;
+    }
+    .imgdiv {
+        border-radius: 50%;
+        padding: 10px;
+        background-color: #ffffff7b
+    }
+    img {
+        margin-left:7px;
+        width: 50px;
+    }
+    .play {
+        filter: invert(28%) sepia(56%) saturate(2295%) hue-rotate(169deg) brightness(102%) contrast(101%);
+    }
+    .play:hover {
+        filter: invert(66%) sepia(30%) saturate(7251%) hue-rotate(160deg) brightness(102%) contrast(108%);
     }
 </style>
+<script>
+    var e = [];
+    e=document.getElementsByClassName("timer");
+    var Interval = setInterval(timerInterval, 1000);
+    function timerInterval() {
+        for (var i = 0; i < e.length; i++) {
+            var Seconds = e[i].getElementsByClassName('Seconds')[0];
+            if ((Number)(Seconds.innerText) > 0) {
+                Seconds.innerText = (((Number)(Seconds.innerText)) - 1);
+                continue;
+            }
+            var Minutes = e[i].getElementsByClassName('Minutes')[0];
+            if ((Number)(Minutes.innerText) > 0) {
+                Minutes.innerText = (((Number)(Minutes.innerText)) - 1);
+                Seconds.innerText = 59;
+                continue;
+            }
+            var Hours = e[i].getElementsByClassName('Hours')[0];
+            if ((Number)(Hours.innerText) > 0) {
+                Hours.innerText = (((Number)(Hours.innerText)) - 1);
+                Minutes.innerText = 59;
+                Seconds.innerText = 59;
+                continue;
+            }
+            var Days = e[i].getElementsByClassName('Days')[0];
+            if ((Number)(Days.innerText) > 0) {
+                Days.innerText = (((Number)(Days.innerText)) - 1);
+                Hours.innerText = 23;
+                Minutes.innerText = 59;
+                Seconds.innerText = 59;
+                continue;
+            }
+            e[i].parentElement.outerHTML = `
+                <div class="imgdiv">
+                    <form action="/ExamStudent" method="post">
+                        @Html.AntiForgeryToken()
+                        <input id="name" name="name" type="hidden" value="`+ e[i].parentElement.parentElement.getElementsByClassName('name')[0].innerText+`">
+                        <button type="submit" style="background-color: #007fa800 !important; width: fit-content !important; height: fit-content !important; margin: 0 !important; padding: 0 !important; ">
+                            <img class="play" src="/Resources/plyr-play.svg">
+                        </button>
+                    </form>
+                </div>
+                `;
+        }
+    }
+</script>

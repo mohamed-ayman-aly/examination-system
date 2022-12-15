@@ -1,0 +1,113 @@
+﻿@using examination_system.Models
+@model Exam
+@{
+    if (Model != null)
+    {
+        ViewBag.Title = Model.Name;
+    }
+    else
+    {
+        ViewBag.Title = "Exam has ended";
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@functions{
+    public string qtohtml(ExamQuestion eq,int n)
+    {
+        string res = "";
+        res += "<div class=\"pnl\">" +
+                    "<h3>" +n+") "+ eq.Question.QuestionBody + "</h3>" +
+                    "<form style=\"width: inherit;\" action=\"/ExamStudent/addAnswer\" method=\"post\">" +
+                        Html.AntiForgeryToken()+
+                        "<input id=\"q\" name=\"q\" type=\"hidden\" value=\"" + eq.Question.Id + "\">";
+                        foreach (var a in eq.Question.Answers) {
+                            res +="<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                                      "<input style=\"width: 4% !important;height: 4% !important;\" id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\">"+
+                                      "<span style=\"font-size: 24px;\">"+a.AnswerBody+"</span>" +
+                                  "</div>";
+                        }
+                    res += "</form>" +
+               "</div>";
+        return res;
+    }
+    public string groptohtml(GroupQuestion gq)
+    { return ""; }
+    public string suptohtml(SubQuestion sq)
+    {
+        string res = "";
+        res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
+                    "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                    "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                    "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
+                    "</div>" +
+                    "<div class= 'row' onclick ='setmehere(event)'>" +
+                        "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
+                            "<img src = '/Resources/Exam/AddSub2E.svg' onclick = 'setmehere(event)' />" +
+                        "</button>" +
+                        "<button class='smallbutton' onclick = 'setmehere(event);AddGrop2f(event);' >" +
+                            "<img src = '/Resources/Exam/AddGrop2E.svg' onclick ='setmehere(event)' />" +
+                        "</button>" +
+                    "</div>" +
+                    "<div class= 'row' onclick = 'setmehere(event)' >" +
+                        "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
+                    "</div>" +
+                    "<div class= 'row' onclick = 'setmehere(event)' >" +
+                        "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
+                        sq.Heading +
+                        "</textarea>" +
+                    "</div>";
+        int n = 1;
+        foreach (ExamQuestion eq in sq.Questions)
+        {
+            res += qtohtml(eq,n);
+            n++;
+        }
+        foreach (GroupQuestion gq in sq.GroupQuestions)
+        {
+            res += groptohtml(gq);
+        }
+        foreach (SubQuestion ssq in sq.SubQuestions)
+        {
+            res += suptohtml(ssq);
+        }
+        res += "</div>";
+        return res;
+    }
+    }
+<div class="all">
+    <div>
+        @if (Model == null)
+        {
+            <div>
+                Exam has ended
+            </div>
+        }
+        else
+        {
+            int n = 1;
+            foreach (ExamQuestion q in Model.Questions)
+            {
+                @Html.Raw(@qtohtml(q,n));
+                n++;
+            }
+        }
+    </div>
+</div>
+<style>
+    .pnl {
+        width: inherit;
+        align-items: baseline !important;
+        padding-left: 40px;
+    }
+    .all > div {
+        overflow: hidden;
+        width: 95% !important;
+        min-height: 0 !important;
+        justify-content: flex-start;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+</style> 
