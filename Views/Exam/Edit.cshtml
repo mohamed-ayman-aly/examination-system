@@ -1,11 +1,11 @@
-﻿<!--this was ajax only challenge,
-    i know that it should be all with post forms,
-    but i have to train on ajax😅😜
--->
-@using examination_system.Models;
+﻿@using examination_system.Models;
 @model Exam
 @{
     ViewBag.Title = "Add Exam";
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
 }
 @functions{
     public string qtohtml(ExamQuestion eq)
@@ -33,10 +33,10 @@
     {
         string res = "";
         res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
-                  "<div class= \"row\" onclick = \"setmehere(event)\" >"+
+                  "<div class= \"row\" onclick = \"setmehere(event)\" >" +
                   "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
-                  "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />"+
-                  "</div>"+
+                  "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
+                  "</div>" +
                   "<div class= 'row' onclick ='setmehere(event)'>" +
                       "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
                           "<img src = '/Resources/Exam/AddSub2E.svg' onclick = 'setmehere(event)' />" +
@@ -132,11 +132,12 @@
         border: solid black 2px;
         min-height: 30px;
     }
-    .sub.sub {
-        margin: 10px;
-        display: flex;
-        flex-wrap: wrap;
-    }
+
+        .sub.sub {
+            margin: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
 
     #body {
         position: relative;
@@ -216,24 +217,27 @@
         flex-direction: row;
         width: 93%;
     }
-    .row textarea {
-        background-color: #00c0ff !important;
-        color: #ffffff !important;
-        max-width: none;
-        border-radius: 34px !important;
-        font-size: 2rem !important;
-        line-height: 23px !important;
-        margin: 10px !important;
-        padding: 20px !important;
-        border: 1px white solid !important;
-        width: 95%;
-        outline: none !important;
-    }
+
+        .row textarea {
+            background-color: #00c0ff !important;
+            color: #ffffff !important;
+            max-width: none;
+            border-radius: 34px !important;
+            font-size: 2rem !important;
+            line-height: 23px !important;
+            margin: 10px !important;
+            padding: 20px !important;
+            border: 1px white solid !important;
+            width: 95%;
+            outline: none !important;
+        }
 </style>
 @section Scripts
     {
     @Scripts.Render("~/bundles/jqueryval")
-<script>
+    <script>
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
     var examtop = document.getElementById("examtop");
     var questiontop = document.getElementById("questiontop");
 
@@ -262,8 +266,11 @@
     function guid(){
         return $.ajax({
             url: '/Exam/Guid',
-            type: 'GET',
+            type: 'POST',
             datatype: 'string',
+            data: {
+                __RequestVerificationToken: token
+            }
         });
     };
     async function sub() {
@@ -302,28 +309,20 @@
     async function AddSub2f(event) {
         event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + await sub();
     };
-    function saveAddSub2E(event) {
-        if (event.target.value!='')
-        $.ajax({
-            url: '/Exam/AddSub2Exam?e=' + '@Model.Id' + '&id=' + here.id + '&head=' + event.target.value,
-            type: 'GET',
-            data: { e: '@Model.Id', id: here.id, head: event.target.value }
-        });
-    };
     function saveAddSub2f(event) {
         if (event.target.value != '') {
             if (here.parentElement.id == 'exambody') {
                 $.ajax({
                     url: '/Exam/AddSub2Exam?e=' + '@Model.Id' + '&id=' + here.id + '&head=' + event.target.value,
-                    type: 'GET',
-                    data: { e: '@Model.Id', id: here.id, head: event.target.value }
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', id: here.id, head: event.target.value }
                 });
             } else {
                 $.ajax({
                     url: '/Exam/AddSub2Sub?sub=' + here.parentElement.id + '&id=' + event.target.parentElement.parentElement.id
                         + '&head=' + event.target.value,
                     type: 'POST',
-                    data: { sub: here.parentElement.id, id: event.target.parentElement.parentElement.id, head: event.target.value }
+                    data: { __RequestVerificationToken: token, sub: here.parentElement.id, id: event.target.parentElement.parentElement.id, head: event.target.value }
                 });
             }
         }
@@ -344,22 +343,22 @@
             if (here.classList.contains("sub")) {
                 $.ajax({
                     url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                    type: 'GET',
-                    data: { e: '@Model.Id', sub: here.id, q: event.target.parentElement.id, deg: event.target.value },
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', sub: here.id, q: event.target.parentElement.id, deg: event.target.value },
                 });
             }
             if (here.classList.contains("grup")) {
                 $.ajax({
                     url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                    type: 'GET',
-                    data: { e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
                 });
             }
             if (here.id == "exambody") {
                 $.ajax({
                     url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                    type: 'GET',
-                    data: { e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
                 });
             }
         });
@@ -383,22 +382,22 @@
         if (here.classList.contains("sub")) {
             $.ajax({
                 url: '/Exam/RemoveQuestion2Sub?sub=' + here.id + '&q=' + event.target.parentElement.id,
-                type: 'GET',
-                data: { sub: here.id, q: event.target.parentElement.id},
+                type: 'POST',
+                data: { __RequestVerificationToken: token, sub: here.id, q: event.target.parentElement.id},
             });
         }
         if (here.classList.contains("grup")) {
             $.ajax({
                 url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                type: 'GET',
-                data: { e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
+                type: 'POST',
+                data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
             });
         }
         if (here.id == "exambody") {
             $.ajax({
                 url: '/Exam/removeQuestion2Exam?q=' + q.id + '&e=' + '@Model.Id',
-                type: 'GET',
-                data: { q: q.id, e: '@Model.Id' },
+                type: 'POST',
+                data: { __RequestVerificationToken: token, q: q.id, e: '@Model.Id' },
             });
         }
 
@@ -430,15 +429,15 @@
         if (parent.classList.contains("sub")) {
             $.ajax({
                 url: '/Exam/RemoveSub2Sub?sub=' + parent.id + '&id=' + id,
-                type: 'GET',
-                data: { sub: parent.id , id:  id },
+                type: 'POST',
+                data: { __RequestVerificationToken: token, sub: parent.id , id:  id },
             });
         }
         if (parent.id == "exambody") {
             $.ajax({
                 url: '/Exam/RemoveSub2Exam?e=' + '@Model.Id' + '&id=' + id,
-                type: 'GET',
-                data: { e: '@Model.Id', id: id },
+                type: 'POST',
+                data: { __RequestVerificationToken: token, e: '@Model.Id', id: id },
             });
         }
         parent.removeChild(event.target.parentElement.parentElement);
@@ -669,5 +668,5 @@
                     localStorage.setItem("screan", "4")
                 }
     }
-</script>
+    </script>
 }

@@ -17,6 +17,6 @@ namespace examination_system.Models
         [Required(ErrorMessage = "Answer Body is Required"), AllowHtml]
         public string AnswerBody { get; set; }
         [InverseProperty("Answers")]
-        public Question Question { get; set; }
+        public virtual Question Question { get; set; }
     }
 }

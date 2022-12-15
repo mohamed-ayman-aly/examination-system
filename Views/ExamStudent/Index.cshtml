@@ -1,40 +1,46 @@
 ﻿@using examination_system.Models
 @model Exam
 @{
-    if (Model != null)
+        if (Model != null)
+        {
+            ViewBag.Title = Model.Name;
+        }
+        else
+        {
+            ViewBag.Title = "Exam has ended";
+        }
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Studentanswer> Studentanswers = ViewBag.ansers;
+    List<Answer> answers = new List<Answer>();
+    foreach (var sa in Studentanswers)
     {
-        ViewBag.Title = Model.Name;
+        answers.Add(sa.Answer);
     }
-    else
-    {
-        ViewBag.Title = "Exam has ended";
-    }
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @functions{
-    public string qtohtml(ExamQuestion eq,int n)
+    public string qtohtml(ExamQuestion eq,int n,List<Answer> answers)
     {
         string res = "";
         res += "<div class=\"pnl\">" +
                     "<h3>" +n+") "+ eq.Question.QuestionBody + "</h3>" +
                     "<h3 class=\"Degree\"> deg:" +eq.Degree + "</h3>" +
-                    "<form style=\"width: inherit;\" action=\"/ExamStudent/AddAnswer\" method=\"post\">" +
+                    "<form action=\'/ExamStudent/AddAnswer\' method=\"post\" onsubmit=\"issaved(" + eq.Id+")\" id=\""+ eq.Id + "\" style=\"width: inherit;\">" +
                         Html.AntiForgeryToken()+
                         "<input id=\"q\" name=\"q\" type=\"hidden\" value=\"" + eq.Question.Id + "\">"+
                         "<input id=\"e\" name=\"e\" type=\"hidden\" value=\"" + ViewBag.ExamStudentId + "\">";
-                        foreach (var a in eq.Question.Answers) {
-                            res +="<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
-                                      "<input onchange=\"this.form.submit()\" style=\"width: 4% !important;height: 4% !important;\" id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\">"+
-                                      "<span style=\"font-size: 24px;\">"+a.AnswerBody+"</span>" +
-                                  "</div>";
-                        }
-                    res += "</form>" +
-               "</div>";
+        foreach (var a in eq.Question.Answers) {
+            res +="<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                      "<input onchange=\"this.form.submit()\""+ (answers.Contains(a)? "checked" : "")+ "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
+                      "<span style=\"font-size: 24px;\">"+a.AnswerBody+"</span>" +
+                  "</div>";
+        }
+        res += "</form>" +
+   "</div>";
         return res;
     }
     public string groptohtml(GroupQuestion gq)
     { return ""; }
-    public string suptohtml(SubQuestion sq)
+    public string suptohtml(SubQuestion sq,List<Answer> answers)
     {
         string res = "";
         res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
@@ -61,7 +67,7 @@
         int n = 1;
         foreach (ExamQuestion eq in sq.Questions)
         {
-            res += qtohtml(eq,n);
+            res += qtohtml(eq,n,answers);
             n++;
         }
         foreach (GroupQuestion gq in sq.GroupQuestions)
@@ -70,7 +76,7 @@
         }
         foreach (SubQuestion ssq in sq.SubQuestions)
         {
-            res += suptohtml(ssq);
+            res += suptohtml(ssq, answers);
         }
         res += "</div>";
         return res;
@@ -82,7 +88,6 @@
         {
             <div>
                 Exam has ended
-                <input />
             </div>
         }
         else
@@ -90,7 +95,7 @@
             int n = 1;
             foreach (ExamQuestion q in Model.Questions)
             {
-                @Html.Raw(@qtohtml(q,n));
+                @Html.Raw(@qtohtml(q,n,answers));
                 n++;
             }
         }
@@ -124,4 +129,21 @@
     }
 </style> 
 <script>
+    function issaved(event, id) {
+        returnToPreviousPage();
+        var form = $(id);
+        $.ajax({
+            type: "POST",
+            url: "/ExamStudent/AddAnswer",
+            data: form.serialize(),
+            success: function (data) {
+                if (data != true) {
+                    location.reload();
+                }
+            },
+            error: function (data) {
+                alert("some Error");
+            }
+        });
+    }
 </script>

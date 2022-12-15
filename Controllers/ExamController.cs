@@ -187,7 +187,7 @@ namespace examination_system.Controllers
 
 
 
-
+        [HttpPost, ValidateAntiForgeryToken]
         public void AddSub2Exam(string e, string id, string head)
         {
             DB = new DB();
@@ -210,6 +210,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void AddSub2Sub(string sub, string id, string head)
         {
             DB = new DB();
@@ -232,6 +233,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void AddQuestion2Exam(string e, string q, int deg)
         {
             DB = new DB();
@@ -258,6 +260,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void RemoveQuestion2Exam(string e, string q)
         {
             DB = new DB();
@@ -271,6 +274,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void AddQuestion2Sub(string e, string sub, string q, int deg)
         {
             DB = new DB();
@@ -298,6 +302,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void RemoveQuestion2Sub(string sub, string q)
         {
             DB = new DB();
@@ -311,6 +316,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void RemoveSub2Exam(string e, string id)
         {
             DB = new DB();
@@ -324,6 +330,7 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void RemoveSub2Sub(string sub, string id)
         {
             DB = new DB();
