@@ -17,12 +17,14 @@
         string res = "";
         res += "<div class=\"pnl\">" +
                     "<h3>" +n+") "+ eq.Question.QuestionBody + "</h3>" +
-                    "<form style=\"width: inherit;\" action=\"/ExamStudent/addAnswer\" method=\"post\">" +
+                    "<h3 class=\"Degree\"> deg:" +eq.Degree + "</h3>" +
+                    "<form style=\"width: inherit;\" action=\"/ExamStudent/AddAnswer\" method=\"post\">" +
                         Html.AntiForgeryToken()+
-                        "<input id=\"q\" name=\"q\" type=\"hidden\" value=\"" + eq.Question.Id + "\">";
+                        "<input id=\"q\" name=\"q\" type=\"hidden\" value=\"" + eq.Question.Id + "\">"+
+                        "<input id=\"e\" name=\"e\" type=\"hidden\" value=\"" + ViewBag.ExamStudentId + "\">";
                         foreach (var a in eq.Question.Answers) {
                             res +="<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
-                                      "<input style=\"width: 4% !important;height: 4% !important;\" id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\">"+
+                                      "<input onchange=\"this.form.submit()\" style=\"width: 4% !important;height: 4% !important;\" id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\">"+
                                       "<span style=\"font-size: 24px;\">"+a.AnswerBody+"</span>" +
                                   "</div>";
                         }
@@ -80,6 +82,7 @@
         {
             <div>
                 Exam has ended
+                <input />
             </div>
         }
         else
@@ -98,6 +101,15 @@
         width: inherit;
         align-items: baseline !important;
         padding-left: 40px;
+        padding-right: 70px;
+        position:relative;
+    }
+    .Degree {
+        position:absolute;
+        top:0;
+        right:0;
+        margin:4px;
+        margin-right:7px;
     }
     .all > div {
         overflow: hidden;
@@ -111,3 +123,5 @@
         align-items: center;
     }
 </style> 
+<script>
+</script>
