@@ -347,26 +347,35 @@
         input.type = 'number';
         input.addEventListener("click", setmehere(event));
         input.addEventListener("focusout", (event) => {
-            var qid = event.target.parentElement.parentElement.id;
+            var q = event.target.parentElement.parentElement;
             if (here.classList.contains("sub")) {
                 $.ajax({
-                    url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + qid + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + q.id + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', sub: here.id, q: qid, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', sub: here.id, q: q.id, deg: event.target.value },
+                    success: function (data) {
+                        q.id = data;
+                    },
                 });
             }
             if (here.classList.contains("grup")) {
                 $.ajax({
-                    url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + qid + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + q.id + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: qid, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: q.id, deg: event.target.value },
+                    success: function (data) {
+                        q.id = data;
+                    },
                 });
             }
             if (here.id == "exambody") {
                 $.ajax({
-                    url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + qid + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + q.id + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: qid, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: q.id, deg: event.target.value },
+                    success: function (data) {
+                        q.id = data;
+                    },
                 });
             }
         });
@@ -392,27 +401,28 @@
             $.ajax({
                 url: '/Exam/RemoveQuestion2Sub?sub=' + here.id + '&q=' + event.target.parentElement.id,
                 type: 'POST',
-                data: { __RequestVerificationToken: token, sub: here.id, q: event.target.parentElement.id },
+                data: {
+                    __RequestVerificationToken: token,
+                    sub: here.id,
+                    q: q.id
+                },
                 success: function (data) {
                     q.id = data;
                 },
             });
         }
         if (here.classList.contains("grup")) {
-            $.ajax({
-                url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
-                type: 'POST',
-                data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
-                success: function (data) {
-                    q.id = data;
-                },
-            });
+            
         }
         if (here.id == "exambody") {
             $.ajax({
                 url: '/Exam/removeQuestion2Exam?q=' + q.id + '&e=' + '@Model.Id',
                 type: 'POST',
-                data: { __RequestVerificationToken: token, q: q.id, e: '@Model.Id' },
+                data: {
+                    __RequestVerificationToken: token,
+                    q: q.id,
+                    e: '@Model.Id'
+                },
                 success: function (data) {
                     q.id = data;
                 },
@@ -442,8 +452,9 @@
         }
     };
     function removesub2here(event) {
-        var id = event.target.parentElement.parentElement.id;
-        var parent = event.target.parentElement.parentElement.parentElement;
+        var sub = event.target.parentElement.parentElement;
+        var id = sub.id;
+        var parent = sub.parentElement;
         if (parent.classList.contains("sub")) {
             $.ajax({
                 url: '/Exam/RemoveSub2Sub?sub=' + parent.id + '&id=' + id,
@@ -458,7 +469,23 @@
                 data: { __RequestVerificationToken: token, e: '@Model.Id', id: id },
             });
         }
-        parent.removeChild(event.target.parentElement.parentElement);
+        var quetions = sub.getElementsByClassName('pnl');
+        for (var i = 0; i < quetions.length; i++) {
+            var q = quetions[i];
+            q.children[0].children[1].setAttribute("onclick", "addqtohere(event);");
+            q.children[0].children[1].src = "/Resources/Account/add.svg";
+            here.removeChild(q);
+            q.style.removeProperty('border');
+            q.style.removeProperty('min-width');
+            q.removeChild(q.children[q.childElementCount - 1]);
+            questionbody.appendChild(q);
+            $.ajax({
+                url: '/Exam/Getqid4meq',
+                type: 'POST',
+                data: { __RequestVerificationToken: token, eq: q.id}
+            });
+        }
+        parent.removeChild(sub);
         here = parent;
     }
 
