@@ -1,15 +1,16 @@
 ﻿@using examination_system.Models
 @model Exam
 @{
-        if (Model != null)
-        {
-            ViewBag.Title = Model.Name;
-        }
-        else
-        {
-            ViewBag.Title = "Exam has ended";
-        }
-        Layout = "~/Views/Shared/_Layout.cshtml";
+    int n = 1;
+    if (Model != null)
+    {
+        ViewBag.Title = Model.Name;
+    }
+    else
+    {
+        ViewBag.Title = "Exam has ended";
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
     List<Studentanswer> Studentanswers = ViewBag.ansers;
     List<Answer> answers = new List<Answer>();
     foreach (var sa in Studentanswers)
@@ -17,71 +18,66 @@
         answers.Add(sa.Answer);
     }
 }
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
 @functions{
-    public string qtohtml(ExamQuestion eq,int n,List<Answer> answers)
+    public string qtohtml(ExamQuestion eq, int n, List<Answer> answers)
     {
         string res = "";
-        res += "<div class=\"pnl\">" +
-                    "<h3>" +n+") "+ eq.Question.QuestionBody + "</h3>" +
-                    "<h3 class=\"Degree\"> deg:" +eq.Degree + "</h3>" +
-                    "<form action=\'/ExamStudent/AddAnswer\' method=\"post\" onsubmit=\"issaved(" + eq.Id+")\" id=\""+ eq.Id + "\" style=\"width: inherit;\">" +
-                        Html.AntiForgeryToken()+
-                        "<input id=\"q\" name=\"q\" type=\"hidden\" value=\"" + eq.Question.Id + "\">"+
-                        "<input id=\"e\" name=\"e\" type=\"hidden\" value=\"" + ViewBag.ExamStudentId + "\">";
-        foreach (var a in eq.Question.Answers) {
-            res +="<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
-                      "<input onchange=\"this.form.submit()\""+ (answers.Contains(a)? "checked" : "")+ "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
-                      "<span style=\"font-size: 24px;\">"+a.AnswerBody+"</span>" +
+        res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
+                    "<div class='row'>" +
+                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                    "</div>" +
+                    "<h3>" + n + ") " + eq.Question.QuestionBody + "</h3>" +
+                    "<h3 class=\"Degree\"> deg:" + eq.Degree + "</h3>" +
+                    "<div id=\"" + eq.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
+        foreach (var a in eq.Question.Answers.OrderBy(a => a.AnswerBody))
+        {
+            res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                      "<input onchange=\"issaved('" + eq.Question.Id + "','" + a.Id + "')\" " + (answers.Contains(a) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
+                      "<span style=\"font-size: 24px;\">" + a.AnswerBody + "</span>" +
                   "</div>";
         }
-        res += "</form>" +
+        res += "</form></div>" +
    "</div>";
         return res;
     }
-    public string groptohtml(GroupQuestion gq)
+    public string groptohtml(GroupQuestion gq, int n, List<Answer> answers)
     { return ""; }
-    public string suptohtml(SubQuestion sq,List<Answer> answers)
+    public string suptohtml(SubQuestion sq, int n, List<Answer> answers)
     {
         string res = "";
-        res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
-                    "<div class= \"row\" onclick = \"setmehere(event)\" >" +
-                    "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
-                    "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
+        res += "<div id='" + sq.Id + "' class='sub'>" +
+                    "<div class='row'>" +
+                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
                     "</div>" +
-                    "<div class= 'row' onclick ='setmehere(event)'>" +
-                        "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
-                            "<img src = '/Resources/Exam/AddSub2E.svg' onclick = 'setmehere(event)' />" +
-                        "</button>" +
-                        "<button class='smallbutton' onclick = 'setmehere(event);AddGrop2f(event);' >" +
-                            "<img src = '/Resources/Exam/AddGrop2E.svg' onclick ='setmehere(event)' />" +
-                        "</button>" +
+                    "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
+                    "<div class= 'row'>" +
+                        "<h3> Heading</h3>" +
                     "</div>" +
-                    "<div class= 'row' onclick = 'setmehere(event)' >" +
-                        "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
-                    "</div>" +
-                    "<div class= 'row' onclick = 'setmehere(event)' >" +
-                        "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
-                        sq.Heading +
-                        "</textarea>" +
+                    "<div class= 'row' >" +
+                        "<h3>" +sq.Heading +"</h3>" +
                     "</div>";
-        int n = 1;
         foreach (ExamQuestion eq in sq.Questions)
         {
-            res += qtohtml(eq,n,answers);
+            res += qtohtml(eq, n, answers);
             n++;
         }
         foreach (GroupQuestion gq in sq.GroupQuestions)
         {
-            res += groptohtml(gq);
+            res += groptohtml(gq, n, answers);
+            n++;
         }
         foreach (SubQuestion ssq in sq.SubQuestions)
         {
-            res += suptohtml(ssq, answers);
+            res += suptohtml(ssq, n, answers);
         }
         res += "</div>";
         return res;
     }
-    }
+}
 <div class="all">
     <div>
         @if (Model == null)
@@ -92,29 +88,68 @@
         }
         else
         {
-            int n = 1;
+
             foreach (ExamQuestion q in Model.Questions)
             {
-                @Html.Raw(@qtohtml(q,n,answers));
+                @Html.Raw(@qtohtml(q, n, answers));
                 n++;
+            }
+            foreach (GroupQuestion gq in Model.GroupQuestions)
+            {
+                @Html.Raw(@groptohtml(gq, n, answers));
+                n++;
+            }
+            foreach (SubQuestion sq in Model.SubQuestions)
+            {
+                @Html.Raw(@suptohtml(sq, n, answers));
             }
         }
     </div>
 </div>
 <style>
+    *,h3 {
+        margin:0;
+        padding:0;
+    }
     .pnl {
         width: inherit;
         align-items: baseline !important;
-        padding-left: 40px;
+        padding-left: 20px;
         padding-right: 70px;
-        position:relative;
+        position: relative;
+        text-align: left !important;
+    }
+    .sub {
+        padding-left: 20px;
+        display: flex;
+        position: relative;
+        background-color: #000000a0;
+        color: #00c0ff !important;
+        border-radius: 12px;
+        margin: 10px;
+        flex-direction: column;
+        border: solid black 2px;
+        min-width: 98%;
+    }
+    .sub.sub {
+        margin: 10px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .row {
+        margin: 3px 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        flex-direction: row;
+        width: 93%;
     }
     .Degree {
-        position:absolute;
-        top:0;
-        right:0;
-        margin:4px;
-        margin-right:7px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 4px;
+        margin-right: 7px;
     }
     .all > div {
         overflow: hidden;
@@ -127,17 +162,24 @@
         flex-wrap: wrap;
         align-items: center;
     }
-</style> 
+</style>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
 <script>
-    function issaved(event, id) {
-        returnToPreviousPage();
-        var form = $(id);
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+    function issaved(q,ans) {
         $.ajax({
             type: "POST",
             url: "/ExamStudent/AddAnswer",
-            data: form.serialize(),
-            success: function (data) {
-                if (data != true) {
+            data: {
+                __RequestVerificationToken: token,
+                e: '@ViewBag.ExamStudentId',
+                q: q,
+                ans: ans,
+            },
+            success: function(data) {
+                if (data != "True") {
                     location.reload();
                 }
             },
@@ -145,5 +187,27 @@
                 alert("some Error");
             }
         });
-    }
+        }
+    function minimize(event) {
+        event.target.src = "/Resources/maximize.svg";
+        event.target.setAttribute("onclick", "maximum(event);")
+        var x = false;
+        for (var child of event.target.parentElement.parentElement.children) {
+            if (x)
+                child.style.display = "none";
+            x = true;
+        }
+
+    };
+    function maximum(event) {
+        event.target.src = "/Resources/minimize.svg";
+        event.target.setAttribute("onclick", "minimize(event);")
+        var x = false;
+        for (var child of event.target.parentElement.parentElement.children) {
+            if (x)
+                child.style.removeProperty('display');
+            x = true;
+        }
+    };
 </script>
+}

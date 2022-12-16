@@ -261,18 +261,20 @@ namespace examination_system.Controllers
             }
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public void RemoveQuestion2Exam(string e, string q)
+        public string RemoveQuestion2Exam(string e, string q)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            string qid=myquestion.Question.Id.ToString();
             if (myquestion != null)
             {
                 DB.ExamQuestions.Remove(myquestion);
                 DB.SaveChanges();
             }
+            return qid;
         }
         [HttpPost, ValidateAntiForgeryToken]
         public void AddQuestion2Sub(string e, string sub, string q, int deg)
@@ -303,18 +305,20 @@ namespace examination_system.Controllers
             }
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public void RemoveQuestion2Sub(string sub, string q)
+        public string RemoveQuestion2Sub(string sub, string q)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
             var myeq = mysub.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            string qid = myeq.Question.Id.ToString();
             if (myeq != null)
             {
                 DB.ExamQuestions.Remove(myeq);
                 DB.SaveChanges();
             }
+            return qid;
         }
         [HttpPost, ValidateAntiForgeryToken]
         public void RemoveSub2Exam(string e, string id)

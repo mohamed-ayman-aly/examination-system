@@ -21,13 +21,18 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var userid = User.Identity.GetUserId();
-            var Classes = DB.Users.FirstOrDefault(u => u.Id == userid).Classes.ToList();
-            List<Exam> Exams=new List<Exam>();
-            foreach (var Class in Classes) {
-                var classexams = Class.Exams.Where(e => e.Date.AddMinutes(e.Duration) > DateTime.Now).ToList();
-                Exams.AddRange(classexams);
+            if (userid != null)
+            {
+                var Classes = DB.Users.FirstOrDefault(u => u.Id == userid).Classes.ToList();
+                List<Exam> Exams = new List<Exam>();
+                foreach (var Class in Classes)
+                {
+                    var classexams = Class.Exams.Where(e => e.Date.AddMinutes(e.Duration) > DateTime.Now).ToList();
+                    Exams.AddRange(classexams);
+                }
+                return View(Exams);
             }
-            return View(Exams);
+            return View();
         }
         [Authorize]
         public ActionResult About()

@@ -34,5 +34,20 @@ namespace examination_system.Models
                 return all;
             }
         }
+        public int Degree() {
+            int count = 0;
+            foreach (var q in Questions) {
+                count+=q.Degree;
+            }
+            foreach (var gq in GroupQuestions)
+            {
+                count += gq.Degree;
+            }
+            foreach (var sq in SubQuestions)
+            {
+                count += sq.Degree();
+            }
+            return count;
+        }
     }
 }

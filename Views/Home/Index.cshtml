@@ -6,46 +6,52 @@
 }
 <div class="all">
     <div>
-        @foreach (var e in Model)
+        @if (Model != null)
         {
-            <div class="pnl">
-                <div>
-                    <span>Exam: </span>
-                    <span class="name">@e.Name</span>
-                </div>
-                <div>
-                    <span>Class: </span>
-                    @e.Class.Name
-                </div>
-                @if ((e.Date - DateTime.Now) > TimeSpan.Zero)
-                {
+            foreach (var e in Model)
+            {
+                <div class="pnl">
                     <div>
-                        <span> starting in: </span>
-                        <div class="timer">
-                            @{
-                                var t = e.Date - DateTime.Now;
-                            }
-                            <span class="Days">@t.Days</span>D
-                            <span class="Hours">@t.Hours</span>H
-                            <span class="Minutes">@t.Minutes</span>M
-                            <span class="Seconds">@t.Seconds</span>S
-                        </div>
+                        <span>Exam: </span>
+                        <span class="name">@e.Name</span>
                     </div>
-                }
-                else
-                {
-            <div class="imgdiv">
-                @using (Html.BeginForm("Index", "ExamStudent"))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.Hidden("name", e.Name)
-                    <button type="submit" style="background-color: #007fa800 !important; width: fit-content !important; height: fit-content !important; margin: 0 !important; padding: 0 !important; ">
-                        <img class="play" src="~/Resources/plyr-play.svg" />
-                    </button>
-                }
-            </div>
-                }
-            </div>
+                    <div>
+                        <span>Class: </span>
+                        @e.Class.Name
+                    </div>
+                    @if ((e.Date - DateTime.Now) > TimeSpan.Zero)
+                    {
+                        <div>
+                            <span> starting in: </span>
+                            <div class="timer">
+                                @{
+                                    var t = e.Date - DateTime.Now;
+                                }
+                                <span class="Days">@t.Days</span>D
+                                <span class="Hours">@t.Hours</span>H
+                                <span class="Minutes">@t.Minutes</span>M
+                                <span class="Seconds">@t.Seconds</span>S
+                            </div>
+                        </div>
+                                    }
+                                    else
+                                    {
+                        <div class="imgdiv">
+                            @using (Html.BeginForm("Index", "ExamStudent"))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("name", e.Name)
+                                <button type="submit" style="background-color: #007fa800 !important; width: fit-content !important; height: fit-content !important; margin: 0 !important; padding: 0 !important; ">
+                                    <img class="play" src="~/Resources/plyr-play.svg" />
+                                </button>
+                            }
+                        </div>
+                                    }
+                </div>
+                                    }
+        }else
+        {
+            <div class="pnl"><a href="/Account/SignIn">Sign In Now</a></div>    
         }
     </div>
 </div>

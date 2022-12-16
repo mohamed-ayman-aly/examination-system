@@ -12,18 +12,23 @@
     {
         string res = "";
         res += "<div id=\"" + eq.Id + "\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\" onclick=\"setmehere(event)\" >" +
-                   "<div onclick=\"setmehere(event)\">" +
-                       "<div onclick=\"setmehere(event)\">" + eq.Question.QuestionBody + "</div>" +
-                       "<ul onclick=\"setmehere(event)\">";
+                   "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                      "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                      "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removeqtohere(event);' />" +
+                   "</div>" +
+                   "<div class='row' onclick=\"setmehere(event)\">" +
+                       "<div class='row' onclick=\"setmehere(event)\">" + eq.Question.QuestionBody + "</div>" +
+                       "<ul style='width: 100%;' onclick=\"setmehere(event)\">";
         foreach (var a in eq.Question.Answers)
         {
             res += "<li onclick=\"setmehere(event)\"><div onclick=\"setmehere(event)\">" + @a.AnswerBody + "</div></li>";
         }
         res += "</ul>" +
             "</div>" +
-            "<img src = \"/Resources/Account/minus.svg\" width=\"50\" height=\"50\" onclick=\"setmehere(event);removeqtohere(event);\" />" +
-            "<span>Degree</span>" +
-            "<input onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
+            "<div>" +
+                "<span>Degree</span>" +
+                "<input type=\"number\" onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
+            "</div>" +
         "</div>";
         return res;
     }
@@ -34,8 +39,9 @@
         string res = "";
         res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
                   "<div class= \"row\" onclick = \"setmehere(event)\" >" +
-                  "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
-                  "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
+                      "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
+                      "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                      "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
                   "</div>" +
                   "<div class= 'row' onclick ='setmehere(event)'>" +
                       "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
@@ -100,6 +106,10 @@
         @foreach (Question q in ViewBag.questionbody)
         {
             <div id="@q.Id" class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="row">
+                    <img style='width: 27px;margin: 10px;' src='/Resources/minimize.svg' onclick='minimize(event);' />
+                    <img style='width: 27px;margin: 10px;' src='~/Resources/Account/add.svg' onclick='addqtohere(event);' />
+                </div>
                 <div>
                     <div>
                         @q.QuestionBody
@@ -111,7 +121,6 @@
                         }
                     </ul>
                 </div>
-                <img src="/Resources/Account/add.svg" width="50" height="50" onclick="addqtohere(event)" />
             </div>
         }
     </div>
@@ -121,10 +130,10 @@
         margin: 0;
         padding: 0;
     }
-
     .sub {
         display: flex;
-        background-color: white;
+        background-color: #000000a0;
+        position:relative;
         color: #00c0ff !important;
         border-radius: 12px;
         margin: 10px;
@@ -132,13 +141,11 @@
         border: solid black 2px;
         min-height: 30px;
     }
-
-        .sub.sub {
-            margin: 10px;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
+    .sub.sub {
+        margin: 10px;
+        display: flex;
+        flex-wrap: wrap;
+    }
     #body {
         position: relative;
         width: 100%;
@@ -146,7 +153,6 @@
         background-color: #ffffff33;
         overflow: hidden;
     }
-
     #examtop {
         color: aliceblue;
         background-color: #007fa8;
@@ -166,7 +172,6 @@
         -o-user-select: none;
         user-select: none;
     }
-
     #questiontop {
         color: aliceblue;
         background-color: #007fa8;
@@ -186,7 +191,6 @@
         -o-user-select: none;
         user-select: none;
     }
-
     #exambody {
         background-color: #007fa8;
         position: absolute;
@@ -197,7 +201,6 @@
         z-index: 1;
         border-radius: 3vh;
     }
-
     #questionbody {
         background-color: #007fa8;
         position: absolute;
@@ -208,7 +211,6 @@
         z-index: 1;
         border-radius: 3vh;
     }
-
     .row {
         margin: 10px;
         display: flex;
@@ -217,25 +219,30 @@
         flex-direction: row;
         width: 93%;
     }
-
-        .row textarea {
-            background-color: #00c0ff !important;
-            color: #ffffff !important;
-            max-width: none;
-            border-radius: 34px !important;
-            font-size: 2rem !important;
-            line-height: 23px !important;
-            margin: 10px !important;
-            padding: 20px !important;
-            border: 1px white solid !important;
-            width: 95%;
-            outline: none !important;
-        }
+    .Degree {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 4px;
+        margin-right: 7px;
+    }
+    .row textarea {
+        background-color: #00c0ff !important;
+        color: #ffffff !important;
+        max-width: none;
+        border-radius: 34px !important;
+        font-size: 2rem !important;
+        line-height: 23px !important;
+        margin: 10px !important;
+        padding: 20px !important;
+        border: 1px white solid !important;
+        width: 95%;
+        outline: none !important;
+    }
 </style>
-@section Scripts
-    {
+@section Scripts{
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
     var examtop = document.getElementById("examtop");
@@ -329,8 +336,8 @@
     }
     function addqtohere(event) {
         event.target.setAttribute("onclick", "removeqtohere(event);");
-        var q = event.target.parentElement;
-        event.target.src = "/Resources/Account/minus.svg";
+        var q = event.target.parentElement.parentElement;
+        event.target.src = "/Resources/delete.svg";
         questionbody.removeChild(q);
         var span = document.createElement("span");
         span.innerHTML = "Degree";
@@ -340,42 +347,44 @@
         input.type = 'number';
         input.addEventListener("click", setmehere(event));
         input.addEventListener("focusout", (event) => {
+            var qid = event.target.parentElement.parentElement.id;
             if (here.classList.contains("sub")) {
                 $.ajax({
-                    url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + qid + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', sub: here.id, q: event.target.parentElement.id, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', sub: here.id, q: qid, deg: event.target.value },
                 });
             }
             if (here.classList.contains("grup")) {
                 $.ajax({
-                    url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + qid + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: qid, deg: event.target.value },
                 });
             }
             if (here.id == "exambody") {
                 $.ajax({
-                    url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + qid + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: qid, deg: event.target.value },
                 });
             }
         });
         input.style = 'width: 82% !important;max-width: none;';
+        var div = document.createElement('div');
+        div.appendChild(span);
+        div.appendChild(input);
         q.style.border = "black solid 2px";
         q.style.minwidth = "0";
-        q.appendChild(span);
-        q.appendChild(input);
+        q.appendChild(div);
         here.appendChild(q);
     };
     function removeqtohere(event) {
         event.target.setAttribute("onclick", "addqtohere(event);");
-        var q = event.target.parentElement;
+        var q = event.target.parentElement.parentElement;
         here.removeChild(q);
         q.style.removeProperty('border');
         q.style.removeProperty('min-width');
-        q.removeChild(q.children[q.childElementCount - 1]);
         q.removeChild(q.children[q.childElementCount - 1]);
         event.target.src = "/Resources/Account/add.svg";
         questionbody.appendChild(q);
@@ -383,7 +392,10 @@
             $.ajax({
                 url: '/Exam/RemoveQuestion2Sub?sub=' + here.id + '&q=' + event.target.parentElement.id,
                 type: 'POST',
-                data: { __RequestVerificationToken: token, sub: here.id, q: event.target.parentElement.id},
+                data: { __RequestVerificationToken: token, sub: here.id, q: event.target.parentElement.id },
+                success: function (data) {
+                    q.id = data;
+                },
             });
         }
         if (here.classList.contains("grup")) {
@@ -391,6 +403,9 @@
                 url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + event.target.parentElement.id + '&deg=' + event.target.value,
                 type: 'POST',
                 data: { __RequestVerificationToken: token, e: '@Model.Id', q: event.target.parentElement.id, deg: event.target.value },
+                success: function (data) {
+                    q.id = data;
+                },
             });
         }
         if (here.id == "exambody") {
@@ -398,15 +413,18 @@
                 url: '/Exam/removeQuestion2Exam?q=' + q.id + '&e=' + '@Model.Id',
                 type: 'POST',
                 data: { __RequestVerificationToken: token, q: q.id, e: '@Model.Id' },
+                success: function (data) {
+                    q.id = data;
+                },
             });
         }
 
     };
     function minimize(event) {
         event.target.src = "/Resources/maximize.svg";
-        event.target.setAttribute("onclick", "setmehere(event);maximum(event);")
+        event.target.setAttribute("onclick", "maximum(event);")
         var x = false;
-        for (var child of here.children) {
+        for (var child of event.target.parentElement.parentElement.children) {
             if (x)
                 child.style.display = "none";
             x = true;
@@ -415,9 +433,9 @@
     };
     function maximum(event) {
         event.target.src = "/Resources/minimize.svg";
-        event.target.setAttribute("onclick", "setmehere(event);minimize(event);")
+        event.target.setAttribute("onclick", "minimize(event);")
         var x = false;
-        for (var child of here.children) {
+        for (var child of event.target.parentElement.parentElement.children) {
             if (x)
                 child.style.removeProperty('display');
             x = true;
@@ -668,5 +686,5 @@
                     localStorage.setItem("screan", "4")
                 }
     }
-    </script>
+</script>
 }
