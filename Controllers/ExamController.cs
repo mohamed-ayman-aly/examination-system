@@ -109,10 +109,7 @@ namespace examination_system.Controllers
             }
             return RedirectToAction("Index");
         }
-        public string Guid()
-        {
-            return System.Guid.NewGuid().ToString();
-        }
+
         public void AddGrop2Exam(string e, int deg)
         {
             DB = new DB();
@@ -185,7 +182,11 @@ namespace examination_system.Controllers
         /*mohsening*/
 
 
-
+        [HttpPost, ValidateAntiForgeryToken]
+        public string Guid()
+        {
+            return System.Guid.NewGuid().ToString();
+        }
         [HttpPost, ValidateAntiForgeryToken]
         public string Getqid4meq(string eq)
         {
