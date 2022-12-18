@@ -45,13 +45,18 @@ namespace examination_system.Models
                         }
                     }
                 }
+                PropertyInfo IdProp = validationContext.ObjectInstance.GetType().GetProperties().FirstOrDefault(x => x.CustomAttributes.Count(a => a.AttributeType == typeof(KeyAttribute)) > 0);
 
+                string Id = IdProp.GetValue(validationContext.ObjectInstance, null).ToString();
                 Type entityType = validationContext.ObjectType;
 
 
                 var result = db.Set(entityType).Where(Name + "==@0", value);
                 int count = 0;
-
+                if (Id != "00000000-0000-0000-0000-000000000000")
+                {
+                    result = result.Where(IdProp.Name + "!=@0",new Guid(Id));
+                }
 
                 count = result.Count();
 

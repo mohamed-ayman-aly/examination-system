@@ -18,7 +18,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -215,6 +215,7 @@
     <Content Include="Resources\Exam\RemoveQ2Grop.svg" />
     <Content Include="Resources\Exam\RemoveQ2Sub.svg" />
     <Content Include="Resources\Exam\RemoveSub2E.svg" />
+    <Content Include="Resources\Exam\Submit.svg" />
     <Content Include="Resources\main.png" />
     <Content Include="Resources\maximize.svg" />
     <Content Include="Resources\minimize.svg" />
@@ -310,7 +311,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50527</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50933/</IISUrl>
+          <IISUrl>http://localhost:51233/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

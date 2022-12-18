@@ -19,6 +19,7 @@ namespace examination_system.Models
         public DateTime Date { get; set; }
         [Required(ErrorMessage = "Exam date is Required")]
         public int Duration { get; set; }
+        public bool Submit { get; set; }
         public virtual AspNetUsers Professor { get; set; }
         public virtual Class Class { get; set; }
         public virtual List<ExamQuestion> Questions { get; set; }

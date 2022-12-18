@@ -25,7 +25,7 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             string s = User.Identity.GetUserId();
-            var exams = DB.Exams.Where(e => e.Professor.Id == s&&e.Name.Contains(SearchName));
+            var exams = DB.Exams.Where(e => e.Professor.Id == s&& e.Name.Contains(SearchName));
             int recsCount = exams.Count();
             if (pg < 1)
                 pg = 1;
@@ -58,6 +58,7 @@ namespace examination_system.Controllers
             NewExame.Id = System.Guid.NewGuid();
             NewExame.Class = DB.Classes.FirstOrDefault(c => c.Id.ToString() == Classid);
             NewExame.Professor = userManager.FindById(User.Identity.GetUserId());
+            NewExame.Submit = false;
             DB.Exams.Add(NewExame);
             if (!ModelState.IsValid)
             {
@@ -91,7 +92,8 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == id);
-            if (userManager.FindById(User.Identity.GetUserId()).Equals(myexam.Professor))
+            if (userManager.FindById(User.Identity.GetUserId()).Equals(myexam.Professor) &&
+                myexam.Submit == false)
             {
                 ViewBag.exambody = myexam.Questions.ToList();
                 ViewBag.myexamGroupQuestions = myexam.GroupQuestions.ToList();
@@ -109,7 +111,22 @@ namespace examination_system.Controllers
             }
             return RedirectToAction("Index");
         }
-
+        [HttpPost, ValidateAntiForgeryToken]
+        public bool Submit(string id)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.First(ex => ex.Id.ToString() == id);
+            if (userManager.FindById(User.Identity.GetUserId()).Equals(myexam.Professor)&&
+                myexam.Submit==false)
+            {
+                myexam.Submit = true;
+                DB.SaveChanges();
+                return true;
+            }
+            return false;
+        }
         public void AddGrop2Exam(string e, int deg)
         {
             DB = new DB();
