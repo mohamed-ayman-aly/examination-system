@@ -17,6 +17,6 @@ namespace examination_system.Models
         public bool Submit { get; set; }
         public virtual AspNetUsers Student { get; set; }
         public virtual List<Studentanswer> Answers { get; set; }
-        public virtual List<ExamQuestion> Questionsingrops { get; set; }
+        public virtual List<Question> Questionsingrops { get; set; }
     }
 }

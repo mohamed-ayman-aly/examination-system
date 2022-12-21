@@ -127,27 +127,7 @@ namespace examination_system.Controllers
             }
             return false;
         }
-        public void AddGrop2Exam(string e, int deg)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            myexam.GroupQuestions.Add(new GroupQuestion { Id = new Guid(), Degree = deg });
-        }
-        public void RemoveGrop2Exam(string e, string id)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            var mygrop = myexam.GroupQuestions.FirstOrDefault(grop => grop.Id.ToString() == id);
-            if (mygrop != null)
-            {
-                myexam.GroupQuestions.Remove(mygrop);
-                DB.SaveChanges();
-            }
-        }
+        [HttpPost, ValidateAntiForgeryToken]
         public void AddQuestion2Grop(string e, string grop, string q)
         {
             DB = new DB();
@@ -156,9 +136,10 @@ namespace examination_system.Controllers
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
             var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
-            mygrop.Questions.Add(new ExamQuestion { Id = new Guid(), Exam = myexam, Question = myquestion }); ;
+            mygrop.Questions.Add( myquestion ); ;
             DB.SaveChanges();
         }
+        [HttpPost, ValidateAntiForgeryToken]
         public void RemoveQuestion2Grop(string grop, string q)
         {
             DB = new DB();
@@ -172,28 +153,8 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
-        public void AddGrop2Sub(string sub, int deg)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-            mysub.GroupQuestions.Add(new GroupQuestion { Id = new Guid(), Degree = deg });
-            DB.SaveChanges();
-        }
-        public void RemoveGrop2Sub(string sub, string grop)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-            var mygrop = mysub.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
-            if (mygrop != null)
-            {
-                mysub.GroupQuestions.Remove(mygrop);
-                DB.SaveChanges();
-            }
-        }
+        
+        
 
 
         /*mohsening*/
@@ -269,14 +230,10 @@ namespace examination_system.Controllers
             var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
             if (myexam.Exambody().Contains(myquestion))
             {
-                foreach (var eq in myexam.Questions)
-                {
-                    if (eq.Question.QuestionBody == myquestion.QuestionBody)
-                    {
-                        eq.Degree = deg;
-                        return eq.Id.ToString();
-                    }
-                }
+                var eq = myexam.Questions.FirstOrDefault(xe => xe.Question.Id == myquestion.Id);
+                eq.Degree = deg;
+                DB.SaveChanges();
+                return myquestion.Id.ToString();
             }
             var Id = System.Guid.NewGuid();
             var neweq = new ExamQuestion { Id = Id, Degree = deg, Exam = myexam, Question = myquestion };
@@ -284,43 +241,33 @@ namespace examination_system.Controllers
             DB.SaveChanges();
             myexam.Questions.Add(neweq);
             DB.SaveChanges();
-            return Id.ToString();
+            return myquestion.Id.ToString();
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public string RemoveQuestion2Exam(string e, string q)
+        public void RemoveQuestion2Exam(string e, string q)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            string qid=myquestion.Question.Id.ToString();
-            if (myquestion != null)
-            {
-                DB.ExamQuestions.Remove(myquestion);
-                DB.SaveChanges();
-            }
-            return qid;
+            var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Question.Id.ToString() == q);
+            DB.ExamQuestions.Remove(myquestion);
+            DB.SaveChanges();
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public string AddQuestion2Sub(string e, string sub, string q, int deg)
+        public string AddQuestion2Sub(string sub, string q, int deg)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
             var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
             if (mysub.Exambody().Contains(myquestion))
             {
-                foreach (var eq in myexam.Questions)
-                {
-                    if (eq.Question.QuestionBody == myquestion.QuestionBody)
-                    {
-                        eq.Degree = deg;
-                        return eq.Id.ToString();
-                    }
-                }
+                var eq = mysub.Questions.FirstOrDefault(x => x.Question.Id == myquestion.Id);
+                eq.Degree = deg;
+                DB.SaveChanges();
+                return myquestion.Id.ToString();
             }
             var id = System.Guid.NewGuid();
             var neweq = new ExamQuestion { Id = id, Degree = deg, Question = myquestion };
@@ -328,23 +275,18 @@ namespace examination_system.Controllers
             DB.SaveChanges();
             mysub.Questions.Add(neweq);
             DB.SaveChanges();
-            return id.ToString();
+            return myquestion.Id.ToString();
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public string RemoveQuestion2Sub(string sub, string q)
+        public void RemoveQuestion2Sub(string sub, string q)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
-            var myeq = mysub.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            string qid = myeq.Question.Id.ToString();
-            if (myeq != null)
-            {
-                DB.ExamQuestions.Remove(myeq);
-                DB.SaveChanges();
-            }
-            return qid;
+            var myeq = mysub.Questions.FirstOrDefault(ex => ex.Question.Id.ToString() == q);
+            DB.ExamQuestions.Remove(myeq);
+            DB.SaveChanges();
         }
         [HttpPost, ValidateAntiForgeryToken]
         public void RemoveSub2Exam(string e, string id)
@@ -371,6 +313,75 @@ namespace examination_system.Controllers
             if (mysonsub != null)
             {
                 mysub.SubQuestions.Remove(mysonsub);
+                DB.SaveChanges();
+            }
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public string AddGrop2Exam(string e, string id, int deg)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            if (id == "")
+            {
+                Guid Id = System.Guid.NewGuid();
+                var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+                myexam.GroupQuestions.Add(new GroupQuestion { Id = Id, Degree = deg });
+                DB.SaveChanges();
+                return Id.ToString();
+            }
+            var grop = DB.GroupQuestions.FirstOrDefault(g => g.Id.ToString() == id);
+            grop.Degree = deg;
+            DB.SaveChanges();
+            return id.ToString();
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public void RemoveGrop2Exam(string e, string id)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            var mygrop = myexam.GroupQuestions.FirstOrDefault(grop => grop.Id.ToString() == id);
+            if (mygrop != null)
+            {
+                myexam.GroupQuestions.Remove(mygrop);
+                DB.SaveChanges();
+            }
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public string AddGrop2Sub(string sub, string id, int deg)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            if (id == "")
+            {
+                Guid Id = System.Guid.NewGuid();
+                var mysub = DB.SubQuestions.FirstOrDefault(s => s.Id.ToString() == sub);
+                mysub.GroupQuestions.Add(new GroupQuestion { Id = Id, Degree = deg });
+                DB.SaveChanges();
+                return Id.ToString();
+            }
+            else
+            {
+                var g = DB.GroupQuestions.FirstOrDefault(s => s.Id.ToString() == id);
+                g.Degree = deg;
+                DB.SaveChanges();
+                return g.Id.ToString();
+            }
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public void RemoveGrop2Sub(string sub, string grop)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var mysub = DB.SubQuestions.FirstOrDefault(ex => ex.Id.ToString() == sub);
+            var mygrop = mysub.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
+            if (mygrop != null)
+            {
+                mysub.GroupQuestions.Remove(mygrop);
                 DB.SaveChanges();
             }
         }

@@ -22,7 +22,7 @@ namespace examination_system.Controllers
             if (examstudent == null)
             {
                 Guid id = Guid.NewGuid();
-                List<ExamQuestion> Questionsingrops = new List<ExamQuestion>();
+                List<Question> Questionsingrops = new List<Question>();
                 Random random = new Random();
                 foreach (var g in exam.GroupQuestions) {
                     int n=random.Next(g.Questions.Count());

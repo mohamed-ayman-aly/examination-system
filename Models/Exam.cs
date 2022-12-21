@@ -33,8 +33,7 @@ namespace examination_system.Models
             foreach(var q in Questions)
                 all.Add(q.Question);
             foreach (var GroupQuestion in GroupQuestions)
-                foreach (var q in GroupQuestion.Questions)
-                    all.Add(q.Question);
+                all.AddRange(GroupQuestion.Questions);
             if (SubQuestions == null || SubQuestions.Count == 0)
                 return all;
             else

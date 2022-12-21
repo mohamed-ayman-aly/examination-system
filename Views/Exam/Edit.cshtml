@@ -11,10 +11,10 @@
     public string qtohtml(ExamQuestion eq)
     {
         string res = "";
-        res += "<div id=\"" + eq.Id + "\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\" onclick=\"setmehere(event)\" >" +
+        res += "<div id=\"" + eq.Question.Id + "\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\" onclick=\"setmehere(event)\" >" +
                    "<div class= \"row\" onclick = \"setmehere(event)\" >" +
-                      "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
-                      "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removeqtohere(event);' />" +
+                      "<img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                      "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeqtohere(event);' />" +
                    "</div>" +
                    "<div class='row' onclick=\"setmehere(event)\">" +
                        "<div class='row' onclick=\"setmehere(event)\">" + eq.Question.QuestionBody + "</div>" +
@@ -27,21 +27,37 @@
             "</div>" +
             "<div>" +
                 "<span>Degree</span>" +
-                "<input type=\"number\" onclick=\"setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
+                "<input type=\"number\" onchange='setmehere(event);saveAddq2f(event);' onclick=\"lastd=event.target.value;setmehere(event)\" value=\"" + eq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
             "</div>" +
         "</div>";
         return res;
     }
     public string groptohtml(GroupQuestion gq)
-    { return ""; }
+    {
+        string res = "";
+        res += "<div id='" + gq.Id + "' class='sub' onclick ='setmehere(event)' >" +
+                    "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                        "<img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                        "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeGrop2here(event);' />" +
+                    "</div>";
+                    foreach (var eq in gq.Questions) {
+                        res += qtohtml(eq);
+                    }
+                    res +="<div>" +
+                            "<span>Degree</span>" +
+                            "<input onchange=\"setmehere(event);saveAddgrop2f(event)\" type=\"number\" onclick=\"lastd=event.target.value;setmehere(event)\" value=\"" + gq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
+                          "</div>" +
+               "</div>";
+        return res;
+    }
     public string suptohtml(SubQuestion sq)
     {
         string res = "";
         res += "<div id='" + sq.Id + "' class='sub' onclick ='setmehere(event)' >" +
                   "<div class= \"row\" onclick = \"setmehere(event)\" >" +
                       "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
-                      "<img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
-                      "<img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
+                      "<img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                      "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />" +
                   "</div>" +
                   "<div class= 'row' onclick ='setmehere(event)'>" +
                       "<button class= 'smallbutton' onclick = 'setmehere(event);AddSub2f(event)' >" +
@@ -55,7 +71,7 @@
                       "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
                   "</div>" +
                   "<div class= 'row' onclick = 'setmehere(event)' >" +
-                      "<textarea onfocusout='saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
+                      "<textarea onchange='saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
                       sq.Heading +
                       "</textarea>" +
                   "</div>";
@@ -79,13 +95,13 @@
 <div style="margin:0 70px">
     <h2>Edit Exam:@Model.Name</h2>
 </div>
-<button class="smallbutton" onclick="AddSub2E()">
+<button class="smallbutton" onclick="AddSub2E()" title="sub Questions">
     <img src="/Resources/Exam/AddSub2E.svg" />
 </button>
-<button class="smallbutton" onclick="AddGrop2E()">
+<button class="smallbutton" onclick="AddGrop2E()" title="Group Questions">
     <img src="/Resources/Exam/AddGrop2E.svg" />
 </button>
-<button class="smallbutton" onclick="Submit()">
+<button class="smallbutton" onclick="Submit()" title="submit">
     <img src="~/Resources/Exam/Submit.svg" />
 </button>
 <div id="body" class="body">
@@ -110,8 +126,8 @@
         {
             <div id="@q.Id" class="pnl" style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="row">
-                    <img style='width: 27px;margin: 10px;' src='/Resources/minimize.svg' onclick='minimize(event);' />
-                    <img style='width: 27px;margin: 10px;' src='~/Resources/Account/add.svg' onclick='addqtohere(event);' />
+                    <img class='minimg' src='/Resources/minimize.svg' onclick='minimize(event);' />
+                    <img class='minimg' src='~/Resources/Account/add.svg' onclick='addqtohere(event);' />
                 </div>
                 <div>
                     <div>
@@ -133,10 +149,14 @@
         margin: 0;
         padding: 0;
     }
+    .minimg {
+        width: 27px;
+        margin: 10px;
+    }
     .sub {
         display: flex;
         background-color: #000000a0;
-        position:relative;
+        position: relative;
         color: #00c0ff !important;
         border-radius: 12px;
         margin: 10px;
@@ -144,10 +164,11 @@
         border: solid black 2px;
         min-height: 30px;
     }
-    .sub.sub {
+    .sub .sub {
         margin: 10px;
         display: flex;
         flex-wrap: wrap;
+        background-color: #00000000;
     }
     #body {
         position: relative;
@@ -258,6 +279,7 @@
     var bodyp = body.getBoundingClientRect();
     var here = exambody;
     here.style.border = "white solid 2px";
+    var lastd = 0;
     function Submit() {
         if (confirm('Are you sure you want to Submit Exam'))
             $.ajax({
@@ -305,8 +327,8 @@
     <div id=`+ g + ` class= "sub" onclick = "setmehere(event)" >
         <div class= "row" onclick = "setmehere(event)" >
             <h3 class="Degree">deg:0</h3>
-            <img style='width: 27px;margin: 10px;' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />
-            <img style='width: 27px;margin: 10px;' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />
+            <img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />
+            <img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removesub2here(event);' />
         </div>
         <div class= "row" onclick = "setmehere(event)" >
             <button class= "smallbutton" onclick = "AddSub2f(event);setmehere(event)" >
@@ -320,7 +342,7 @@
             <span onclick = "setmehere(event)" style = "margin: 0 10px;width: 100%;" > Heading </span >
         </div>
         <div class= "row" onclick = "setmehere(event)" >
-            <textarea onfocusout=" saveAddSub2f(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
+            <textarea onchange=" saveAddSub2f(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
         </div>
     </div>`;
         }
@@ -332,8 +354,8 @@
     async function AddSub2E() {
         exambody.innerHTML = exambody.innerHTML + await sub();
     };
-    async function AddSub2f(event) {
-        event.target.parentElement.parentElement.parentElement.innerHTML = event.target.parentElement.parentElement.parentElement.innerHTML + await sub();
+    async function AddSub2f() {
+        here.innerHTML = here.innerHTML + await sub();
     };
     function saveAddSub2f(event) {
         if (event.target.value != '') {
@@ -352,7 +374,7 @@
                 });
             }
         }
-    }
+    };
     function addqtohere(event) {
         event.target.setAttribute("onclick", "removeqtohere(event);");
         var q = event.target.parentElement.parentElement;
@@ -365,7 +387,21 @@
         var input = document.createElement("input");
         input.type = 'number';
         input.addEventListener("click", setmehere(event));
-        input.addEventListener("focusout", (event) => {
+        input.addEventListener("change", (event) => {
+            setmehere(event);
+            saveAddq2f(event);
+        });
+        input.style = 'width: 82% !important;max-width: none;';
+        var div = document.createElement('div');
+        div.appendChild(span);
+        div.appendChild(input);
+        q.style.border = "black solid 2px";
+        q.style.minwidth = "0";
+        q.appendChild(div);
+        here.appendChild(q);
+    };
+    function saveAddq2f(event) {
+        if (event.target.value != undefined) {
             var q = event.target.parentElement.parentElement;
             if (here.classList.contains("sub")) {
                 $.ajax({
@@ -377,7 +413,11 @@
                     },
                 });
                 var deg = here.children[0].children[0];
-                deg.innerText = deg.innerText.substr(0, 4) + (((Number)(deg.innerText.substr(4, deg.innerText.length))) + (Number)(event.target.value))
+                var c = 0;
+                var is = here.getElementsByTagName('input');
+                for (var i = 0; i < is.length; i += 1)
+                    c += (Number)(is[i].value);
+                deg.innerText ='deg:'+c;
             }
             if (here.classList.contains("grup")) {
                 $.ajax({
@@ -399,16 +439,8 @@
                     },
                 });
             }
-        });
-        input.style = 'width: 82% !important;max-width: none;';
-        var div = document.createElement('div');
-        div.appendChild(span);
-        div.appendChild(input);
-        q.style.border = "black solid 2px";
-        q.style.minwidth = "0";
-        q.appendChild(div);
-        here.appendChild(q);
-    };
+        }
+    }
     function removeqtohere(event) {
         event.target.setAttribute("onclick", "addqtohere(event);");
         var q = event.target.parentElement.parentElement;
@@ -477,7 +509,7 @@
         }
     };
     function removesub2here(event) {
-        var sub = event.target.parentElement.parentElement;
+        var sub = here;
         var id = sub.id;
         var parent = sub.parentElement;
         if (parent.classList.contains("sub")) {
@@ -512,8 +544,73 @@
         }
         parent.removeChild(sub);
         here = parent;
-    }
-
+    };
+    var grop = `<div class='sub' onclick ='setmehere(event)' >
+                    <div class= "row" onclick = "setmehere(event)" >
+                        <img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />
+                        <img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeGrop2here(event);' />
+                    </div>
+                    <div>
+                        <span>Degree</span>
+                        <input onchange="setmehere(event);saveAddgrop2f(event)" type="number" onclick="lastd=event.target.value;setmehere(event)" style="max-width: none;color:#00c0ff !important; width: 82% !important;" />
+                    </div>
+                </div>`;
+    function AddGrop2E() {
+        exambody.innerHTML = exambody.innerHTML + grop;
+    };
+    function AddGrop2f() {
+        here.innerHTML = here.innerHTML + grop;
+    };
+    function saveAddgrop2f(event) {
+        if (event.target.value != '') {
+            if (here.parentElement.id == 'exambody') {
+                $.ajax({
+                    url: '/Exam/AddGrop2Exam?e=' + '@Model.Id' + '&id=' + here.id + '&deg=' + event.target.value,
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', id:here.id, deg: event.target.value },
+                    success: function (data) {
+                        event.target.parentElement.parentElement.id = data;
+                    },
+                });
+            } else {
+                $.ajax({
+                    url: '/Exam/AddGrop2Sub?sub=' + here.parentElement.id + '&id=' + here.id + '&deg=' + event.target.value,
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, sub: here.parentElement.id, deg: event.target.value },
+                    success: function (data) {
+                        event.target.parentElement.parentElement.id = data;
+                    },
+                });
+                var deg = here.parentElement.children[0].children[0];
+                var c = 0;
+                var is = here.parentElement.getElementsByTagName('input');
+                for (var i = 0; i < is.length; i += 1)
+                    c += (Number)(is[i].value);
+                deg.innerText = 'deg:' + c;
+            }
+        }
+    };
+    function removeGrop2here(event) {
+        var Grop = here;
+        var id = Grop.id;
+        var parent = Grop.parentElement;
+        if (parent.classList.contains("sub")) {
+            $.ajax({
+                url: '/Exam/RemoveGrop2Sub?sub=' + parent.id + '&grop=' + id,
+                type: 'POST',
+                data: { __RequestVerificationToken: token, sub: parent.id, grop:  id },
+            });
+        }
+        if (parent.id == "exambody") {
+            $.ajax({
+                url: '/Exam/RemoveGrop2Exam?e=' + '@Model.Id' + '&id=' + id,
+                type: 'POST',
+                data: { __RequestVerificationToken: token, e: '@Model.Id', id: id },
+            });
+        }
+        parent.removeChild(Grop);
+        here = parent;
+    };
 
     examtop.addEventListener("mousedown", (event) => {
         localStorage.setItem("lasttop", "examtop")
