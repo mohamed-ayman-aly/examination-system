@@ -27,34 +27,47 @@
                 @if (pager.CurrentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
+                        <a class="page-link" href="/Exam/Index?SearchName=&pg=1" onmouseover="setSearchName(event)">First</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
+                        <a class="page-link" href="/Exam/Index?SearchName=&pg=@(pager.CurrentPage-1)" onmouseover="setSearchName(event)">previous</a>
                     </li>
                 }
                 @for (var p = pager.StartPage; p <= pager.EndPage; p++)
                 {
                     <li class="page-item @(p==pager.CurrentPage?"active":"")">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
+                        <a class="page-link" href="/Exam/Index?SearchName=&pg=@p" onmouseover="setSearchName(event)">@p</a>
                     </li>
                 }
                 @if (pager.CurrentPage < pager.TotalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
+                        <a class="page-link" href="/Exam/Index?SearchName=&pg=@(pager.CurrentPage+1)" onmouseover="setSearchName(event)">Next</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="/Class/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
+                        <a class="page-link" href="/Exam/Index?SearchName=&pg=@pager.TotalPages" onmouseover="setSearchName(event)">Last</a>
                     </li>
                 }
             </ul>
         }
     </div>
     <div id="all">
+        <div style="width:100%;justify-content:center;">
+            Unsubmited<hr style="width: 72%; display: inline-block; margin-bottom: 5px;"/>
+        </div>
         @foreach (var exam in Model)
         {
-            if (exam != null)
+            if (exam != null && exam.Submit == false)
+            {
+                @Html.Partial("_exam", exam, ViewData);
+            }
+        }
+        <div style="width: 100%;justify-content:center;">
+            Submited<hr style="width: 72%; display: inline-block; margin-bottom: 5px; "/>
+        </div>
+        @foreach (var exam in Model)
+        {
+            if (exam != null && exam.Submit == true)
             {
                 @Html.Partial("_exam", exam, ViewData);
             }

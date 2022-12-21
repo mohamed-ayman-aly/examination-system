@@ -27,8 +27,14 @@ namespace examination_system.Controllers
                 List<Exam> Exams = new List<Exam>();
                 foreach (var Class in Classes)
                 {
-                    var classexams = Class.Exams.Where(e => e.Date.AddMinutes(e.Duration) > DateTime.Now).ToList();
-                    Exams.AddRange(classexams);
+                    var classexams = Class.Exams.Where(e =>e.Date.AddMinutes(e.Duration) > DateTime.Now&&e.Submit).ToList();
+                    foreach (var exam in classexams)
+                    {
+                        var studentexams = exam.ExamStudent.FirstOrDefault(es => es.Student.Id == userid);
+                        if (studentexams == null || studentexams.Submit == false) {
+                            Exams.Add(exam);
+                        }
+                    }
                 }
                 return View(Exams);
             }

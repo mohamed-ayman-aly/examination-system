@@ -25,6 +25,8 @@ namespace examination_system.Models
         public virtual List<ExamQuestion> Questions { get; set; }
         public virtual List<SubQuestion> SubQuestions { get; set; }
         public virtual List<GroupQuestion> GroupQuestions { get; set; }
+        [InverseProperty("Exam")]
+        public virtual List<ExamStudent> ExamStudent { get; set; }
         public List<Question> Exambody()
         {
             List<Question> all = new List<Question>();
@@ -43,6 +45,23 @@ namespace examination_system.Models
                 }
                 return all;
             }
+        }
+        public int Degree()
+        {
+            int count = 0;
+            foreach (var q in Questions)
+            {
+                count += q.Degree;
+            }
+            foreach (var gq in GroupQuestions)
+            {
+                count += gq.Degree;
+            }
+            foreach (var sq in SubQuestions)
+            {
+                count += sq.Degree();
+            }
+            return count;
         }
     }
 }

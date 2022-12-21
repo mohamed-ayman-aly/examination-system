@@ -88,7 +88,32 @@
         }
         else
         {
-
+            <div class="row">
+                <h2>Class: @Model.Class.Name</h2>
+            </div>
+            <div class="Degree">
+                <h2>Degree: @Model.Degree()</h2>
+            </div>
+            <div class="time">
+                @{
+                    var t = Model.Date + TimeSpan.FromMinutes(Model.Duration) - DateTime.Now;
+                }
+                <h2 class="Days">@t.Days </h2><h2>D</h2>
+                <h2 class="Hours">@t.Hours </h2><h2>H</h2>
+                <h2 class="Minutes">@t.Minutes </h2><h2>M</h2>
+                <h2 class="Seconds">@t.Seconds </h2><h2>S</h2>
+            </div>
+            <div class="Prof">
+                <h2>Professor: @Model.Professor.UserName</h2>
+            </div>
+            <div class="row">
+                <h2>Exam: @Model.Name</h2>
+            </div>
+            <div class="row">
+                <button class="smallbutton" onclick="Submit()">
+                    <img src="~/Resources/Exam/Submit.svg" />
+                </button>
+            </div>
             foreach (ExamQuestion q in Model.Questions)
             {
                 @Html.Raw(@qtohtml(q, n, answers));
@@ -162,12 +187,44 @@
         flex-wrap: wrap;
         align-items: center;
     }
+    .time {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        margin: 4px;
+        margin-right: 7px;
+    }
+    .time h2 {
+        display:inline;
+    }
+    .Prof {
+        position: absolute;
+        top: 68px;
+        right: 0;
+        margin: 4px;
+        margin-right: 7px;
+    }
 </style>
 @section Scripts{
     @Scripts.Render("~/bundles/jqueryval")
 <script>
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
+     function Submit() {
+        if (confirm('Are you sure you want to Submit Exam'))
+            $.ajax({
+                url: '/ExamStudent/Submit?Id=' + '@(ViewBag.ExamStudentId)',
+                type: 'POST',
+                data: { __RequestVerificationToken: token, Id: '@(ViewBag.ExamStudentId)' },
+                success: function (data) {
+                    if (data == 'True') {
+                        var a = document.createElement('a');
+                        a.href = "/Home/Index";
+                        a.click();
+                    }
+                }
+            });
+    }
     function issaved(q,ans) {
         $.ajax({
             type: "POST",
@@ -209,5 +266,35 @@
             x = true;
         }
     };
+    var e = document.getElementsByClassName("time")[0];
+    var Interval = setInterval(timerInterval, 1000);
+    function timerInterval() {
+        var Seconds = e.getElementsByClassName('Seconds')[0];
+        if ((Number)(Seconds.innerText) > 0) {
+            Seconds.innerText = (((Number)(Seconds.innerText)) - 1);
+            return;
+        }
+        var Minutes = e.getElementsByClassName('Minutes')[0];
+        if ((Number)(Minutes.innerText) > 0) {
+            Minutes.innerText = (((Number)(Minutes.innerText)) - 1);
+            Seconds.innerText = 59;
+            return;
+        }
+        var Hours = e.getElementsByClassName('Hours')[0];
+        if ((Number)(Hours.innerText) > 0) {
+            Hours.innerText = (((Number)(Hours.innerText)) - 1);
+            Minutes.innerText = 59;
+            Seconds.innerText = 59;
+            return;
+        }
+        var Days = e.getElementsByClassName('Days')[0];
+        if ((Number)(Days.innerText) > 0) {
+            Days.innerText = (((Number)(Days.innerText)) - 1);
+            Hours.innerText = 23;
+            Minutes.innerText = 59;
+            Seconds.innerText = 59;
+            return;
+        }
+    }
 </script>
 }

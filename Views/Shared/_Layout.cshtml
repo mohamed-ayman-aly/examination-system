@@ -24,54 +24,52 @@
     <div style="z-index: -10; position: fixed; top: 0; right: 0; width: 100vw; height: 100vh; background: linear-gradient(225deg,#110f2a,#7b7c86,#110f2a); "></div>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div>
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("examination system", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="navbar-brand p-0 m-0 img" id="img">
+                    <img src="~/Resources/Account/imgs/@userManager.FindById(User.Identity.GetUserId()).ImgFileName" />
+                </div>
+            }
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("examination system", "Index", "Home", new { area = "" }, new {style= "margin :0 !important;", @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        @if (User.IsInRole("superadmin") ||
+                                User.IsInRole(examination_system.Models.UserType.admin.ToString()))
+                        {
+                            <li>@Html.ActionLink("Accounts", "Index", "Account")</li>
+                        }
+                        @if (User.IsInRole("superadmin") ||
+                                User.IsInRole("admin") ||
+                                User.IsInRole("professor"))
+                        {
+                            <li>@Html.ActionLink("Classes", "Index", "Class")</li>
+                        }
+                        @if (User.IsInRole("superadmin") || User.IsInRole("student"))
+                        {
+                            <li>@Html.ActionLink("Register", "Register", "Class")</li>
+                        }
+                        @if (User.IsInRole("professor") ||
+                                User.IsInRole("superadmin"))
+                        {
+                            <li>@Html.ActionLink("Questions", "Index", "Question")</li>
+                            <li>@Html.ActionLink("Exams", "Index", "Exam")</li>
+                        }
+                        <li>@Html.ActionLink("About", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                        @if (!(User.Identity.IsAuthenticated))
+                        {
+                            <li>@Html.ActionLink("Log In", "LogIn", "Account")</li>
+                        }
+                    </ul>
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @if (User.IsInRole("superadmin") ||
-                            User.IsInRole(examination_system.Models.UserType.admin.ToString()))
-                    {
-                        <li>@Html.ActionLink("Accounts", "Index", "Account")</li>
-                    }
-                    @if (User.IsInRole("superadmin") ||
-                            User.IsInRole("admin") ||
-                            User.IsInRole("professor"))
-                    {
-                        <li>@Html.ActionLink("Classes", "Index", "Class")</li>
-                    }
-                    @if(User.IsInRole("superadmin") || User.IsInRole("student")){
-                        <li>@Html.ActionLink("Register", "Register", "Class")</li>
-                    }
-                    @if (User.IsInRole("professor") ||
-                            User.IsInRole("superadmin"))
-                    {
-                        <li>@Html.ActionLink("Questions", "Index", "Question")</li>
-                        <li>@Html.ActionLink("Exams", "Index", "Exam")</li>
-                    }
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li style="position: absolute" id="img" class="img">
-                            <img src="~/Resources/Account/imgs/@userManager.FindById(User.Identity.GetUserId()).ImgFileName" />
-                            <a class="hidden" href="/Account/LogOut"></a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li>
-                            @Html.ActionLink("Log In", "LogIn", "Account")
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
     </div>
     <div>
         <div style="z-index:1034;" id="m"></div>
@@ -125,8 +123,8 @@
     }
 
     .img {
-        top: 0;
-        left: 0;
+        margin :0 !important;
+        padding :0 !important;
     }
 
     .img img {
@@ -460,8 +458,8 @@
                 m.style.top = "10px";
                 m.innerHTML = `<div style="border-radius:10px ;border: solid 1px white; background-color: #00000075;">
                                     <div class="pointer pnlpnl" onclick="document.getElementById('m').innerHTML = ''; c = true;" style="color:red;"> x </div>
-                                    <div  class="pointer pnlpnl"> @Html.ActionLink("Log Out", "LogOut", "Account",new { style = "color:#00c0ff;font-size:11px;" })</div>
-                                    <div  class="pointer pnlpnl"> @Html.ActionLink("edit", "edit", "Account", new { style = "color:#00c0ff;font-size:12px;" })</div>
+                                    <div  class="pointer pnlpnl"> @Html.ActionLink("Log Out", "LogOut", "Account","" ,new { style = "color:#00c0ff;font-size:11px;" })</div>
+                                    <div  class="pointer pnlpnl"> @Html.ActionLink("Edit", "edit", "Account","", new { style = "color:#00c0ff;font-size:12px;" })</div>
                                </div>`
                     ;
                 c = !c;

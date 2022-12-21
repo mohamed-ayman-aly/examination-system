@@ -14,5 +14,6 @@ namespace examination_system.Models
         public int Degree { get; set; }
         public virtual Question Question { get; set; }
         public virtual Exam Exam { get; set; }
+        public virtual List<ExamStudent> ExamsStudentGroup { get; set; }
     }
 }
