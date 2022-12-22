@@ -8,7 +8,27 @@
     @Html.AntiForgeryToken()
 }
 @functions{
-    public string qtohtml(ExamQuestion eq)
+    public string qtohtml(Question q)
+    {
+        string res = "";
+        res += "<div id=\"" + q.Id + "\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\" onclick=\"setmehere(event)\" >" +
+                   "<div class= \"row\" onclick = \"setmehere(event)\" >" +
+                      "<img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
+                      "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeqtohere(event);' />" +
+                   "</div>" +
+                   "<div class='row' onclick=\"setmehere(event)\">" +
+                       "<div class='row' onclick=\"setmehere(event)\">" + q.QuestionBody + "</div>" +
+                       "<ul style='width: 100%;' onclick=\"setmehere(event)\">";
+        foreach (var a in q.Answers)
+        {
+            res += "<li onclick=\"setmehere(event)\"><div onclick=\"setmehere(event)\">" + a.AnswerBody + "</div></li>";
+        }
+        res += "</ul>" +
+            "</div>" +
+        "</div>";
+        return res;
+    }
+    public string eqtohtml(ExamQuestion eq)
     {
         string res = "";
         res += "<div id=\"" + eq.Question.Id + "\" class=\"pnl\" style=\"display: flex; justify-content: space-between; align-items: center;\" onclick=\"setmehere(event)\" >" +
@@ -40,14 +60,14 @@
                         "<img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
                         "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeGrop2here(event);' />" +
                     "</div>";
-                    foreach (var eq in gq.Questions) {
-                        res += qtohtml(eq);
-                    }
-                    res +="<div>" +
-                            "<span>Degree</span>" +
-                            "<input onchange=\"setmehere(event);saveAddgrop2f(event)\" type=\"number\" onclick=\"lastd=event.target.value;setmehere(event)\" value=\"" + gq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
-                          "</div>" +
-               "</div>";
+        foreach (var eq in gq.Questions) {
+            res += qtohtml(eq);
+        }
+        res +="<div>" +
+                "<span>Degree</span>" +
+                "<input onchange=\"setmehere(event);saveAddgrop2f(event)\" type=\"number\" onclick=\"lastd=event.target.value;setmehere(event)\" value=\"" + gq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
+              "</div>" +
+   "</div>";
         return res;
     }
     public string suptohtml(SubQuestion sq)
@@ -71,14 +91,14 @@
                       "<span onclick = 'setmehere(event)' style = 'margin: 0 10px;width: 60px;' > Heading</ span>" +
                   "</div>" +
                   "<div class= 'row' onclick = 'setmehere(event)' >" +
-                      "<textarea onchange='saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
+                      "<textarea onchange='setmehere(event);saveAddSub2f(event)' onclick = 'setmehere(event)'>" +
                       sq.Heading +
                       "</textarea>" +
                   "</div>";
 
         foreach (ExamQuestion eq in sq.Questions)
         {
-            res += qtohtml(eq);
+            res += eqtohtml(eq);
         }
         foreach (GroupQuestion gq in sq.GroupQuestions)
         {
@@ -108,19 +128,28 @@
     <div id="examtop" class="move" unselectable="on" style="position: absolute;overflow-y:hidden;">exam</div>
     <div id="questiontop" class="move" unselectable="on" style="position: absolute; overflow-y: hidden;">questions</div>
     <div id="exambody" onclick="setmehere(event);" style="position: absolute;border: solid 2px white">
-        @foreach (ExamQuestion eq in ViewBag.exambody)
+        @if (ViewBag.exambody != null)
         {
-            @Html.Raw(@qtohtml(eq));
+            foreach (ExamQuestion eq in ViewBag.exambody)
+            {
+                @Html.Raw(@eqtohtml(eq));
+            }
         }
-        @foreach (GroupQuestion q in ViewBag.myexamGroupQuestions)
+        @if (ViewBag.myexamGroupQuestions != null)
         {
-            @Html.Raw(@groptohtml(q));
+            foreach (GroupQuestion q in ViewBag.myexamGroupQuestions)
+            {
+                @Html.Raw(@groptohtml(q));
+            }
         }
-        @foreach (SubQuestion q in ViewBag.myexamSubQuestions)
+        @if (ViewBag.myexamSubQuestions != null)
         {
-            @Html.Raw(@suptohtml(q));
+            foreach (SubQuestion q in ViewBag.myexamSubQuestions)
+            {
+                @Html.Raw(@suptohtml(q));
+            }
         }
-    </div>
+        </div>
     <div id="questionbody" style="position: absolute;">
         @foreach (Question q in ViewBag.questionbody)
         {
@@ -342,7 +371,7 @@
             <span onclick = "setmehere(event)" style = "margin: 0 10px;width: 100%;" > Heading </span >
         </div>
         <div class= "row" onclick = "setmehere(event)" >
-            <textarea onchange=" saveAddSub2f(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
+            <textarea onchange="setmehere(event);saveAddSub2f(event)" onclick = "setmehere(event)" style = "max-width: none;" ></textarea>
         </div>
     </div>`;
         }
@@ -462,9 +491,6 @@
                     sub: here.id,
                     q: q.id
                 },
-                success: function (data) {
-                    q.id = data;
-                },
             });
             deg.innerText = deg.innerText.substr(0, 4) + (((Number)(deg.innerText.substr(4, deg.innerText.length))) - (Number)(n.value))
         }
@@ -479,9 +505,6 @@
                     __RequestVerificationToken: token,
                     q: q.id,
                     e: '@Model.Id'
-                },
-                success: function (data) {
-                    q.id = data;
                 },
             });
         }

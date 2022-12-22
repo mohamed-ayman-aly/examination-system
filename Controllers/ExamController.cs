@@ -153,13 +153,13 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
-        
-        
+
+
+
+
 
 
         /*mohsening*/
-
-
         [HttpPost, ValidateAntiForgeryToken]
         public string Guid()
         {
@@ -219,40 +219,6 @@ namespace examination_system.Controllers
                 newsub.Heading = head;
                 DB.SaveChanges();
             }
-        }
-        [HttpPost, ValidateAntiForgeryToken]
-        public string AddQuestion2Exam(string e, string q, int deg)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            if (myexam.Exambody().Contains(myquestion))
-            {
-                var eq = myexam.Questions.FirstOrDefault(xe => xe.Question.Id == myquestion.Id);
-                eq.Degree = deg;
-                DB.SaveChanges();
-                return myquestion.Id.ToString();
-            }
-            var Id = System.Guid.NewGuid();
-            var neweq = new ExamQuestion { Id = Id, Degree = deg, Exam = myexam, Question = myquestion };
-            DB.ExamQuestions.Add(neweq);
-            DB.SaveChanges();
-            myexam.Questions.Add(neweq);
-            DB.SaveChanges();
-            return myquestion.Id.ToString();
-        }
-        [HttpPost, ValidateAntiForgeryToken]
-        public void RemoveQuestion2Exam(string e, string q)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
-            var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Question.Id.ToString() == q);
-            DB.ExamQuestions.Remove(myquestion);
-            DB.SaveChanges();
         }
         [HttpPost, ValidateAntiForgeryToken]
         public string AddQuestion2Sub(string sub, string q, int deg)
@@ -382,6 +348,43 @@ namespace examination_system.Controllers
             if (mygrop != null)
             {
                 mysub.GroupQuestions.Remove(mygrop);
+                DB.SaveChanges();
+            }
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public string AddQuestion2Exam(string e, string q, int deg)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            if (myexam.Exambody().Contains(myquestion))
+            {
+                var eq = myexam.Questions.FirstOrDefault(xe => xe.Question.Id == myquestion.Id);
+                eq.Degree = deg;
+                DB.SaveChanges();
+                return myquestion.Id.ToString();
+            }
+            var Id = System.Guid.NewGuid();
+            var neweq = new ExamQuestion { Id = Id, Degree = deg, Exam = myexam, Question = myquestion };
+            DB.ExamQuestions.Add(neweq);
+            DB.SaveChanges();
+            myexam.Questions.Add(neweq);
+            DB.SaveChanges();
+            return myquestion.Id.ToString();
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public void RemoveQuestion2Exam(string e, string q)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
+            var myquestion = myexam.Questions.FirstOrDefault(ex => ex.Question.Id.ToString() == q);
+            if (myquestion != null)
+            {
+                DB.ExamQuestions.Remove(myquestion);
                 DB.SaveChanges();
             }
         }
