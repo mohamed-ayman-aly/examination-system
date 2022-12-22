@@ -62,5 +62,24 @@ namespace examination_system.Models
             }
             return count;
         }
+        public List<Answer> CorrectAnswers()
+        {
+            List<Answer> all = new List<Answer>();
+            foreach (var q in Questions)
+                all.Add(q.Question.CorrectAnswer);
+            foreach (var GroupQuestion in GroupQuestions)
+                foreach (var q in GroupQuestion.Questions)
+                    all.Add(q.CorrectAnswer);
+            if (SubQuestions == null || SubQuestions.Count == 0)
+                return all;
+            else
+            {
+                foreach (var Question in SubQuestions)
+                {
+                    all.AddRange(Question.CorrectAnswers());
+                }
+                return all;
+            }
+        }
     }
 }

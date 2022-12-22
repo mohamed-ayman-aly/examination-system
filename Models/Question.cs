@@ -16,7 +16,8 @@ namespace examination_system.Models
         [Required(ErrorMessage = "Question Body is Required"),AllowHtml]
         public string QuestionBody { get; set; }
         public virtual List<Answer> Answers { get; set; }
-        public virtual List<ExamQuestion> Exams { get; set; }
+        public virtual List<ExamQuestion> ExamQuestions { get; set; }
+        public virtual List<GroupQuestion> GroupQuestion { get; set; }
         public virtual Answer CorrectAnswer { get; set; }
         public virtual Class Class { get; set; }
 

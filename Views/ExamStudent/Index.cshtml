@@ -13,9 +13,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Studentanswer> Studentanswers = ViewBag.ansers;
     List<Answer> answers = new List<Answer>();
-    foreach (var sa in Studentanswers)
+    List<Question> Questionsingrops = ViewBag.Questionsingrops;
+    if (Studentanswers != null)
     {
-        answers.Add(sa.Answer);
+        foreach (var sa in Studentanswers)
+        {
+            answers.Add(sa.Answer);
+        }
     }
 }
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
@@ -23,61 +27,91 @@
     @Html.AntiForgeryToken()
 }
 @functions{
-    public string qtohtml(ExamQuestion eq, int n, List<Answer> answers)
-    {
-        string res = "";
-        res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
-                    "<div class='row'>" +
-                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
-                    "</div>" +
-                    "<h3>" + n + ") " + eq.Question.QuestionBody + "</h3>" +
-                    "<h3 class=\"Degree\"> deg:" + eq.Degree + "</h3>" +
-                    "<div id=\"" + eq.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
-        foreach (var a in eq.Question.Answers.OrderBy(a => a.AnswerBody))
-        {
-            res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
-                      "<input onchange=\"issaved('" + eq.Question.Id + "','" + a.Id + "')\" " + (answers.Contains(a) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
-                      "<span style=\"font-size: 24px;\">" + a.AnswerBody + "</span>" +
-                  "</div>";
+            public string qtohtml(Question q, int n, List<Answer> answers, int d, Guid id)
+            {
+                string res = "";
+                res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
+                            "<div class='row'>" +
+                                "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                            "</div>" +
+                            "<h3>" + n + ") " + q.QuestionBody + "</h3>" +
+                             "<h3 class=\"Degree\"> deg:" + d + "</h3>" +
+                            "<div id=\"" + q.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
+                foreach (var a in q.Answers.OrderBy(a => a.AnswerBody))
+                {
+                    res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                              "<input onchange=\"issaved('" + id.ToString() + "','" + a.Id + "')\" " + (answers.Contains(a) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
+                              "<span style=\"font-size: 24px;\">" + a.AnswerBody + "</span>" +
+                          "</div>";
+                }
+                res += "</form></div>" +
+           "</div>";
+                return res;
+            }
+            public string eqtohtml(ExamQuestion eq, int n, List<Answer> answers)
+            {
+                string res = "";
+                res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
+                            "<div class='row'>" +
+                                "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                            "</div>" +
+                            "<h3>" + n + ") " + eq.Question.QuestionBody + "</h3>" +
+                            "<h3 class=\"Degree\"> deg:" + eq.Degree + "</h3>" +
+                            "<div id=\"" + eq.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
+                foreach (var a in eq.Question.Answers.OrderBy(a => a.AnswerBody))
+                {
+                    res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                              "<input onchange=\"issaved('" + eq.Id + "','" + a.Id + "')\" " + (answers.Contains(a) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
+                              "<span style=\"font-size: 24px;\">" + a.AnswerBody + "</span>" +
+                          "</div>";
+                }
+                res += "</form></div>" +
+           "</div>";
+                return res;
+            }
+            public string groptohtml(GroupQuestion gq, int n, List<Answer> answers, List<Question> Questionsingrops)
+            {
+                foreach (var gqq in Questionsingrops)
+                {
+                    if (gq.Questions.Contains(gqq))
+                    {
+                        return qtohtml(gqq, n, answers, gq.Degree, gq.Id);
+                    }
+                }
+                return "";
+            }
+            public string suptohtml(SubQuestion sq, int n, List<Answer> answers, List<Question> Questionsingrops)
+            {
+                string res = "";
+                res += "<div id='" + sq.Id + "' class='sub'>" +
+                            "<div class='row'>" +
+                                "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                            "</div>" +
+                            "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
+                            "<div class= 'row'>" +
+                                "<h3> Heading</h3>" +
+                            "</div>" +
+                            "<div class= 'row' >" +
+                                "<h3>" + sq.Heading + "</h3>" +
+                            "</div>";
+                foreach (ExamQuestion eq in sq.Questions)
+                {
+                    res += eqtohtml(eq, n, answers);
+                    n++;
+                }
+                foreach (GroupQuestion gq in sq.GroupQuestions)
+                {
+                    res += groptohtml(gq, n, answers, Questionsingrops);
+                    n++;
+                }
+                foreach (SubQuestion ssq in sq.SubQuestions)
+                {
+                    res += suptohtml(ssq, n, answers, Questionsingrops);
+                }
+                res += "</div>";
+                return res;
+            }
         }
-        res += "</form></div>" +
-   "</div>";
-        return res;
-    }
-    public string groptohtml(GroupQuestion gq, int n, List<Answer> answers)
-    { return ""; }
-    public string suptohtml(SubQuestion sq, int n, List<Answer> answers)
-    {
-        string res = "";
-        res += "<div id='" + sq.Id + "' class='sub'>" +
-                    "<div class='row'>" +
-                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
-                    "</div>" +
-                    "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
-                    "<div class= 'row'>" +
-                        "<h3> Heading</h3>" +
-                    "</div>" +
-                    "<div class= 'row' >" +
-                        "<h3>" +sq.Heading +"</h3>" +
-                    "</div>";
-        foreach (ExamQuestion eq in sq.Questions)
-        {
-            res += qtohtml(eq, n, answers);
-            n++;
-        }
-        foreach (GroupQuestion gq in sq.GroupQuestions)
-        {
-            res += groptohtml(gq, n, answers);
-            n++;
-        }
-        foreach (SubQuestion ssq in sq.SubQuestions)
-        {
-            res += suptohtml(ssq, n, answers);
-        }
-        res += "</div>";
-        return res;
-    }
-}
 <div class="all">
     <div>
         @if (Model == null)
@@ -97,7 +131,7 @@
             <div class="time">
                 @{
                     var t = Model.Date + TimeSpan.FromMinutes(Model.Duration) - DateTime.Now;
-                }
+    }
                 <h2 class="Days">@t.Days </h2><h2>D</h2>
                 <h2 class="Hours">@t.Hours </h2><h2>H</h2>
                 <h2 class="Minutes">@t.Minutes </h2><h2>M</h2>
@@ -115,19 +149,19 @@
                 </button>
             </div>
             foreach (ExamQuestion q in Model.Questions)
-            {
-                @Html.Raw(@qtohtml(q, n, answers));
-                n++;
-            }
-            foreach (GroupQuestion gq in Model.GroupQuestions)
-            {
-                @Html.Raw(@groptohtml(gq, n, answers));
-                n++;
-            }
-            foreach (SubQuestion sq in Model.SubQuestions)
-            {
-                @Html.Raw(@suptohtml(sq, n, answers));
-            }
+    {
+        @Html.Raw(@eqtohtml(q, n, answers));
+        n++;
+    }
+    foreach (GroupQuestion gq in Model.GroupQuestions)
+    {
+        @Html.Raw(@groptohtml(gq, n, answers, Questionsingrops));
+        n++;
+    }
+    foreach (SubQuestion sq in Model.SubQuestions)
+    {
+        @Html.Raw(@suptohtml(sq, n, answers, Questionsingrops));
+    }
         }
     </div>
 </div>
@@ -206,12 +240,12 @@
     }
 </style>
 @section Scripts{
-    @Scripts.Render("~/bundles/jqueryval")
-<script>
-    var form = $('#__AjaxAntiForgeryForm');
-    var token = $('input[name="__RequestVerificationToken"]', form).val();
-     function Submit() {
-        if (confirm('Are you sure you want to Submit Exam'))
+        @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        function Submit() {
+            if (confirm('Are you sure you want to Submit Exam'))
             $.ajax({
                 url: '/ExamStudent/Submit?Id=' + '@(ViewBag.ExamStudentId)',
                 type: 'POST',

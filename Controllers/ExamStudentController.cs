@@ -58,21 +58,46 @@ namespace examination_system.Controllers
             DateTime examend = myExamStudent.Exam.Date.AddMinutes(myExamStudent.Exam.Duration);
             if (examend > DateTime.Now&&!myExamStudent.Submit)
             {
-                var Answers = myExamStudent.Answers;
-                foreach (var Studentanswer in Answers.ToList())
+                var Answers = myExamStudent.Answers.ToList();
+                foreach (var Studentanswer in Answers)
                 {
-                    if (Studentanswer.Answer.Question.Id.ToString() == q)
+                    var ExamQuestion = Studentanswer.ExamQuestion;
+                    if (ExamQuestion!=null&& ExamQuestion.Id.ToString()==q)
+                    {
+                        Studentanswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
+                        DB.SaveChanges();
+                        return true;
+                    }
+                    var GroupQuestion = Studentanswer.GroupQuestion;
+                    if (GroupQuestion != null && GroupQuestion.Id.ToString() == q)
                     {
                         Studentanswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
                         DB.SaveChanges();
                         return true;
                     }
                 }
-                Answers.Add(new Studentanswer {
-                    Answer=DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans),
-                    ExamStudent=myExamStudent,
-                    Id=Guid.NewGuid()
-                });
+                var eq = DB.ExamQuestions.FirstOrDefault(x=>x.Id.ToString()==q);
+                if (eq == null)
+                {
+                    myExamStudent.Answers.Add(new Studentanswer
+                    {
+                        Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans),
+                        ExamStudent = myExamStudent,
+                        GroupQuestion = DB.GroupQuestions.FirstOrDefault(gq=>gq.Id.ToString()==q),
+                        Id = Guid.NewGuid()
+                    });
+                }
+                else
+                {
+                    myExamStudent.Answers.Add(new Studentanswer
+                    {
+                        Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans),
+                        ExamStudent = myExamStudent,
+                        ExamQuestion = eq,
+                        Id = Guid.NewGuid()
+                    });
+                }
+                
                 DB.SaveChanges();
                 return true;
             }
@@ -84,10 +109,30 @@ namespace examination_system.Controllers
         public bool Submit(string id)
         {
             DB = new DB();
-            var myexam = DB.ExamStudent.FirstOrDefault(ex => ex.Id.ToString() == id);
-            if (myexam.Submit == false)
+            var myExamStudent = DB.ExamStudent.FirstOrDefault(ex => ex.Id.ToString() == id);
+            var myExam = myExamStudent.Exam;
+            int Degree = 0;
+            if (myExamStudent.Submit == false)
             {
-                myexam.Submit = true;
+                myExamStudent.Submit = true;
+                var studentanswers=myExamStudent.Answers;
+
+                foreach (var ca in myExam.CorrectAnswers())
+                {
+                    foreach (var sa in studentanswers) {
+                        if (sa.Answer.Id == ca.Id) {
+                            var eq = sa.ExamQuestion;
+                            if (eq == null)
+                            {
+                                Degree += sa.GroupQuestion.Degree;
+                            }
+                            else {
+                                Degree += eq.Degree;
+                            }
+                        }
+                    }
+                }
+                myExamStudent.Degree = Degree;
                 DB.SaveChanges();
                 return true;
             }

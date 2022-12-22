@@ -15,6 +15,7 @@ namespace examination_system.Models
         [InverseProperty("ExamStudent")]
         public virtual Exam Exam { get; set; }
         public bool Submit { get; set; }
+        public int Degree { get; set; }
         public virtual AspNetUsers Student { get; set; }
         public virtual List<Studentanswer> Answers { get; set; }
         public virtual List<Question> Questionsingrops { get; set; }

@@ -14,6 +14,8 @@ namespace examination_system.Models
         public Guid Id { get; set; }
         public virtual Answer Answer { get; set; }
         public virtual ExamStudent ExamStudent { get; set; }
+        public virtual ExamQuestion ExamQuestion { get; set; }
+        public virtual GroupQuestion GroupQuestion { get; set; }
 
 
     }

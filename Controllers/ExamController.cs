@@ -128,12 +128,11 @@ namespace examination_system.Controllers
             return false;
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public void AddQuestion2Grop(string e, string grop, string q)
+        public void AddQuestion2Grop(string grop, string q)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.FirstOrDefault(ex => ex.Id.ToString() == e);
             var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
             var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
             mygrop.Questions.Add( myquestion ); ;
@@ -164,15 +163,6 @@ namespace examination_system.Controllers
         public string Guid()
         {
             return System.Guid.NewGuid().ToString();
-        }
-        [HttpPost, ValidateAntiForgeryToken]
-        public string Getqid4meq(string eq)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myeq=DB.ExamQuestions.FirstOrDefault(ex => ex.Id.ToString() == eq);
-            return myeq.Question.Id.ToString();
         }
         [HttpPost, ValidateAntiForgeryToken]
         public void AddSub2Exam(string e, string id, string head)
@@ -221,7 +211,7 @@ namespace examination_system.Controllers
             }
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public string AddQuestion2Sub(string sub, string q, int deg)
+        public void AddQuestion2Sub(string sub, string q, int deg)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
@@ -233,7 +223,7 @@ namespace examination_system.Controllers
                 var eq = mysub.Questions.FirstOrDefault(x => x.Question.Id == myquestion.Id);
                 eq.Degree = deg;
                 DB.SaveChanges();
-                return myquestion.Id.ToString();
+                return;
             }
             var id = System.Guid.NewGuid();
             var neweq = new ExamQuestion { Id = id, Degree = deg, Question = myquestion };
@@ -241,7 +231,7 @@ namespace examination_system.Controllers
             DB.SaveChanges();
             mysub.Questions.Add(neweq);
             DB.SaveChanges();
-            return myquestion.Id.ToString();
+            return;
         }
         [HttpPost, ValidateAntiForgeryToken]
         public void RemoveQuestion2Sub(string sub, string q)
@@ -352,7 +342,7 @@ namespace examination_system.Controllers
             }
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public string AddQuestion2Exam(string e, string q, int deg)
+        public void AddQuestion2Exam(string e, string q, int deg)
         {
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
@@ -364,7 +354,7 @@ namespace examination_system.Controllers
                 var eq = myexam.Questions.FirstOrDefault(xe => xe.Question.Id == myquestion.Id);
                 eq.Degree = deg;
                 DB.SaveChanges();
-                return myquestion.Id.ToString();
+                return;
             }
             var Id = System.Guid.NewGuid();
             var neweq = new ExamQuestion { Id = Id, Degree = deg, Exam = myexam, Question = myquestion };
@@ -372,7 +362,7 @@ namespace examination_system.Controllers
             DB.SaveChanges();
             myexam.Questions.Add(neweq);
             DB.SaveChanges();
-            return myquestion.Id.ToString();
+            return;
         }
         [HttpPost, ValidateAntiForgeryToken]
         public void RemoveQuestion2Exam(string e, string q)

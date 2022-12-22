@@ -55,19 +55,20 @@
     public string groptohtml(GroupQuestion gq)
     {
         string res = "";
-        res += "<div id='" + gq.Id + "' class='sub' onclick ='setmehere(event)' >" +
+        res += "<div id='" + gq.Id + "' class='sub group' onclick ='setmehere(event)' >" +
                     "<div class= \"row\" onclick = \"setmehere(event)\" >" +
                         "<img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />" +
                         "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeGrop2here(event);' />" +
+                    "</div>"+
+                    "<div>" +
+                        "<span>Degree</span>" +
+                        "<input onchange=\"setmehere(event);saveAddgrop2f(event)\" type=\"number\" onclick=\"lastd=event.target.value;setmehere(event)\" value=\"" + gq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
                     "</div>";
-        foreach (var eq in gq.Questions) {
-            res += qtohtml(eq);
-        }
-        res +="<div>" +
-                "<span>Degree</span>" +
-                "<input onchange=\"setmehere(event);saveAddgrop2f(event)\" type=\"number\" onclick=\"lastd=event.target.value;setmehere(event)\" value=\"" + gq.Degree + "\" style=\"max-width: none;color:#00c0ff !important; width: 82% !important;\" />" +
-              "</div>" +
-   "</div>";
+                    foreach (var eq in gq.Questions)
+                    {
+                        res += qtohtml(eq);
+                    }
+        res+="</div>";
         return res;
     }
     public string suptohtml(SubQuestion sq)
@@ -312,7 +313,7 @@
     function Submit() {
         if (confirm('Are you sure you want to Submit Exam'))
             $.ajax({
-                url: '/Exam/Submit?Id=' + '@(Model.Id)',
+                url: '/Exam/Submit',
                 type: 'POST',
                 data: { __RequestVerificationToken: token, Id: '@(Model.Id)' },
                 success: function (data) {
@@ -426,7 +427,15 @@
         div.appendChild(input);
         q.style.border = "black solid 2px";
         q.style.minwidth = "0";
-        q.appendChild(div);
+        if (here.classList.contains("group")) {
+            $.ajax({
+                url: '/Exam/AddQuestion2Grop',
+                type: 'POST',
+                data: { __RequestVerificationToken: token, grop: here.id, q:q.id },
+            });
+        } else {
+            q.appendChild(div);
+        }
         here.appendChild(q);
     };
     function saveAddq2f(event) {
@@ -437,9 +446,6 @@
                     url: '/Exam/AddQuestion2Sub?e=' + '@Model.Id' + '&sub=' + here.id + '&q=' + q.id + '&deg=' + event.target.value,
                     type: 'POST',
                     data: { __RequestVerificationToken: token, e: '@Model.Id', sub: here.id, q: q.id, deg: event.target.value },
-                    success: function (data) {
-                        q.id = data;
-                    },
                 });
                 var deg = here.children[0].children[0];
                 var c = 0;
@@ -448,24 +454,11 @@
                     c += (Number)(is[i].value);
                 deg.innerText ='deg:'+c;
             }
-            if (here.classList.contains("grup")) {
-                $.ajax({
-                    url: '/Exam/AddQuestion2?e=' + '@Model.Id' + '&q=' + q.id + '&deg=' + event.target.value,
-                    type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', q: q.id, deg: event.target.value },
-                    success: function (data) {
-                        q.id = data;
-                    },
-                });
-            }
             if (here.id == "exambody") {
                 $.ajax({
-                    url: '/Exam/AddQuestion2Exam?e=' + '@Model.Id' + '&q=' + q.id + '&deg=' + event.target.value,
+                    url: '/Exam/AddQuestion2Exam',
                     type: 'POST',
                     data: { __RequestVerificationToken: token, e: '@Model.Id', q: q.id, deg: event.target.value },
-                    success: function (data) {
-                        q.id = data;
-                    },
                 });
             }
         }
@@ -568,7 +561,7 @@
         parent.removeChild(sub);
         here = parent;
     };
-    var grop = `<div class='sub' onclick ='setmehere(event)' >
+    var grop = `<div class='sub group' onclick ='setmehere(event)' >
                     <div class= "row" onclick = "setmehere(event)" >
                         <img class='minimg' src = '/Resources/minimize.svg' onclick ='setmehere(event);minimize(event);' />
                         <img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeGrop2here(event);' />
