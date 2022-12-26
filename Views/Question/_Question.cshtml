@@ -30,7 +30,7 @@
             @{
                 try
                 {
-                    @Model.Exams.Count()
+                    @(Model.GroupQuestion.Count+Model.ExamQuestions.Count)
                 }
                 catch
                 {
