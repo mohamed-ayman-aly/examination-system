@@ -185,7 +185,7 @@
                 sub += sq.Exambody().Count();
             }
             int allq = q + g + sub;
-            for (int i = 0; i < allq; i++)
+            for (int i = 0; i < allq;)
             {
                 int type = random.Next(3);
                 if (type == 0 && Model.Questions.Count != 0)
@@ -194,6 +194,7 @@
                     @Html.Raw(@eqtohtml(Model.Questions[r], n, answers));
                     n++;
                     Model.Questions.RemoveAt(r);
+                    i++;
                 }
                 if (type == 1 && Model.GroupQuestions.Count != 0)
                 {
@@ -201,12 +202,14 @@
                     @Html.Raw(@groptohtml(Model.GroupQuestions[r], n, answers, Questionsingrops));
                     n++;
                     Model.GroupQuestions.RemoveAt(r);
+                    i++;
                 }
                 if (type == 2 && Model.SubQuestions.Count != 0)
                 {
                     int r = random.Next(Model.SubQuestions.Count);
                     @Html.Raw(@suptohtml(Model.SubQuestions[r], n, answers, Questionsingrops));
                     Model.SubQuestions.RemoveAt(r);
+                    i++;
                 }
             }
         }

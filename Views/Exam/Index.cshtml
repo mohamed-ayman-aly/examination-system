@@ -53,7 +53,7 @@
     </div>
     <div id="all">
         <div style="width:100%;justify-content:center;">
-            Unsubmited<hr style="width: 72%; display: inline-block; margin-bottom: 5px;"/>
+            <hr />Unsubmited
         </div>
         @foreach (var exam in Model)
         {
@@ -63,13 +63,13 @@
             }
         }
         <div style="width: 100%;justify-content:center;">
-            Submited<hr style="width: 72%; display: inline-block; margin-bottom: 5px; "/>
+            <hr />Submited
         </div>
         @foreach (var exam in Model)
         {
             if (exam != null && exam.Submit == true)
             {
-                @Html.Partial("_exam", exam, ViewData);
+                @Html.Partial("_submitedexam", exam, ViewData);
             }
         }
         @if (User.IsInRole("professor") || User.IsInRole("superadmin"))

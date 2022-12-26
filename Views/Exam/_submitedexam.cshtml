@@ -6,10 +6,6 @@
 <div class="pnl col-sm-3">
     <div id="@Model.Id" style="border-radius: 10px; background-color: #00000075; position: absolute; right: 10px; top: 0px; display: none;">
         <div onclick="dlt('@Model.Id')" class="pointer pnlpnl" style="color:red;height:22px"> x </div>
-        <a href="/Exam/Edit?Id=@Model.Id"></a>
-        <a href="/Exam/EditDetails?Id=@Model.Id"></a>
-        <div onclick="document.getElementById('@Model.Id').children[1].click()" class="pointer pnlpnl" style="height:22px"> Edit </div>
-        <div onclick="document.getElementById('@Model.Id').children[2].click()" class="pointer pnlpnl" style="height: 22px; font-size: 1px;"> Edit Details </div>
         <div onclick="deleteexam('@Model.Id')" class="pointer pnlpnl" style="height:22px"> Delete </div>
     </div>
     <img src="/Resources/Account/3verticaldots.svg" class="dots pointer" onclick="filldots('@Model.Id')" />
@@ -33,14 +29,14 @@
                 {@Model.Questions.Count}
             catch
             {<span> 0</span>} }
-    </li>
-    <li>
-        @c
-    </li>
-</ol>
-<ol>
-    <li>Questions</li>
-    <li>Students</li>
-</ol>
-<button>view details</button>
+        </li>
+        <li>
+            @c
+        </li>
+    </ol>
+    <ol>
+        <li>Questions</li>
+        <li>Students</li>
+    </ol>
+    <button>view details</button>
 </div>
