@@ -76,9 +76,12 @@ namespace examination_system.Controllers
             DB = new DB();
             string userid = User.Identity.GetUserId();
             var aspNetUsers = DB.Users.FirstOrDefault(u => u.Id == userid);
-            var myClass = aspNetUsers.Classes.FirstOrDefault(c=>c.Id==new Guid(Id));
-            aspNetUsers.Classes.Remove(myClass);
-            DB.SaveChanges();
+            var myClass = aspNetUsers.Classes.FirstOrDefault(c => c.Id == new Guid(Id));
+            var exams = DB.ExamStudent.FirstOrDefault(es => es.Student.Id == userid && es.Exam.Class.Id == new Guid(Id));
+            if (exams == null) {
+                aspNetUsers.Classes.Remove(myClass);
+                DB.SaveChanges();
+            }
             return RedirectToAction("Register");
         }
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "student,superadmin")]
