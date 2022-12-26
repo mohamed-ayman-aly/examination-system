@@ -2,6 +2,7 @@
 @model Exam
 @{
     int n = 1;
+    Random random = new Random();
     if (Model != null)
     {
         ViewBag.Title = Model.Name;
@@ -27,91 +28,118 @@
     @Html.AntiForgeryToken()
 }
 @functions{
-            public string qtohtml(Question q, int n, List<Answer> answers, int d, Guid id)
+    public string qtohtml(Question q, int n, List<Answer> answers, int d, Guid id)
+    {
+        Random random = new Random();
+        string res = "";
+        res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
+                    "<div class='row'>" +
+                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                    "</div>" +
+                    "<h3>" + n + ") " + q.QuestionBody + "</h3>" +
+                     "<h3 class=\"Degree\"> deg:" + d + "</h3>" +
+                    "<div id=\"" + q.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
+        var ans=q.Answers.OrderBy(a => a.AnswerBody).ToList();
+        for (int i = 0; i < ans.Count;)
+        {
+            int r = random.Next(ans.Count);
+            res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                      "<input onchange=\"issaved('" + id.ToString() + "','" + ans[r].Id + "')\" " + (answers.Contains(ans[r]) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + ans[r].Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
+                      "<span style=\"font-size: 24px;\">" + ans[r].AnswerBody + "</span>" +
+                  "</div>";
+            ans.RemoveAt(r);
+        }
+        res += "</form></div>" +
+   "</div>";
+        return res;
+    }
+    public string eqtohtml(ExamQuestion eq, int n, List<Answer> answers)
+    {
+        Random random = new Random();
+        string res = "";
+        res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
+                    "<div class='row'>" +
+                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                    "</div>" +
+                    "<h3>" + n + ") " + eq.Question.QuestionBody + "</h3>" +
+                    "<h3 class=\"Degree\"> deg:" + eq.Degree + "</h3>" +
+                    "<div id=\"" + eq.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
+        var ans = eq.Question.Answers.OrderBy(a => a.AnswerBody).ToList();
+        for (int i = 0; i < ans.Count;)
+        {
+            int r = random.Next(ans.Count);
+            res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
+                      "<input onchange=\"issaved('" + eq.Id + "','" + ans[r].Id + "')\" " + (answers.Contains(ans[r]) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + ans[r].Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
+                      "<span style=\"font-size: 24px;\">" + ans[r].AnswerBody + "</span>" +
+                  "</div>";
+            ans.RemoveAt(r);
+        }
+        res += "</form></div>" +
+"</div>";
+        return res;
+    }
+    public string groptohtml(GroupQuestion gq, int n, List<Answer> answers, List<Question> Questionsingrops)
+    {
+        foreach (var gqq in Questionsingrops)
+        {
+            if (gq.Questions.Contains(gqq))
             {
-                string res = "";
-                res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
-                            "<div class='row'>" +
-                                "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
-                            "</div>" +
-                            "<h3>" + n + ") " + q.QuestionBody + "</h3>" +
-                             "<h3 class=\"Degree\"> deg:" + d + "</h3>" +
-                            "<div id=\"" + q.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
-                foreach (var a in q.Answers.OrderBy(a => a.AnswerBody))
-                {
-                    res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
-                              "<input onchange=\"issaved('" + id.ToString() + "','" + a.Id + "')\" " + (answers.Contains(a) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
-                              "<span style=\"font-size: 24px;\">" + a.AnswerBody + "</span>" +
-                          "</div>";
-                }
-                res += "</form></div>" +
-           "</div>";
-                return res;
-            }
-            public string eqtohtml(ExamQuestion eq, int n, List<Answer> answers)
-            {
-                string res = "";
-                res += "<div class=\"pnl\" style=\"min-width: 98%;\">" +
-                            "<div class='row'>" +
-                                "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
-                            "</div>" +
-                            "<h3>" + n + ") " + eq.Question.QuestionBody + "</h3>" +
-                            "<h3 class=\"Degree\"> deg:" + eq.Degree + "</h3>" +
-                            "<div id=\"" + eq.Id + "\" style=\"width:100%\"><form style=\"width: inherit;\">";
-                foreach (var a in eq.Question.Answers.OrderBy(a => a.AnswerBody))
-                {
-                    res += "<div style=\"display: flex;width: inherit;flex-direction: row;align-items: stretch;\">" +
-                              "<input onchange=\"issaved('" + eq.Id + "','" + a.Id + "')\" " + (answers.Contains(a) ? "checked" : "") + "  id=\"ans\" name=\"ans\" type=\"radio\" value=\"" + a.Id + "\" style=\"width: 4% !important;height: 4% !important;\">" +
-                              "<span style=\"font-size: 24px;\">" + a.AnswerBody + "</span>" +
-                          "</div>";
-                }
-                res += "</form></div>" +
-           "</div>";
-                return res;
-            }
-            public string groptohtml(GroupQuestion gq, int n, List<Answer> answers, List<Question> Questionsingrops)
-            {
-                foreach (var gqq in Questionsingrops)
-                {
-                    if (gq.Questions.Contains(gqq))
-                    {
-                        return qtohtml(gqq, n, answers, gq.Degree, gq.Id);
-                    }
-                }
-                return "";
-            }
-            public string suptohtml(SubQuestion sq, int n, List<Answer> answers, List<Question> Questionsingrops)
-            {
-                string res = "";
-                res += "<div id='" + sq.Id + "' class='sub'>" +
-                            "<div class='row'>" +
-                                "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
-                            "</div>" +
-                            "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
-                            "<div class= 'row'>" +
-                                "<h3> Heading</h3>" +
-                            "</div>" +
-                            "<div class= 'row' >" +
-                                "<h3>" + sq.Heading + "</h3>" +
-                            "</div>";
-                foreach (ExamQuestion eq in sq.Questions)
-                {
-                    res += eqtohtml(eq, n, answers);
-                    n++;
-                }
-                foreach (GroupQuestion gq in sq.GroupQuestions)
-                {
-                    res += groptohtml(gq, n, answers, Questionsingrops);
-                    n++;
-                }
-                foreach (SubQuestion ssq in sq.SubQuestions)
-                {
-                    res += suptohtml(ssq, n, answers, Questionsingrops);
-                }
-                res += "</div>";
-                return res;
+                return qtohtml(gqq, n, answers, gq.Degree, gq.Id);
             }
         }
+        return "";
+    }
+    public string suptohtml(SubQuestion sq, int n, List<Answer> answers, List<Question> Questionsingrops)
+    {
+        string res = "";
+        res += "<div id='" + sq.Id + "' class='sub'>" +
+                    "<div class='row'>" +
+                        "<img style='width: 27px;margin: 5px;' src = '/Resources/minimize.svg' onclick ='minimize(event);' />" +
+                    "</div>" +
+                    "<h3 class=\"Degree\"> deg:" + sq.Degree() + "</h3>" +
+                    "<div class= 'row'>" +
+                        "<h3> Heading</h3>" +
+                    "</div>" +
+                    "<div class= 'row' >" +
+                        "<h3>" + sq.Heading + "</h3>" +
+                    "</div>";
+        Random random = new Random();
+        int q = sq.Questions.Count;
+        int g = sq.GroupQuestions.Count;
+        int sub = 0;
+        foreach (SubQuestion inersq in sq.SubQuestions)
+        {
+            sub += inersq.Exambody().Count();
+        }
+        int allq = q + g + sub;
+        for (int i = 0; i < allq; i++)
+        {
+            int type = random.Next(3);
+            if (type == 0 && sq.Questions.Count != 0)
+            {
+                int r = random.Next(sq.Questions.Count);
+                res += eqtohtml(sq.Questions[r], n, answers);
+                n++;
+                sq.Questions.RemoveAt(r);
+            }
+            if (type == 1 && sq.GroupQuestions.Count != 0)
+            {
+                int r = random.Next(sq.GroupQuestions.Count);
+                res += groptohtml(sq.GroupQuestions[r], n, answers, Questionsingrops);
+                n++;
+                sq.GroupQuestions.RemoveAt(r);
+            }
+            if (type == 2 && sq.SubQuestions.Count != 0)
+            {
+                int r = random.Next(sq.SubQuestions.Count);
+                res += suptohtml(sq.SubQuestions[r], n, answers, Questionsingrops);
+                sq.SubQuestions.RemoveAt(r);
+            }
+        }
+        res += "</div>";
+        return res;
+    }
+}
 <div class="all">
     <div>
         @if (Model == null)
@@ -131,7 +159,7 @@
             <div class="time">
                 @{
                     var t = Model.Date + TimeSpan.FromMinutes(Model.Duration) - DateTime.Now;
-    }
+                }
                 <h2 class="Days">@t.Days </h2><h2>D</h2>
                 <h2 class="Hours">@t.Hours </h2><h2>H</h2>
                 <h2 class="Minutes">@t.Minutes </h2><h2>M</h2>
@@ -148,20 +176,39 @@
                     <img src="~/Resources/Exam/Submit.svg" />
                 </button>
             </div>
-            foreach (ExamQuestion q in Model.Questions)
-    {
-        @Html.Raw(@eqtohtml(q, n, answers));
-        n++;
-    }
-    foreach (GroupQuestion gq in Model.GroupQuestions)
-    {
-        @Html.Raw(@groptohtml(gq, n, answers, Questionsingrops));
-        n++;
-    }
-    foreach (SubQuestion sq in Model.SubQuestions)
-    {
-        @Html.Raw(@suptohtml(sq, n, answers, Questionsingrops));
-    }
+
+            int q = Model.Questions.Count;
+            int g = Model.GroupQuestions.Count;
+            int sub = 0;
+            foreach (SubQuestion sq in Model.SubQuestions)
+            {
+                sub += sq.Exambody().Count();
+            }
+            int allq = q + g + sub;
+            for (int i = 0; i < allq; i++)
+            {
+                int type = random.Next(3);
+                if (type == 0 && Model.Questions.Count != 0)
+                {
+                    int r = random.Next(Model.Questions.Count);
+                    @Html.Raw(@eqtohtml(Model.Questions[r], n, answers));
+                    n++;
+                    Model.Questions.RemoveAt(r);
+                }
+                if (type == 1 && Model.GroupQuestions.Count != 0)
+                {
+                    int r = random.Next(Model.GroupQuestions.Count);
+                    @Html.Raw(@groptohtml(Model.GroupQuestions[r], n, answers, Questionsingrops));
+                    n++;
+                    Model.GroupQuestions.RemoveAt(r);
+                }
+                if (type == 2 && Model.SubQuestions.Count != 0)
+                {
+                    int r = random.Next(Model.SubQuestions.Count);
+                    @Html.Raw(@suptohtml(Model.SubQuestions[r], n, answers, Questionsingrops));
+                    Model.SubQuestions.RemoveAt(r);
+                }
+            }
         }
     </div>
 </div>

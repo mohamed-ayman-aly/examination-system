@@ -59,9 +59,10 @@ namespace examination_system.Controllers
             string userid = User.Identity.GetUserId();
             var aspNetUsers = DB.Users.FirstOrDefault(u => u.Id == userid);
             var myClasses = aspNetUsers.Classes.ToList();
+            var myClassesn = aspNetUsers.Classes.Select(c => c.Name).ToList();
             var OtherClasses= DB.Classes.OrderBy(u => u.Name).ToList();
-            for (int i=0;i< OtherClasses.Count;i++) {
-                if (myClasses.Contains(OtherClasses[i])) {
+            for (int i=0;i< OtherClasses.Count();i++) {
+                if (myClassesn.Contains(OtherClasses[i].Name)) {
                     OtherClasses.RemoveAt(i);
                     i--;
                 }
@@ -69,6 +70,16 @@ namespace examination_system.Controllers
             ViewBag.myClasses = myClasses;
             ViewBag.OtherClasses = OtherClasses;
             return View();
+        }
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "student,superadmin")]
+        public ActionResult DeleteRegister(string Id) {
+            DB = new DB();
+            string userid = User.Identity.GetUserId();
+            var aspNetUsers = DB.Users.FirstOrDefault(u => u.Id == userid);
+            var myClass = aspNetUsers.Classes.FirstOrDefault(c=>c.Id==new Guid(Id));
+            aspNetUsers.Classes.Remove(myClass);
+            DB.SaveChanges();
+            return RedirectToAction("Register");
         }
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "student,superadmin")]
         public ActionResult Register(string Class)

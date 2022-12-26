@@ -104,7 +104,13 @@
                 $.ajax({
                     url: '/Class/Delete?Id=' + id,
                     data: { Id: id },
-                    success: function () { location.reload() },
+                    success: function (data) {
+                        if (data) {
+                            location.reload()
+                        } else {
+                            alert("you can't delete exam")
+                        }
+                    },
                 });
         }
         function dlt(id) {

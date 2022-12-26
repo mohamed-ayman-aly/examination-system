@@ -71,18 +71,25 @@ namespace examination_system.Controllers
         }
         public bool Delete(string Id)
         {
+            string s = User.Identity.GetUserId();
             DB = new DB();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var e = DB.Exams.FirstOrDefault(u => u.Id.ToString() == Id);
-            DB.Exams.Remove(e);
-            try
+            if (e.Professor.Id == s)
             {
-                DB.SaveChanges();
-                return true;
+                DB.Exams.Remove(e);
+                try
+                {
+                    DB.SaveChanges();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            catch
-            {
+            else {
                 return false;
             }
         }
@@ -111,52 +118,33 @@ namespace examination_system.Controllers
             }
             return RedirectToAction("Index");
         }
-        [HttpPost, ValidateAntiForgeryToken]
-        public bool Submit(string id)
+        public ActionResult EditDetails(string Id)
         {
-            DB = new DB();
+            string s = User.Identity.GetUserId();
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
-            var myexam = DB.Exams.First(ex => ex.Id.ToString() == id);
-            if (userManager.FindById(User.Identity.GetUserId()).Equals(myexam.Professor)&&
-                myexam.Submit==false)
+            var e = DB.Exams.FirstOrDefault(u => u.Id.ToString() == Id);
+            if (e.Professor.Id == s && e.Submit == false)
             {
-                myexam.Submit = true;
-                DB.SaveChanges();
-                return true;
+                ViewBag.Class = DB.Classes.ToList();
+                return View(e);
             }
-            return false;
+            else
+                return RedirectToAction("Index");
         }
-        [HttpPost, ValidateAntiForgeryToken]
-        public void AddQuestion2Grop(string grop, string q)
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "admin,superadmin")]
+        public ActionResult EditDetails(Exam EditedExam)
         {
             DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
-            mygrop.Questions.Add( myquestion ); ;
+            if (!ModelState.IsValid)
+                return View(EditedExam);
+            var exam = DB.Exams.FirstOrDefault(c => c.Id.ToString() == EditedExam.Id.ToString());
+            exam.Name = EditedExam.Name;
+            exam.Date = EditedExam.Date;
+            exam.Duration = EditedExam.Duration;
             DB.SaveChanges();
+            return RedirectToAction("Index");
         }
-        [HttpPost, ValidateAntiForgeryToken]
-        public void RemoveQuestion2Grop(string grop, string q)
-        {
-            DB = new DB();
-            UserStore = new UserStore<AspNetUsers>(DB);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
-            var myquestion = mygrop.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
-            if (myquestion != null)
-            {
-                mygrop.Questions.Remove(myquestion); ;
-                DB.SaveChanges();
-            }
-        }
-
-
-
-
-
 
         /*mohsening*/
         [HttpPost, ValidateAntiForgeryToken]
@@ -378,5 +366,47 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
+        [HttpPost, ValidateAntiForgeryToken]
+        public bool Submit(string id)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myexam = DB.Exams.First(ex => ex.Id.ToString() == id);
+            if (userManager.FindById(User.Identity.GetUserId()).Equals(myexam.Professor) &&
+                myexam.Submit == false)
+            {
+                myexam.Submit = true;
+                DB.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public void AddQuestion2Grop(string grop, string q)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var myquestion = DB.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
+            mygrop.Questions.Add(myquestion); ;
+            DB.SaveChanges();
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public void RemoveQuestion2Grop(string grop, string q)
+        {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var mygrop = DB.GroupQuestions.FirstOrDefault(ex => ex.Id.ToString() == grop);
+            var myquestion = mygrop.Questions.FirstOrDefault(ex => ex.Id.ToString() == q);
+            if (myquestion != null)
+            {
+                mygrop.Questions.Remove(myquestion); ;
+                DB.SaveChanges();
+            }
+        }
+
     }
 }

@@ -103,6 +103,29 @@ namespace examination_system.Controllers
             }
             myExamStudent.Submit = true;
             DB.SaveChanges();
+            var myExam = myExamStudent.Exam;
+            var studentanswers = myExamStudent.Answers;
+            int Degree = 0;
+            foreach (var ca in myExam.CorrectAnswers())
+            {
+                foreach (var sa in studentanswers)
+                {
+                    if (sa.Answer.Id == ca.Id)
+                    {
+                        var eq = sa.ExamQuestion;
+                        if (eq == null)
+                        {
+                            Degree += sa.GroupQuestion.Degree;
+                        }
+                        else
+                        {
+                            Degree += eq.Degree;
+                        }
+                    }
+                }
+            }
+            myExamStudent.Degree = Degree;
+            DB.SaveChanges();
             return false;
         }
         [HttpPost, ValidateAntiForgeryToken]

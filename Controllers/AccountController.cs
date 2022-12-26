@@ -21,13 +21,6 @@ namespace examination_system.Controllers
         static DB Db = new DB();
         static UserStore<AspNetUsers> UserStore = new UserStore<AspNetUsers>(Db);
         static UserManager<AspNetUsers> userManager = new UserManager<AspNetUsers>(UserStore);
-        [Authorize(Roles = "superadmin")]
-        public string Rolename(string id) {
-            Db = new DB();
-            UserStore = new UserStore<AspNetUsers>(Db);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            return Db.Roles.FirstOrDefault(r=>r.Id==id).Name;
-        }
         const int pageSize = 29;
         [Authorize(Roles = "superadmin,admin")]
         public ActionResult Index(string SearchName="",int pg=1)
@@ -35,15 +28,18 @@ namespace examination_system.Controllers
             Db = new DB();
             UserStore = new UserStore<AspNetUsers>(Db);
             userManager = new UserManager<AspNetUsers>(UserStore);
+
             var Users = Db.Users.Where(u=>u.UserName.Contains(SearchName));
+
             int recsCount = Users.Count();
             if (pg < 1)
                 pg = 1;
             if (recsCount != 0 && pg > (int)Math.Ceiling((decimal) recsCount / pageSize)) {
-                pg = (int)Math.Ceiling((decimal)recsCount / pageSize);
+                pg = (int)Math.Ceiling((decimal) recsCount / pageSize);
             }
             Pager pager = new Pager(recsCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
+
             var data = Users.OrderBy(a=>a.UserName).Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.pager = pager;
             this.ViewBag.SearchName = SearchName;

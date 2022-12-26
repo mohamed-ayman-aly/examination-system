@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "classes";
     List<Class> myClasses = ViewBag.myClasses;
-    SelectList OtherClasses = new SelectList(ViewBag.OtherClasses, "Id", "Name", 0);
+    List<Class> OtherClasses = ViewBag.OtherClasses;
 }
 @using (Html.BeginForm())
 {
@@ -12,7 +12,13 @@
         <div class="form-group">
             @Html.Label("class", htmlAttributes: new { @class = "lbel control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("Class", OtherClasses, new { @class = "form-control slect" })
+                <select name="Class" id="Class" class="form-control slect" required>
+                    <option selected></option>
+                    @foreach (var c in OtherClasses)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
             </div>
         </div>
 
@@ -30,13 +36,44 @@
             foreach (var Class in myClasses)
             {
 
-                @Html.Partial("_Class", Class);
+                @Html.Partial("_RClass", Class);
             }
         }
-        else {
+        else
+        {
             <div class="pnl">
                 <h2 style="padding:10px">you aren't Register in any class</h2>
             </div>
         }
     </div>
 </div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+@section Scripts {
+    <script>
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        function deleteclass(id) {
+            if (confirm('Are you sure you want to delete Class'))
+                $.ajax({
+                    url: '/Class/DeleteRegister',
+                    type: 'POST',
+                    data: { __RequestVerificationToken: token, Id: id },
+                    success: function () { location.reload() },
+                });
+        }
+        function dlt(id) {
+            var i = document.getElementById(id);
+            i.style.display = "none"
+        }
+        function filldots(id) {
+            var i = document.getElementById(id);
+            if (i.style.display == "none")
+                i.style.display = "block";
+            else
+                i.style.display = "none"
+        }
+    </script>
+}
