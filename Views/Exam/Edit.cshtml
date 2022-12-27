@@ -403,6 +403,8 @@
                     data: { __RequestVerificationToken: token, sub: here.parentElement.id, id: event.target.parentElement.parentElement.id, head: event.target.value }
                 });
             }
+        } else {
+            alert("can't add sub question without heading");
         }
     };
     function addqtohere(event) {
@@ -439,7 +441,7 @@
         here.appendChild(q);
     };
     function saveAddq2f(event) {
-        if (event.target.value != undefined) {
+        if (event.target.value != undefined || event.target.value != "0") {
             var q = event.target.parentElement.parentElement;
             if (here.classList.contains("sub")) {
                 $.ajax({
@@ -461,6 +463,8 @@
                     data: { __RequestVerificationToken: token, e: '@Model.Id', q: q.id, deg: event.target.value },
                 });
             }
+        } else {
+            alert("can't add question without degree");
         }
     }
     function removeqtohere(event) {
@@ -578,12 +582,12 @@
         here.innerHTML = here.innerHTML + grop;
     };
     function saveAddgrop2f(event) {
-        if (event.target.value != '') {
+        if (event.target.value != undefined || event.target.value != "0") {
             if (here.parentElement.id == 'exambody') {
                 $.ajax({
                     url: '/Exam/AddGrop2Exam?e=' + '@Model.Id' + '&id=' + here.id + '&deg=' + event.target.value,
                     type: 'POST',
-                    data: { __RequestVerificationToken: token, e: '@Model.Id', id:here.id, deg: event.target.value },
+                    data: { __RequestVerificationToken: token, e: '@Model.Id', id: here.id, deg: event.target.value },
                     success: function (data) {
                         event.target.parentElement.parentElement.id = data;
                     },
@@ -604,6 +608,8 @@
                     c += (Number)(is[i].value);
                 deg.innerText = 'deg:' + c;
             }
+        } else {
+            alert("can't add group question without degree");
         }
     };
     function removeGrop2here(event) {
@@ -642,9 +648,9 @@
         examtop.style.removeProperty("right");
         if (event.clientX > bodyp.left && event.clientX < bodyp.right)
             examtop.style.left = exambody.style.left = event.clientX - bodyp.left - (examtop.clientWidth / 2) + 'px';
-        if (event.clientY + st > bodyp.y / 4 - 220 && event.clientY + st < bodyp.y / 4 - 220 + bodyp.height) {
-            examtop.style.top = event.clientY + st - bodyp.top / 4 + 220 - (examtop.clientHeight / 2) + 'px';
-            exambody.style.top = event.clientY + st - bodyp.top / 4 + 220 + (examtop.clientHeight / 2) - 12 + 'px';
+        if (event.clientY + st > bodyp.y / 4 - 50 && event.clientY + st < bodyp.y / 4 - 50 + bodyp.height) {
+            examtop.style.top = event.clientY + st - bodyp.top / 4 + 50 - (examtop.clientHeight / 2) + 'px';
+            exambody.style.top = event.clientY + st - bodyp.top / 4 + 50 + (examtop.clientHeight / 2) - 12 + 'px';
         }
         document.addEventListener("mousemove", FolwMouse);
         function FolwMouse(event) {
@@ -652,9 +658,9 @@
             examtop.style.removeProperty("right");
             if (event.clientX > bodyp.left && event.clientX < bodyp.right)
                 examtop.style.left = exambody.style.left = event.clientX - bodyp.left - (examtop.clientWidth / 2) + 'px';
-            if (event.clientY + st > bodyp.y / 4 - 220 && event.clientY + st < bodyp.y / 4 - 220 + bodyp.height) {
-                examtop.style.top = event.clientY + st - bodyp.top / 4 + 220 - (examtop.clientHeight / 2) + 'px';
-                exambody.style.top = event.clientY + st - bodyp.top / 4 + 220 + (examtop.clientHeight / 2) - 12 + 'px';
+            if (event.clientY + st > bodyp.y / 4 - 50 && event.clientY + st < bodyp.y / 4 - 50 + bodyp.height) {
+                examtop.style.top = event.clientY + st - bodyp.top / 4 + 50 - (examtop.clientHeight / 2) + 'px';
+                exambody.style.top = event.clientY + st - bodyp.top / 4 + 50 + (examtop.clientHeight / 2) - 12 + 'px';
             }
         }
         examtop.addEventListener("mouseup", (event) => {
@@ -663,7 +669,7 @@
             document.removeEventListener("mousemove", FolwMouse);
             exambody.style.removeProperty("top");
             examtop.style.removeProperty("top");
-            if (event.clientY - bodyp.top / 4 + 220 + document.documentElement.scrollTop < body.clientHeight / 20) {
+            if (event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop < body.clientHeight / 20) {
                 exambody.style.width = "100%";
                 questionbody.style.width = "100%";
                 exambody.style.removeProperty("left");
@@ -723,18 +729,18 @@
         questiontop.style.removeProperty("right");
         if (event.clientX > bodyp.left && event.clientX < bodyp.right)
             questiontop.style.left = questionbody.style.left = event.clientX - bodyp.left - (questiontop.clientWidth / 2) + 'px';
-        if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 220 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 220 + bodyp.height) {
-            questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 220 + document.documentElement.scrollTop + 'px';
-            questionbody.style.top = event.clientY - bodyp.top / 4 + 220 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
+        if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 50 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 50 + bodyp.height) {
+            questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 50 + document.documentElement.scrollTop + 'px';
+            questionbody.style.top = event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
         }
         document.addEventListener("mousemove", FolwMouse);
         function FolwMouse(event) {
             questiontop.style.removeProperty("right");
             if (event.clientX > bodyp.left && event.clientX < bodyp.right)
                 questiontop.style.left = questionbody.style.left = event.clientX - bodyp.left - (questiontop.clientWidth / 2) + 'px';
-            if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 220 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 220 + bodyp.height) {
-                questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 220 + document.documentElement.scrollTop + 'px';
-                questionbody.style.top = event.clientY - bodyp.top / 4 + 220 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
+            if (event.clientY + document.documentElement.scrollTop > bodyp.top / 4 - 50 && event.clientY + document.documentElement.scrollTop < bodyp.top / 4 - 50 + bodyp.height) {
+                questiontop.style.top = event.clientY - (questiontop.clientHeight / 2) - bodyp.top / 4 + 50 + document.documentElement.scrollTop + 'px';
+                questionbody.style.top = event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop + (questiontop.clientHeight / 2) - 12 + 'px';
             }
         }
         questiontop.addEventListener("mouseup", (event) => {
@@ -743,7 +749,7 @@
             document.removeEventListener("mousemove", FolwMouse);
             questionbody.style.removeProperty("top");
             questiontop.style.removeProperty("top");
-            if (event.clientY - bodyp.top / 4 + 220 + document.documentElement.scrollTop < body.clientHeight / 20) {
+            if (event.clientY - bodyp.top / 4 + 50 + document.documentElement.scrollTop < body.clientHeight / 20) {
                 exambody.style.width = "100%";
                 questionbody.style.width = "100%";
                 exambody.style.removeProperty("left");
