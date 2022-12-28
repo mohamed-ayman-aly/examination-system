@@ -15,7 +15,14 @@
         <div class="form-group">
             <label class="control-label lbel col-md-2">class</label>
             <div class="col-md-10">
-                @Html.DropDownList("Class", classes, new { @class = " slect" })
+                @*@Html.DropDownList("Class", classes, new { @class = " slect" })*@
+                <select class="form-group dropdown slect" id="Class" name="Class" required>
+                    <option selected></option>
+                    @foreach (examination_system.Models.Class c in ViewBag.Class)
+                    {
+                        <option value="@c.Id.ToString()" @(c.Id==Model.Class.Id?"selected":"")>@c.Name</option>
+                    }
+                </select>
             </div>
         </div>
         <div class="form-group">

@@ -193,43 +193,13 @@ namespace examination_system.Controllers
             q.Class=DB.Classes.FirstOrDefault(c=>c.Id.ToString()==Class);
             q.CorrectAnswer.AnswerBody=NewQuestion.CorrectAnswer.AnswerBody;
             DB.SaveChanges();
-            if (Answers.Count >= q.Answers.Count-1)
+            var deletedAnswers = q.Answers.Where(a=>a.Id!=q.CorrectAnswer.Id && !Answers.Contains(a.AnswerBody)).ToList();
+            q.Answers.RemoveAll(a => a.Id != q.CorrectAnswer.Id && !Answers.Contains(a.AnswerBody));
+            var ans= q.Answers.Where(a => a.Id != q.CorrectAnswer.Id).Select(a => a.AnswerBody).ToList();
+            var addedAnswers = Answers.Where(adans => !ans.Contains(adans)).ToList();
+            foreach (var a in addedAnswers)
             {
-                for (int i = 0; i < q.Answers.Count; i++)
-                {
-                    if (q.Answers[i].AnswerBody!= NewQuestion.CorrectAnswer.AnswerBody) {
-                        q.Answers[i].AnswerBody = Answers[0];
-                        Answers.RemoveAt(0);
-                        continue;
-                    }
-                }
-                foreach (var a in Answers)
-                {
-                    q.Answers.Add(new Answer { Id = Guid.NewGuid(), AnswerBody = a });
-                }
-            }
-            else
-            {
-                int outofindex = 0;
-                for (int i=0;i< q.Answers.Count- Answers.Count; i++)
-                {
-                    if (q.Answers[i+outofindex].AnswerBody != NewQuestion.CorrectAnswer.AnswerBody)
-                    {
-                        DB.Answers.Remove(q.Answers[i + outofindex]);
-                        continue;
-                    }
-                    outofindex++;
-                    i--;
-                }
-                for (int i = 0; i < q.Answers.Count; i++)
-                {
-                    if (q.Answers[i].AnswerBody != NewQuestion.CorrectAnswer.AnswerBody)
-                    {
-                        q.Answers[i].AnswerBody = Answers[0];
-                        Answers.RemoveAt(0);
-                        continue;
-                    }
-                }
+                q.Answers.Add(new Answer { Id = Guid.NewGuid(), AnswerBody = a });
             }
             DB.SaveChanges();
             return RedirectToAction("Index");
