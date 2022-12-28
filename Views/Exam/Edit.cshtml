@@ -17,8 +17,8 @@
                       "<img class='minimg' src = '/Resources/delete.svg' onclick ='setmehere(event);removeqtohere(event);' />" +
                    "</div>" +
                    "<div class='row' onclick=\"setmehere(event)\">" +
-                       "<div class='row' onclick=\"setmehere(event)\">" + q.QuestionBody + "</div>" +
-                       "<ul style='width: 100%;' onclick=\"setmehere(event)\">";
+                       "<h2 class='row' onclick=\"setmehere(event)\" style=\"justify-content: center;\">" + q.QuestionBody + "</h2>" +
+                       "<ul style='width: 100%; ' onclick=\"setmehere(event)\">";
         foreach (var a in q.Answers)
         {
             res += "<li onclick=\"setmehere(event)\"><div onclick=\"setmehere(event)\">" + a.AnswerBody + "</div></li>";
@@ -160,9 +160,9 @@
                     <img class='minimg' src='~/Resources/Account/add.svg' onclick='addqtohere(event);' />
                 </div>
                 <div>
-                    <div>
+                    <h3>
                         @q.QuestionBody
-                    </div>
+                    </h3>
                     <ul>
                         @foreach (var a in q.Answers)
                         {
