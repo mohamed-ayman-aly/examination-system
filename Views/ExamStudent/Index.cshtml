@@ -112,7 +112,7 @@
             sub += inersq.Exambody().Count();
         }
         int allq = q + g + sub;
-        for (int i = 0; i < allq; i++)
+        for (int i = 0; i < allq;)
         {
             int type = random.Next(3);
             if (type == 0 && sq.Questions.Count != 0)
@@ -121,6 +121,7 @@
                 res += eqtohtml(sq.Questions[r], n, answers);
                 n++;
                 sq.Questions.RemoveAt(r);
+                i++;
             }
             if (type == 1 && sq.GroupQuestions.Count != 0)
             {
@@ -128,12 +129,14 @@
                 res += groptohtml(sq.GroupQuestions[r], n, answers, Questionsingrops);
                 n++;
                 sq.GroupQuestions.RemoveAt(r);
+                i++;
             }
             if (type == 2 && sq.SubQuestions.Count != 0)
             {
                 int r = random.Next(sq.SubQuestions.Count);
                 res += suptohtml(sq.SubQuestions[r], n, answers, Questionsingrops);
                 sq.SubQuestions.RemoveAt(r);
+                i++;
             }
         }
         res += "</div>";

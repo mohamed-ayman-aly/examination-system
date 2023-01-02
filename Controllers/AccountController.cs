@@ -70,7 +70,15 @@ namespace examination_system.Controllers
             try
             {
                 IdentityResult result = userManager.CreateAsync(NewUser, NewUser.PasswordHash).Result;
-                return View(NewUser);
+                if (result.Succeeded)
+                {
+                    return View(NewUser);
+                }
+                else {
+                    foreach (var e in result.Errors)
+                        ModelState.AddModelError("", e);
+                    return View(NewUser);
+                }
             }
             catch
             {
@@ -164,7 +172,9 @@ namespace examination_system.Controllers
         [AllowAnonymous]
         public ActionResult LogIn()
         {
-            return View();
+            if(User.Identity.GetUserId()==null)
+                return View();
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost, ValidateAntiForgeryToken,AllowAnonymous]
         public async Task<ActionResult> LogIn(LogInViewModel User)
@@ -185,6 +195,19 @@ namespace examination_system.Controllers
                 ModelState.AddModelError("", "Invalid username or password.");
             }
             return View(User);
+        }
+        public ActionResult ViewProfile(string id) 
+        {
+            Db = new DB();
+            UserStore = new UserStore<AspNetUsers>(Db);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            
+            string userid=User.Identity.GetUserId();
+            if (userid == id) {
+                var user = Db.Users.FirstOrDefault(u => u.Id == id);
+                return View(user);
+            }
+            return RedirectToAction("Index");
         }
         [Authorize]
         public ActionResult LogOut()

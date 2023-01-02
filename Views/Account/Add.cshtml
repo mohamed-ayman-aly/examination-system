@@ -59,7 +59,7 @@
         <div class="form-group">
             @Html.Label("User Type", htmlAttributes: new { @class = "text lbel control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(m => m.UserType, "Select a User Type", new { @class = "slect form-control" })
+                @Html.EnumDropDownListFor(m => m.UserType , "Select a User Type", new { @class = "slect form-control" })
                 @Html.ValidationMessageFor(m => m.UserType)
             </div>
         </div>

@@ -278,6 +278,7 @@
     <Content Include="Views\Class\_RClass.cshtml" />
     <Content Include="Views\Exam\EditDetails.cshtml" />
     <Content Include="Views\Exam\_submitedexam.cshtml" />
+    <Content Include="Views\Account\ViewProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
