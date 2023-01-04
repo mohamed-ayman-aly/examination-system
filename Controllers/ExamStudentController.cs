@@ -26,7 +26,8 @@ namespace examination_system.Controllers
                 Random random = new Random();
                 foreach (var g in exam.GroupQuestions) {
                     int n=random.Next(g.Questions.Count());
-                    Questionsingrops.Add(g.Questions[n]);
+                    if(g.Questions.Count!=0)
+                        Questionsingrops.Add(g.Questions[n]);
                 }
                 DB.ExamStudent.Add(new ExamStudent
                 {
@@ -97,7 +98,6 @@ namespace examination_system.Controllers
                         Id = Guid.NewGuid()
                     });
                 }
-                
                 DB.SaveChanges();
                 return true;
             }

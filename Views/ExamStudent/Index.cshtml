@@ -180,42 +180,54 @@
                 </button>
             </div>
 
-            int q = Model.Questions.Count;
-            int g = Model.GroupQuestions.Count;
-            int sub = 0;
-            foreach (SubQuestion sq in Model.SubQuestions)
-            {
-                sub += sq.Exambody().Count();
-            }
-            int allq = q + g + sub;
-            for (int i = 0; i < allq;)
-            {
-                int type = random.Next(3);
-                if (type == 0 && Model.Questions.Count != 0)
-                {
-                    int r = random.Next(Model.Questions.Count);
-                    @Html.Raw(@eqtohtml(Model.Questions[r], n, answers));
-                    n++;
-                    Model.Questions.RemoveAt(r);
-                    i++;
-                }
-                if (type == 1 && Model.GroupQuestions.Count != 0)
-                {
-                    int r = random.Next(Model.GroupQuestions.Count);
-                    @Html.Raw(@groptohtml(Model.GroupQuestions[r], n, answers, Questionsingrops));
-                    n++;
-                    Model.GroupQuestions.RemoveAt(r);
-                    i++;
-                }
-                if (type == 2 && Model.SubQuestions.Count != 0)
-                {
-                    int r = random.Next(Model.SubQuestions.Count);
-                    @Html.Raw(@suptohtml(Model.SubQuestions[r], n, answers, Questionsingrops));
-                    Model.SubQuestions.RemoveAt(r);
-                    i++;
-                }
-            }
-        }
+                    int q = Model.Questions.Count;
+                    int g = Model.GroupQuestions.Count;
+                    int sub = 0;
+                    foreach (SubQuestion sq in Model.SubQuestions)
+                    {
+                        sub += sq.Exambody().Count();
+                    }
+                    int allq = q + g + sub;
+                    foreach (var gq in Model.GroupQuestions)
+                    {
+                        if (gq.Questions.Count == 0)
+                        {
+                            allq--;
+                        }
+                    }
+                    for (int i = 0; i < allq;)
+                    {
+                        int type = random.Next(3);
+                        if (type == 0 && Model.Questions.Count != 0)
+                        {
+                            int r = random.Next(Model.Questions.Count);
+                            @Html.Raw(@eqtohtml(Model.Questions[r], n, answers));
+                            n++;
+                            Model.Questions.RemoveAt(r);
+                            i++;
+                        }
+                        else { if (type == 0) { type++; } }
+                        if (type == 1 && Model.GroupQuestions.Count != 0)
+                        {
+                            int r = random.Next(Model.GroupQuestions.Count);
+                                @Html.Raw(@groptohtml(Model.GroupQuestions[r], n, answers, Questionsingrops));
+                            n++;
+                            Model.GroupQuestions.RemoveAt(r);
+                            i++;
+                        }
+                        else { if (type == 1) { type++; } }
+                        if (type == 2 && Model.SubQuestions.Count != 0)
+                        {
+                            int r = random.Next(Model.SubQuestions.Count);
+                            var eb = Model.SubQuestions[r].Exambody();
+                            @Html.Raw(@suptohtml(Model.SubQuestions[r], n, answers, Questionsingrops));
+                            i += eb.Count();
+                            Model.SubQuestions.RemoveAt(r);
+
+
+                            }
+                        }
+                    }
     </div>
 </div>
 <style>
