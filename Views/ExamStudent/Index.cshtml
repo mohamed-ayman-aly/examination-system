@@ -112,6 +112,13 @@
             sub += inersq.Exambody().Count();
         }
         int allq = q + g + sub;
+        foreach (var gq in sq.GroupQuestions)
+        {
+            if (gq.Questions.Count == 0)
+            {
+                allq--;
+            }
+        }
         for (int i = 0; i < allq;)
         {
             int type = random.Next(3);
@@ -134,9 +141,10 @@
             if (type == 2 && sq.SubQuestions.Count != 0)
             {
                 int r = random.Next(sq.SubQuestions.Count);
+                var eb = sq.SubQuestions[r].Exambody().Count();
                 res += suptohtml(sq.SubQuestions[r], n, answers, Questionsingrops);
                 sq.SubQuestions.RemoveAt(r);
-                i++;
+                i+= eb;
             }
         }
         res += "</div>";
@@ -195,7 +203,7 @@
                             allq--;
                         }
                     }
-                    for (int i = 0; i < allq;)
+                    for (int i = 0; i <= allq;)
                     {
                         int type = random.Next(3);
                         if (type == 0 && Model.Questions.Count != 0)
@@ -219,9 +227,9 @@
                         if (type == 2 && Model.SubQuestions.Count != 0)
                         {
                             int r = random.Next(Model.SubQuestions.Count);
-                            var eb = Model.SubQuestions[r].Exambody();
+                            var eb = Model.SubQuestions[r].Exambody().Count();
                             @Html.Raw(@suptohtml(Model.SubQuestions[r], n, answers, Questionsingrops));
-                            i += eb.Count();
+                            i += eb;
                             Model.SubQuestions.RemoveAt(r);
 
 
