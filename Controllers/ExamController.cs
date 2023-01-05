@@ -373,6 +373,16 @@ namespace examination_system.Controllers
             UserStore = new UserStore<AspNetUsers>(DB);
             userManager = new UserManager<AspNetUsers>(UserStore);
             var myexam = DB.Exams.First(ex => ex.Id.ToString() == id);
+            foreach(var sq in myexam.SubQuestions)
+            {
+                if(sq.Exambody().Count()==0)
+                    return false;
+            }
+            foreach (var gq in myexam.GroupQuestions)
+            {
+                if (gq.Questions.Count() == 0)
+                    return false;
+            }
             if (userManager.FindById(User.Identity.GetUserId()).Equals(myexam.Professor) &&
                 myexam.Submit == false)
             {
