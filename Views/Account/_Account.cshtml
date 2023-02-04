@@ -3,7 +3,7 @@
 <div class="pnl col-md-3">
     <div id="@Model.Id" style="border-radius: 10px; background-color: #00000075; position: absolute; right: 10px; top: 0px; display: none;">
         <div onclick="dlt('@Model.Id')" class="pointer pnlpnl" style="padding: 2px; margin: 5px; color: red; height: 22px; width: 45px; "> x </div>
-        <div class="pointer pnlpnl" style="padding: 2px; margin: 5px; height: 22px; width: 45px;"> Edit </div>
+        <div onclick="Editeaccount('@Model.Id')" class="pointer pnlpnl" style="padding: 2px; margin: 5px; height: 22px; width: 45px;"> Edit </div>
         <div onclick="deleteaccount('@Model.Id')" class="pointer pnlpnl" style="padding: 2px; margin: 5px; height: 22px; width: 45px; "> Delete </div>
     </div>
     <img src="/Resources/Account/3verticaldots.svg" class="dots pointer" onclick="filldots('@Model.Id')" />

@@ -314,7 +314,7 @@
 </style>
 @section Scripts{
         @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
         var form = $('#__AjaxAntiForgeryForm');
         var token = $('input[name="__RequestVerificationToken"]', form).val();
         function Submit() {
@@ -326,82 +326,82 @@
                 success: function (data) {
                     if (data == 'True') {
                         var a = document.createElement('a');
-                        a.href = "/Home/Index";
+                        a.href = "/ExamStudent/SubmitPage?Id=" + '@(ViewBag.ExamStudentId)';
                         a.click();
                     }
                 }
             });
     }
-    function issaved(q,ans) {
-        $.ajax({
-            type: "POST",
-            url: "/ExamStudent/AddAnswer",
-            data: {
-                __RequestVerificationToken: token,
-                e: '@ViewBag.ExamStudentId',
-                q: q,
-                ans: ans,
-            },
-            success: function(data) {
-                if (data != "True") {
-                    location.reload();
+        function issaved(q,ans) {
+            $.ajax({
+                type: "POST",
+                url: "/ExamStudent/AddAnswer",
+                data: {
+                    __RequestVerificationToken: token,
+                    e: '@ViewBag.ExamStudentId',
+                    q: q,
+                    ans: ans,
+                },
+                success: function(data) {
+                    if (data != "True") {
+                        location.reload();
+                    }
+                },
+                error: function (data) {
+                    alert("some Error");
                 }
-            },
-            error: function (data) {
-                alert("some Error");
+            });
             }
-        });
-        }
-    function minimize(event) {
-        event.target.src = "/Resources/maximize.svg";
-        event.target.setAttribute("onclick", "maximum(event);")
-        var x = false;
-        for (var child of event.target.parentElement.parentElement.children) {
-            if (x)
-                child.style.display = "none";
-            x = true;
-        }
+        function minimize(event) {
+            event.target.src = "/Resources/maximize.svg";
+            event.target.setAttribute("onclick", "maximum(event);")
+            var x = false;
+            for (var child of event.target.parentElement.parentElement.children) {
+                if (x)
+                    child.style.display = "none";
+                x = true;
+            }
 
-    };
-    function maximum(event) {
-        event.target.src = "/Resources/minimize.svg";
-        event.target.setAttribute("onclick", "minimize(event);")
-        var x = false;
-        for (var child of event.target.parentElement.parentElement.children) {
-            if (x)
-                child.style.removeProperty('display');
-            x = true;
+        };
+        function maximum(event) {
+            event.target.src = "/Resources/minimize.svg";
+            event.target.setAttribute("onclick", "minimize(event);")
+            var x = false;
+            for (var child of event.target.parentElement.parentElement.children) {
+                if (x)
+                    child.style.removeProperty('display');
+                x = true;
+            }
+        };
+        var e = document.getElementsByClassName("time")[0];
+        var Interval = setInterval(timerInterval, 1000);
+        function timerInterval() {
+            var Seconds = e.getElementsByClassName('Seconds')[0];
+            if ((Number)(Seconds.innerText) > 0) {
+                Seconds.innerText = (((Number)(Seconds.innerText)) - 1);
+                return;
+            }
+            var Minutes = e.getElementsByClassName('Minutes')[0];
+            if ((Number)(Minutes.innerText) > 0) {
+                Minutes.innerText = (((Number)(Minutes.innerText)) - 1);
+                Seconds.innerText = 59;
+                return;
+            }
+            var Hours = e.getElementsByClassName('Hours')[0];
+            if ((Number)(Hours.innerText) > 0) {
+                Hours.innerText = (((Number)(Hours.innerText)) - 1);
+                Minutes.innerText = 59;
+                Seconds.innerText = 59;
+                return;
+            }
+            var Days = e.getElementsByClassName('Days')[0];
+            if ((Number)(Days.innerText) > 0) {
+                Days.innerText = (((Number)(Days.innerText)) - 1);
+                Hours.innerText = 23;
+                Minutes.innerText = 59;
+                Seconds.innerText = 59;
+                return;
+            }
         }
-    };
-    var e = document.getElementsByClassName("time")[0];
-    var Interval = setInterval(timerInterval, 1000);
-    function timerInterval() {
-        var Seconds = e.getElementsByClassName('Seconds')[0];
-        if ((Number)(Seconds.innerText) > 0) {
-            Seconds.innerText = (((Number)(Seconds.innerText)) - 1);
-            return;
-        }
-        var Minutes = e.getElementsByClassName('Minutes')[0];
-        if ((Number)(Minutes.innerText) > 0) {
-            Minutes.innerText = (((Number)(Minutes.innerText)) - 1);
-            Seconds.innerText = 59;
-            return;
-        }
-        var Hours = e.getElementsByClassName('Hours')[0];
-        if ((Number)(Hours.innerText) > 0) {
-            Hours.innerText = (((Number)(Hours.innerText)) - 1);
-            Minutes.innerText = 59;
-            Seconds.innerText = 59;
-            return;
-        }
-        var Days = e.getElementsByClassName('Days')[0];
-        if ((Number)(Days.innerText) > 0) {
-            Days.innerText = (((Number)(Days.innerText)) - 1);
-            Hours.innerText = 23;
-            Minutes.innerText = 59;
-            Seconds.innerText = 59;
-            return;
-        }
-    }
 </script>
 }

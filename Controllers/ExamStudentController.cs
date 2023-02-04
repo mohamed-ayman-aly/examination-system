@@ -12,7 +12,7 @@ namespace examination_system.Controllers
     public class ExamStudentController : Controller
     {
         DB DB = new DB();
-        [HttpPost,ValidateAntiForgeryToken,Authorize(Roles = "superadmin,student")]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "superadmin,student")]
         public ActionResult Index(string name)
         {
             DB = new DB();
@@ -24,9 +24,10 @@ namespace examination_system.Controllers
                 Guid id = Guid.NewGuid();
                 List<Question> Questionsingrops = new List<Question>();
                 Random random = new Random();
-                foreach (var g in exam.GroupQuestions) {
-                    int n=random.Next(g.Questions.Count());
-                    if(g.Questions.Count!=0)
+                foreach (var g in exam.GroupQuestions)
+                {
+                    int n = random.Next(g.Questions.Count());
+                    if (g.Questions.Count != 0)
                         Questionsingrops.Add(g.Questions[n]);
                 }
                 DB.ExamStudent.Add(new ExamStudent
@@ -34,15 +35,16 @@ namespace examination_system.Controllers
                     Id = id,
                     Exam = exam,
                     Student = DB.Users.FirstOrDefault(u => u.Id == userid),
-                    Questionsingrops= Questionsingrops,
-                    Submit=false,
-                    Answers=null,
+                    Questionsingrops = Questionsingrops,
+                    Submit = false,
+                    Answers = null,
                 });
                 DB.SaveChanges();
                 ViewBag.ExamStudentId = id;
                 ViewBag.Questionsingrops = Questionsingrops;
             }
-            else {
+            else
+            {
                 ViewBag.ExamStudentId = examstudent.Id;
                 ViewBag.Questionsingrops = examstudent.Questionsingrops;
                 ViewBag.ansers = examstudent.Answers.ToList();
@@ -52,39 +54,36 @@ namespace examination_system.Controllers
             return View();
         }
         [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "superadmin,student")]
-        public bool AddAnswer(string e,string q,string ans)
+        public bool AddAnswer(string e, string q, string ans)
         {
             DB = new DB();
-            var myExamStudent= DB.ExamStudent.FirstOrDefault(es => es.Id.ToString() == e);
+            var myExamStudent = DB.ExamStudent.FirstOrDefault(es => es.Id.ToString() == e);
             DateTime examend = myExamStudent.Exam.Date.AddMinutes(myExamStudent.Exam.Duration);
-            if (examend > DateTime.Now&&!myExamStudent.Submit)
+            if (examend > DateTime.Now && !myExamStudent.Submit)
             {
                 var Answers = myExamStudent.Answers.ToList();
-                foreach (var Studentanswer in Answers)
+                var lastAnswer = Answers.FirstOrDefault(a => a.ExamQuestion.Id.ToString() == q);
+                if (lastAnswer != null)
                 {
-                    var ExamQuestion = Studentanswer.ExamQuestion;
-                    if (ExamQuestion!=null&& ExamQuestion.Id.ToString()==q)
-                    {
-                        Studentanswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
-                        DB.SaveChanges();
-                        return true;
-                    }
-                    var GroupQuestion = Studentanswer.GroupQuestion;
-                    if (GroupQuestion != null && GroupQuestion.Id.ToString() == q)
-                    {
-                        Studentanswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
-                        DB.SaveChanges();
-                        return true;
-                    }
+                    lastAnswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
+                    DB.SaveChanges();
+                    return true;
                 }
-                var eq = DB.ExamQuestions.FirstOrDefault(x=>x.Id.ToString()==q);
+                lastAnswer = Answers.FirstOrDefault(a => a.GroupQuestion.Id.ToString() == q);
+                if (lastAnswer != null)
+                {
+                    lastAnswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
+                    DB.SaveChanges();
+                    return true;
+                }
+                var eq = DB.ExamQuestions.FirstOrDefault(x => x.Id.ToString() == q);
                 if (eq == null)
                 {
                     myExamStudent.Answers.Add(new Studentanswer
                     {
                         Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans),
                         ExamStudent = myExamStudent,
-                        GroupQuestion = DB.GroupQuestions.FirstOrDefault(gq=>gq.Id.ToString()==q),
+                        GroupQuestion = DB.GroupQuestions.FirstOrDefault(gq => gq.Id.ToString() == q),
                         Id = Guid.NewGuid()
                     });
                 }
@@ -101,34 +100,10 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
                 return true;
             }
-            myExamStudent.Submit = true;
-            DB.SaveChanges();
-            var myExam = myExamStudent.Exam;
-            var studentanswers = myExamStudent.Answers;
-            int Degree = 0;
-            foreach (var ca in myExam.CorrectAnswers())
-            {
-                foreach (var sa in studentanswers)
-                {
-                    if (sa.Answer.Id == ca.Id)
-                    {
-                        var eq = sa.ExamQuestion;
-                        if (eq == null)
-                        {
-                            Degree += sa.GroupQuestion.Degree;
-                        }
-                        else
-                        {
-                            Degree += eq.Degree;
-                        }
-                    }
-                }
-            }
-            myExamStudent.Degree = Degree;
-            DB.SaveChanges();
+            bool s=Submit(e);
             return false;
         }
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "superadmin,student")]
         public bool Submit(string id)
         {
             DB = new DB();
@@ -138,18 +113,20 @@ namespace examination_system.Controllers
             if (myExamStudent.Submit == false)
             {
                 myExamStudent.Submit = true;
-                var studentanswers=myExamStudent.Answers;
-
+                var studentanswers = myExamStudent.Answers;
                 foreach (var ca in myExam.CorrectAnswers())
                 {
-                    foreach (var sa in studentanswers) {
-                        if (sa.Answer.Id == ca.Id) {
+                    foreach (var sa in studentanswers)
+                    {
+                        if (sa.Answer.Id == ca.Id)
+                        {
                             var eq = sa.ExamQuestion;
                             if (eq == null)
                             {
                                 Degree += sa.GroupQuestion.Degree;
                             }
-                            else {
+                            else
+                            {
                                 Degree += eq.Degree;
                             }
                         }
@@ -160,6 +137,13 @@ namespace examination_system.Controllers
                 return true;
             }
             return false;
+        }
+        [Authorize(Roles = "superadmin,student")]
+        public ActionResult SubmitPage(string id)
+        {
+            DB = new DB();
+            var myExamStudent = DB.ExamStudent.FirstOrDefault(ex => ex.Id.ToString() == id);
+            return View(new List<int>{ myExamStudent.Degree,myExamStudent.Exam.Degree()});
         }
     }
 }

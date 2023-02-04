@@ -107,6 +107,11 @@
                     success: function () { location.reload() },
                 });
         }
+        function Editeaccount(id) {
+            var a = document.createElement('a');
+            a.href = "/Account/Edit?Id=" + id;
+            a.click();
+        }
         function dlt(id) {
             var i = document.getElementById(id);
             i.style.display = "none"

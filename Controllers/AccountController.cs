@@ -9,6 +9,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -99,6 +101,68 @@ namespace examination_system.Controllers
                     return View(NewUser);
                 }
             }
+        }
+        [Authorize(Roles = "superadmin,admin")]
+        public ActionResult Edit(string id)
+        {
+            Db = new DB();
+            UserStore = new UserStore<AspNetUsers>(Db);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            return View(Db.Users.FirstOrDefault(u=>u.Id==id));
+        }
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "superadmin,admin")]
+        public ActionResult Edit(string id,AspNetUsers NewUser, HttpPostedFileBase ImgFile)
+        {
+            Db = new DB();
+            UserStore = new UserStore<AspNetUsers>(Db);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var user=Db.Users.FirstOrDefault(u => u.Id == id);
+            
+            if (User.IsInRole("admin") && NewUser.UserType == UserType.admin)
+            {
+                ModelState.AddModelError("", "admin users can't add admin users");
+                return View(id);
+            }
+            user.UserName = NewUser.UserName;
+            user.Email = NewUser.Email;
+            if (NewUser.ConfirmPassword != ""&& NewUser.PasswordHash != "")
+            {
+                user.PasswordHash = HashPassword(NewUser.PasswordHash);
+                user.ConfirmPassword = HashPassword(NewUser.ConfirmPassword);
+            }
+            user.PhoneNumber = NewUser.PhoneNumber;
+            user.UserType = NewUser.UserType;
+            if (ImgFile != null)
+            {
+                user.ImgFileName = user.Id + ImgFile.FileName.Substring(ImgFile.FileName.LastIndexOf("."));
+                string path = "~/Resources/Account/imgs/" + user.ImgFileName;
+                ImgFile.SaveAs(Server.MapPath(path));
+            }
+            string s = NewUser.UserType.ToString();
+            string oldroleid = user.Roles.FirstOrDefault().RoleId;
+            string oldrole = Db.Roles.FirstOrDefault(r => r.Id == oldroleid).Name;
+            userManager.RemoveFromRole(NewUser.Id, oldrole);
+            userManager.AddToRole(NewUser.Id, s);
+            Db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        public static string HashPassword(string password)
+        {
+            byte[] salt;
+            byte[] buffer2;
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+            using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
+            {
+                salt = bytes.Salt;
+                buffer2 = bytes.GetBytes(0x20);
+            }
+            byte[] dst = new byte[0x31];
+            Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
+            Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
+            return Convert.ToBase64String(dst);
         }
         [Authorize(Roles = "superadmin,admin")]
         public void Delete(string Id)
