@@ -16,6 +16,8 @@ namespace examination_system.Models
         [Required(ErrorMessage = "ConfirmPassword is Required"),Compare("PasswordHash",ErrorMessage = "Passwords are not match")]
         public string ConfirmPassword { get; set; }
         public virtual List<Class> Classes { get; set; }
+        [InverseProperty("Professor")]
+        public virtual List<Exam> MyExams { get; set; }
         [InverseProperty("Student")]
         public virtual List<ExamStudent> Exams { get; set; }
     }

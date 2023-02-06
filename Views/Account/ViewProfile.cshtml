@@ -5,125 +5,185 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int counter = 1;
 }
-<div class="container">
-    <div class="grid">
-        <div>
-            <img class="ImgFileName" src="~/Resources/Account/imgs/@Model.ImgFileName" />
-            <h3>@Model.UserName</h3>
-        </div>
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <td>#</td><td>Class</td><td>Exam</td><td>Attendance</td>
-                        <td>Degree</td><td>Out Of</td><td>Success</td><td>Date</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var e in Model.Exams)
-                    {
+@if (Model.Roles.ToList()[0].RoleId == "student" || Model.Roles.ToList()[0].RoleId == "superadmin")
+{
+    <div class="container">
+        <div class="grid">
+            <div class="profile">
+                <img class="ImgFileName" src="~/Resources/Account/imgs/@Model.ImgFileName" />
+                <h3>@Model.UserName</h3>
+            </div>
+            <div>
+                <table>
+                    <thead>
                         <tr>
-                            <td>@(counter++)</td>
-                            <td>@e.Exam.Class.Name</td>
-                            <td>@e.Exam.Name</td>
-                            <td><input type="checkbox" checked disabled /><label>attended</label></td>
-                            <td>@e.Degree</td>
-                            <td>@e.Exam.Degree()</td>
-                            <td>
-                                @if (e.Degree >= e.Exam.Degree() / 2)
-                                {
-                                    <input type="checkbox" checked disabled /><label>succeeded</label>
-                                }
-                                else
-                                {
-                                    <input type="checkbox" class="badcheckbox" disabled /><label>failed</label>
-                                }
-                            </td>
-                            <td>@e.Exam.Date</td>
+                            <td>#</td>
+                            <td>Class</td>
+                            <td>Exam</td>
+                            <td>Attendance</td>
+                            <td>Degree</td>
+                            <td>Out Of</td>
+                            <td>Success</td>
+                            <td>Date</td>
                         </tr>
-                    }
-                    @foreach (var c in Model.Classes)
-                    {
-                        foreach (var e in c.Exams)
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.Exams)
                         {
-                            if (e.Submit&&e.Date<DateTime.Now&& e.ExamStudent.Where(es => es.Student.Id == Model.Id).Count() == 0)
-                            {
-                                <tr>
-                                    <td>@(counter++)</td>
-                                    <td>@e.Class.Name</td>
-                                    <td>@e.Name</td>
-                                    <td><input type="checkbox" class="badcheckbox" disabled /><label>absented</label></td>
-                                    <td>0</td>
-                                    <td>@e.Degree()</td>
-                                    <td>
+                            <tr>
+                                <td>@(counter++)</td>
+                                <td>@e.Exam.Class.Name</td>
+                                <td>@e.Exam.Name</td>
+                                <td><input type="checkbox" checked disabled /><label>attended</label></td>
+                                <td>@e.Degree</td>
+                                <td>@e.Exam.Degree()</td>
+                                <td>
+                                    @if (e.Degree >= e.Exam.Degree() / 2)
+                                    {
+                                        <input type="checkbox" checked disabled /><label>succeeded</label>
+                                    }
+                                    else
+                                    {
                                         <input type="checkbox" class="badcheckbox" disabled /><label>failed</label>
-                                    </td>
-                                    <td>@e.Date</td>
-                                </tr>
+                                    }
+                                </td>
+                                <td>@e.Exam.Date</td>
+                            </tr>
+                        }
+                        @foreach (var c in Model.Classes)
+                        {
+                            foreach (var e in c.Exams)
+                            {
+                                if (e.Submit && e.Date < DateTime.Now && e.ExamStudent.Where(es => es.Student.Id == Model.Id).Count() == 0)
+                                {
+                                    <tr>
+                                        <td>@(counter++)</td>
+                                        <td>@e.Class.Name</td>
+                                        <td>@e.Name</td>
+                                        <td><input type="checkbox" class="badcheckbox" disabled /><label>absented</label></td>
+                                        <td>0</td>
+                                        <td>@e.Degree()</td>
+                                        <td>
+                                            <input type="checkbox" class="badcheckbox" disabled /><label>failed</label>
+                                        </td>
+                                        <td>@e.Date</td>
+                                    </tr>
+                                }
                             }
                         }
-                    }
                     </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+}
+@if (Model.Roles.ToList()[0].RoleId == "professor" || Model.Roles.ToList()[0].RoleId == "superadmin")
+{
+    <div class="container">
+        <div class="grid">
+            <div>
+                <img class="ImgFileName" src="~/Resources/Account/imgs/@Model.ImgFileName" />
+                <h3>@Model.UserName</h3>
+            </div>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>#</td>
+                            <td>Class</td>
+                            <td>Exam</td>
+                            <td>Attendance</td>
+                            <td>absenteeism</td>
+                            <td>Out Of</td>
+                            <td>Success</td>
+                            <td>Fail</td>
+                            <td>Date</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.MyExams)
+                        {
+                            <tr>
+                                <td>@(counter++)</td>
+                                <td>@e.Class.Name</td>
+                                <td>@e.Name</td>
+                                <td>@e.ExamStudent.Count()</td>
+                                <td>@(e.Class.Students.Count() - e.ExamStudent.Count())</td>
+                                <td>@e.Degree()</td>
+                                <td>@e.ExamStudent.Where(es=>es.Degree >= e.Degree() / 2).Count()</td>
+                                <td>@(e.Class.Students.Count()-e.ExamStudent.Count()+e.ExamStudent.Where(es=>es.Degree < e.Degree() / 2).Count())</td>
+                                <td>@e.Date</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
 <style>
     .grid {
         display: grid;
-        grid-template-columns:1fr 3fr;
+        grid-template-columns: 1fr 3fr;
+        margin: 25px 0;
     }
+
     .ImgFileName {
         width: 200px;
         height: 200px;
         border-radius: 50%;
         border: solid #e1e8ff 10px;
     }
+
     input[type=checkbox] {
-        display:none;
+        display: none;
     }
+
         input[type=checkbox] + label:before {
             border: 0.1em solid black;
             border-radius: 0.2em;
             display: inline-block;
             width: 2em;
             height: 2em;
-            display:flex;
-            justify-content:center;
+            display: flex;
+            justify-content: center;
             align-items: center;
             line-height: 100%;
-            margin: .2em;
             vertical-align: bottom;
             color: white;
         }
+
     label {
-        display:flex;
-        align-items:center;
+        display: flex;
+        align-items: center;
     }
+
     input[type=checkbox]:checked + label:before {
         content: "\2714";
         background-color: #007fa8;
     }
+
     input[type=checkbox] + label:before {
         content: "X";
         background-color: #c80c0c;
     }
+
     table {
         border-collapse: collapse;
-        margin: 25px 0;
         font-size: 1.1em;
         font-family: sans-serif;
         width: 100%;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     }
-    table thead tr {
-        background-color:#007fa8;
-        color: #ffffff;
-        text-align: left;
-    }
-    table th,
-    table td {
-        padding: 12px 15px;
-    }
-</style>
 
+        table thead tr {
+            background-color: #007fa8;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        table th,
+        table td {
+            padding: 12px 15px;
+        }
+</style>
