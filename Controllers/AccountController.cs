@@ -102,15 +102,21 @@ namespace examination_system.Controllers
                 }
             }
         }
-        [Authorize(Roles = "superadmin,admin")]
+        [Authorize]
         public ActionResult Edit(string id)
         {
-            Db = new DB();
-            UserStore = new UserStore<AspNetUsers>(Db);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            return View(Db.Users.FirstOrDefault(u=>u.Id==id));
+            if (User.IsInRole("superadmin") || User.IsInRole("admin")|| User.Identity.GetUserId()==id)
+            {
+                Db = new DB();
+                UserStore = new UserStore<AspNetUsers>(Db);
+                userManager = new UserManager<AspNetUsers>(UserStore);
+                return View(Db.Users.FirstOrDefault(u => u.Id == id));
+            }
+            else {
+                return RedirectToAction("Index");
+            }
         }
-        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "superadmin,admin")]
+        [HttpPost, ValidateAntiForgeryToken, Authorize]
         public ActionResult Edit(string id,AspNetUsers NewUser, HttpPostedFileBase ImgFile)
         {
             Db = new DB();
@@ -260,25 +266,27 @@ namespace examination_system.Controllers
             }
             return View(User);
         }
-        public ActionResult ViewProfile(string id) 
-        {
-            Db = new DB();
-            UserStore = new UserStore<AspNetUsers>(Db);
-            userManager = new UserManager<AspNetUsers>(UserStore);
-            
-            string userid=User.Identity.GetUserId();
-            if (userid == id) {
-                var user = Db.Users.FirstOrDefault(u => u.Id == id);
-                return View(user);
-            }
-            return RedirectToAction("Index");
-        }
         [Authorize]
         public ActionResult LogOut()
         {
             IAuthenticationManager manager= HttpContext.GetOwinContext().Authentication;
             manager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("LogIn", "Account");
+        }
+        [Authorize]
+        public ActionResult ViewProfile(string id) {
+            if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.Identity.GetUserId() == id)
+            {
+                Db = new DB();
+                UserStore = new UserStore<AspNetUsers>(Db);
+                userManager = new UserManager<AspNetUsers>(UserStore);
+                var user = Db.Users.FirstOrDefault(u => u.Id == id);
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
     }
 }
