@@ -417,6 +417,12 @@ namespace examination_system.Controllers
                 DB.SaveChanges();
             }
         }
-
+        public ActionResult ViewDetails(string id) {
+            DB = new DB();
+            UserStore = new UserStore<AspNetUsers>(DB);
+            userManager = new UserManager<AspNetUsers>(UserStore);
+            var exam = DB.Exams.FirstOrDefault(e => e.Id.ToString() == id);
+            return View(exam);
+        }
     }
 }

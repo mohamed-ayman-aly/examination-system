@@ -38,15 +38,11 @@
             {<span> 0</span>} }
         </li>
     </ol>
-    <ol>
+    <ol style="margin-bottom:87px">
         @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
         {
             <li>Students</li>
         }
         <li>Questions</li>
     </ol>
-    @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
-    {
-        <button>view details</button>
-    }
 </div>
