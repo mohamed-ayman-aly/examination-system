@@ -62,14 +62,14 @@ namespace examination_system.Controllers
             if (examend > DateTime.Now && !myExamStudent.Submit)
             {
                 var Answers = myExamStudent.Answers.ToList();
-                var lastAnswer = Answers.FirstOrDefault(a => a.ExamQuestion.Id.ToString() == q);
+                var lastAnswer = Answers.FirstOrDefault(a => a.ExamQuestion!=null && a.ExamQuestion.Id.ToString() == q);
                 if (lastAnswer != null)
                 {
                     lastAnswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
                     DB.SaveChanges();
                     return true;
                 }
-                lastAnswer = Answers.FirstOrDefault(a => a.GroupQuestion.Id.ToString() == q);
+                lastAnswer = Answers.FirstOrDefault(a => a.GroupQuestion != null && a.GroupQuestion.Id.ToString() == q);
                 if (lastAnswer != null)
                 {
                     lastAnswer.Answer = DB.Answers.FirstOrDefault(a => a.Id.ToString() == ans);
