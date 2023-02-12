@@ -135,7 +135,7 @@ namespace examination_system.Controllers
             DB = new DB();
             var Question = DB.Questions.FirstOrDefault(c => c.Id.ToString() == Id);
             ViewBag.Class = DB.Classes.ToList();
-            ViewBag.Answers = Question.Answers;
+            ViewBag.Answers = Question.Answers.Select(a=>a.AnswerBody).ToList();
             return View(Question);
         }
         [HttpPost, ValidateAntiForgeryToken]
@@ -165,6 +165,9 @@ namespace examination_system.Controllers
                     ModelState.AddModelError("", "Correct Answer should not repeat");
                     ViewBag.Answers = Answers;
                     ViewBag.Class = DB.Classes.ToList();
+                    NewQuestion.Class = new Class {
+                        Id = new Guid(Class)
+                    };
                     return View(NewQuestion);
                 }
                 if (a == null || a == "")
@@ -172,6 +175,10 @@ namespace examination_system.Controllers
                     ModelState.AddModelError("", "can't add blank'empty' Answer");
                     ViewBag.Answers = Answers;
                     ViewBag.Class = DB.Classes.ToList();
+                    NewQuestion.Class = new Class
+                    {
+                        Id = new Guid(Class)
+                    };
                     return View(NewQuestion);
                 }
             }
@@ -180,6 +187,10 @@ namespace examination_system.Controllers
                 ModelState.AddModelError("", "can't add blank'empty' Question");
                 ViewBag.Answers = Answers;
                 ViewBag.Class = DB.Classes.ToList();
+                NewQuestion.Class = new Class
+                {
+                    Id = new Guid(Class)
+                };
                 return View(NewQuestion);
             }
             if (Class == null || Class == "")
@@ -187,6 +198,10 @@ namespace examination_system.Controllers
                 ModelState.AddModelError("", "Correct Answer is Required");
                 ViewBag.Answers = Answers;
                 ViewBag.Class = DB.Classes.ToList();
+                NewQuestion.Class = new Class
+                {
+                    Id = new Guid(Class)
+                };
                 return View(NewQuestion);
             }
             q.QuestionBody = NewQuestion.QuestionBody;

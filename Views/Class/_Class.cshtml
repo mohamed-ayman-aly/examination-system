@@ -22,7 +22,7 @@
     </svg>
     <div class="UserName">@Model.Name</div>
     <ol style="font-size:17px;">
-        @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
+        @if (User.IsInRole("professor") || User.IsInRole("admin") || User.IsInRole("superadmin"))
         {
             <li>
                 @{try
@@ -39,7 +39,7 @@
         </li>
     </ol>
     <ol style="margin-bottom:87px">
-        @if (User.IsInRole("admin") || User.IsInRole("superadmin"))
+        @if (User.IsInRole("professor") || User.IsInRole("admin") || User.IsInRole("superadmin"))
         {
             <li>Students</li>
         }

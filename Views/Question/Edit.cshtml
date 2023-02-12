@@ -16,7 +16,6 @@
             <label class="control-label lbel col-md-2">class</label>
             <div class="col-md-10">
                 <select class="form-group dropdown slect" id="Class" name="Class" required>
-                    <option selected></option>
                     @foreach (examination_system.Models.Class c in ViewBag.Class)
                     {
                         <option value="@c.Id.ToString()" @(c.Id==Model.Class.Id?"selected":"")>@c.Name</option>
@@ -42,12 +41,12 @@
             int i = 1;
             foreach (var a in ViewBag.Answers)
             {
-                if (a.AnswerBody != Model.CorrectAnswer.AnswerBody)
+                if (a != Model.CorrectAnswer.AnswerBody)
                 {
                     <div class="form-group">
                             <label class="control-label lbel col-md-2">Answer @i</label>
                             <div class="col-md-10">
-                                <textarea class=" textarea" name="Answers" id="Answers" value="@a">@a.AnswerBody</textarea>
+                                <textarea class=" textarea" name="Answers" id="Answers" value="@a">@a</textarea>
                                 <span onclick="deleteAnswer(event,@i)" class="pointer pnl" style="width:20px;height:22px">Delete Answer @i</span>
                             </div>
                         </div>
